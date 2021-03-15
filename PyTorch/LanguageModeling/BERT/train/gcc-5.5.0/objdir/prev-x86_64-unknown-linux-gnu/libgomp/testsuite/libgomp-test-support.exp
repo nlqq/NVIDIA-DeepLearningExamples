@@ -1,0 +1,6 @@
+set cuda_driver_include ""
+set cuda_driver_lib ""
+
+set offload_targets "host_nonshm"
+set offload_additional_options ""
+set offload_additional_lib_paths ""

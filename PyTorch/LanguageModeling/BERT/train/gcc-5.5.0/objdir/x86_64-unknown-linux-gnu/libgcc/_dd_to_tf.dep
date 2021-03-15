@@ -1,0 +1,105 @@
+_dd_to_tf.o: ../../../libgcc/config/libbid/_dd_to_tf.c \
+ /usr/include/stdc-predef.h ../../../libgcc/config/libbid/bid_conf.h \
+ ../../../libgcc/config/libbid/bid_functions.h \
+ ../../../libgcc/config/libbid/bid_gcc_intrinsics.h ../.././gcc/tconfig.h \
+ ../.././gcc/auto-host.h ../../../libgcc/../include/ansidecl.h \
+ ../../../libgcc/../gcc/coretypes.h ../.././gcc/tm.h \
+ ../.././gcc/options.h ../../../libgcc/../gcc/flag-types.h \
+ ../../../libgcc/../gcc/config/i386/i386-opts.h \
+ ../../../libgcc/../gcc/config/i386/stringop.def \
+ ../.././gcc/insn-constants.h \
+ ../../../libgcc/../gcc/config/vxworks-dummy.h \
+ ../../../libgcc/../gcc/config/i386/biarch64.h \
+ ../../../libgcc/../gcc/config/i386/i386.h \
+ ../../../libgcc/../gcc/config/i386/x86-tune.def \
+ ../../../libgcc/../gcc/config/i386/unix.h \
+ ../../../libgcc/../gcc/config/i386/att.h \
+ ../../../libgcc/../gcc/config/dbxelf.h \
+ ../../../libgcc/../gcc/config/elfos.h \
+ ../../../libgcc/../gcc/config/gnu-user.h \
+ ../../../libgcc/../gcc/config/glibc-stdint.h \
+ ../../../libgcc/../gcc/config/i386/x86-64.h \
+ ../../../libgcc/../gcc/config/i386/gnu-user-common.h \
+ ../../../libgcc/../gcc/config/i386/gnu-user64.h \
+ ../../../libgcc/../gcc/config/linux.h \
+ ../../../libgcc/../gcc/config/linux-android.h \
+ ../../../libgcc/../gcc/config/i386/linux-common.h \
+ ../../../libgcc/../gcc/config/i386/linux64.h \
+ ../../../libgcc/../gcc/config/initfini-array.h ../.././gcc/insn-modes.h \
+ ../../../libgcc/../gcc/defaults.h libgcc_tm.h \
+ ../../../libgcc/config/i386/elf-lib.h \
+ ../../../libgcc/config/i386/value-unwind.h
+
+/usr/include/stdc-predef.h:
+
+../../../libgcc/config/libbid/bid_conf.h:
+
+../../../libgcc/config/libbid/bid_functions.h:
+
+../../../libgcc/config/libbid/bid_gcc_intrinsics.h:
+
+../.././gcc/tconfig.h:
+
+../.././gcc/auto-host.h:
+
+../../../libgcc/../include/ansidecl.h:
+
+../../../libgcc/../gcc/coretypes.h:
+
+../.././gcc/tm.h:
+
+../.././gcc/options.h:
+
+../../../libgcc/../gcc/flag-types.h:
+
+../../../libgcc/../gcc/config/i386/i386-opts.h:
+
+../../../libgcc/../gcc/config/i386/stringop.def:
+
+../.././gcc/insn-constants.h:
+
+../../../libgcc/../gcc/config/vxworks-dummy.h:
+
+../../../libgcc/../gcc/config/i386/biarch64.h:
+
+../../../libgcc/../gcc/config/i386/i386.h:
+
+../../../libgcc/../gcc/config/i386/x86-tune.def:
+
+../../../libgcc/../gcc/config/i386/unix.h:
+
+../../../libgcc/../gcc/config/i386/att.h:
+
+../../../libgcc/../gcc/config/dbxelf.h:
+
+../../../libgcc/../gcc/config/elfos.h:
+
+../../../libgcc/../gcc/config/gnu-user.h:
+
+../../../libgcc/../gcc/config/glibc-stdint.h:
+
+../../../libgcc/../gcc/config/i386/x86-64.h:
+
+../../../libgcc/../gcc/config/i386/gnu-user-common.h:
+
+../../../libgcc/../gcc/config/i386/gnu-user64.h:
+
+../../../libgcc/../gcc/config/linux.h:
+
+../../../libgcc/../gcc/config/linux-android.h:
+
+../../../libgcc/../gcc/config/i386/linux-common.h:
+
+../../../libgcc/../gcc/config/i386/linux64.h:
+
+../../../libgcc/../gcc/config/initfini-array.h:
+
+../.././gcc/insn-modes.h:
+
+../../../libgcc/../gcc/defaults.h:
+
+libgcc_tm.h:
+
+../../../libgcc/config/i386/elf-lib.h:
+
+../../../libgcc/config/i386/value-unwind.h:

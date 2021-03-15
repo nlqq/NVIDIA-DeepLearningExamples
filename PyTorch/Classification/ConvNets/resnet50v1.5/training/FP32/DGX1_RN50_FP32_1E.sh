@@ -1,0 +1,12 @@
+python ./multiproc.py --nproc_per_node 8 ./main.py /imagenet \
+        --data-backend dali-cpu \
+        --raport-file raport.json \
+        -j8 -p 1 --lr 2.048 \
+        --optimizer-batch-size 1 \
+        --warmup 8 --arch resnet50 \
+        -c fanin --label-smoothing 0.1 \
+        --lr-schedule cosine --mom 0.875 \
+        --wd 3.0517578125e-05 \
+        --workspace ${1:-./} -b 128 \
+        --epochs 1 --prof 120 \
+        --training-only --no-checkpoints 
