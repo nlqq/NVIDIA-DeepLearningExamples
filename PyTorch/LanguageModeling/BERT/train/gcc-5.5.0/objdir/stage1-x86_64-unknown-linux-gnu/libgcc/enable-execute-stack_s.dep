@@ -1,4 +1,0 @@
-enable-execute-stack_s.o: enable-execute-stack.c \
- /usr/include/stdc-predef.h
-
-/usr/include/stdc-predef.h:

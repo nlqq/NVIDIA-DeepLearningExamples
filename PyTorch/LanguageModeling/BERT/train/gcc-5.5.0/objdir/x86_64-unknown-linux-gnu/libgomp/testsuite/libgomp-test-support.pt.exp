@@ -1,4 +1,0 @@
-set cuda_driver_include ""
-set cuda_driver_lib ""
-
-set offload_targets "host_nonshm"

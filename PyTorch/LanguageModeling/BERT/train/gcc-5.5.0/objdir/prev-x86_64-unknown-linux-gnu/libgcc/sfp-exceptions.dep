@@ -1,9 +1,0 @@
-sfp-exceptions.o: ../../../libgcc/config/i386/sfp-exceptions.c \
- /usr/include/stdc-predef.h ../../../libgcc/config/i386/sfp-machine.h \
- ../../../libgcc/config/i386/64/sfp-machine.h
-
-/usr/include/stdc-predef.h:
-
-../../../libgcc/config/i386/sfp-machine.h:
-
-../../../libgcc/config/i386/64/sfp-machine.h:

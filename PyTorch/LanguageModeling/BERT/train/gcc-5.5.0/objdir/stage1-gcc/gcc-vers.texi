@@ -1,5 +1,0 @@
-@set version-GCC 5.5.0
-@clear DEVELOPMENT
-@set srcdir /home/leinao/DeepLearningExamples/PyTorch/LanguageModeling/BERT/train/gcc-5.5.0/objdir/gcc/../../gcc
-@set VERSION_PACKAGE (GCC) 
-@set BUGURL @uref{http://gcc.gnu.org/bugs.html}

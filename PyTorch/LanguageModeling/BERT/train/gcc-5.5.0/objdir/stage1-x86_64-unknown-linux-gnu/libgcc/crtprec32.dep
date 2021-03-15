@@ -1,4 +1,0 @@
-crtprec32.o: ../../../libgcc/config/i386/crtprec.c \
- /usr/include/stdc-predef.h
-
-/usr/include/stdc-predef.h:

@@ -1,6 +1,0 @@
-morestack.o: ../../../libgcc/config/i386/morestack.S \
- /usr/include/stdc-predef.h morestack.vis
-
-/usr/include/stdc-predef.h:
-
-morestack.vis:
