@@ -1,0 +1,53 @@
++ python /workspace/rn50/multiproc.py --nnodes 1 --node_rank 0 --nproc_per_node 1 --master_addr 127.0.0.1 --master_port=29500 /workspace/rn50/main.py --data-backend dali-cpu --raport-file /workspace/rn50/raport.json -j5 -p 1 --lr 0.128 --optimizer-batch-size -1 --warmup 8 --arch resnet50 -c fanin --label-smoothing 0.1 --lr-schedule cosine --mom 0.125 --wd 3.0517578125e-05 --workspace /workspace/rn50 -b 128 --epochs 1 --prof 150 --training-only --no-checkpoints /data/image
+=> creating model '('resnet50', 'fanin', 1000)'
+Version: {'net': <class 'image_classification.resnet.ResNet'>, 'block': <class 'image_classification.resnet.Bottleneck'>, 'layers': [3, 4, 6, 3], 'widths': [64, 128, 256, 512], 'expansion': 4}
+Config: {'conv': <class 'torch.nn.modules.conv.Conv2d'>, 'conv_init': 'fan_in', 'nonlinearity': 'relu', 'last_bn_0_init': False, 'activation': <function <lambda> at 0x7ff8f3b919d8>}
+Num classes: 1000
+i'm not distributed in dali
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+    main(args)
+  File "/workspace/rn50/main.py", line 436, in main
+    memory_format=memory_format,
+  File "/workspace/rn50/image_classification/dataloaders.py", line 241, in gdtl
+    pipe.build()
+  File "/opt/conda/lib/python3.6/site-packages/nvidia/dali/pipeline.py", line 317, in build
+    self._pipe.Build(self._names_and_devices)
+RuntimeError: [/opt/dali/dali/operators/reader/loader/file_loader.cc:59] Assert on "dir != nullptr" failed: Directory /data/image/train could not be opened.
+Stacktrace (34 entries):
+[frame 0]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(+0x2cf43e) [0x7ff8f73c943e]
+[frame 1]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(+0xac965d) [0x7ff8f7bc365d]
+[frame 2]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(+0xaccdfb) [0x7ff8f7bc6dfb]
+[frame 3]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(+0xb06def) [0x7ff8f7c00def]
+[frame 4]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(std::_Function_handler<std::unique_ptr<dali::OperatorBase, std::default_delete<dali::OperatorBase> > (dali::OpSpec const&), std::unique_ptr<dali::OperatorBase, std::default_delete<dali::OperatorBase> > (*)(dali::OpSpec const&)>::_M_invoke(std::_Any_data const&, dali::OpSpec const&)+0xc) [0x7ff8f73c3c8c]
+[frame 5]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali.so(+0x1350e4) [0x7ff8f5de90e4]
+[frame 6]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali.so(dali::InstantiateOperator(dali::OpSpec const&)+0x34e) [0x7ff8f5de862e]
+[frame 7]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali.so(dali::OpGraph::InstantiateOperators()+0xa7) [0x7ff8f5da0227]
+[frame 8]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali.so(dali::Pipeline::Build(std::vector<std::pair<std::string, std::string>, std::allocator<std::pair<std::string, std::string> > >)+0xa48) [0x7ff8f5e06f48]
+[frame 9]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/backend_impl.cpython-36m-x86_64-linux-gnu.so(+0x3d10f) [0x7ff902c1610f]
+[frame 10]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/backend_impl.cpython-36m-x86_64-linux-gnu.so(+0x20ff3) [0x7ff902bf9ff3]
+[frame 11]: /opt/conda/bin/python(_PyCFunction_FastCallDict+0x154) [0x560fb06cfc54]
+[frame 12]: /opt/conda/bin/python(+0x199c0e) [0x560fb0757c0e]
+[frame 13]: /opt/conda/bin/python(_PyEval_EvalFrameDefault+0x30a) [0x560fb077a75a]
+[frame 14]: /opt/conda/bin/python(+0x193c5b) [0x560fb0751c5b]
+[frame 15]: /opt/conda/bin/python(+0x199b95) [0x560fb0757b95]
+[frame 16]: /opt/conda/bin/python(_PyEval_EvalFrameDefault+0x30a) [0x560fb077a75a]
+[frame 17]: /opt/conda/bin/python(+0x193136) [0x560fb0751136]
+[frame 18]: /opt/conda/bin/python(+0x193ed6) [0x560fb0751ed6]
+[frame 19]: /opt/conda/bin/python(+0x199b95) [0x560fb0757b95]
+[frame 20]: /opt/conda/bin/python(_PyEval_EvalFrameDefault+0x10cc) [0x560fb077b51c]
+[frame 21]: /opt/conda/bin/python(+0x19329e) [0x560fb075129e]
+[frame 22]: /opt/conda/bin/python(+0x193ed6) [0x560fb0751ed6]
+[frame 23]: /opt/conda/bin/python(+0x199b95) [0x560fb0757b95]
+[frame 24]: /opt/conda/bin/python(_PyEval_EvalFrameDefault+0x30a) [0x560fb077a75a]
+[frame 25]: /opt/conda/bin/python(PyEval_EvalCodeEx+0x329) [0x560fb07529b9]
+[frame 26]: /opt/conda/bin/python(PyEval_EvalCode+0x1c) [0x560fb075375c]
+[frame 27]: /opt/conda/bin/python(+0x215744) [0x560fb07d3744]
+[frame 28]: /opt/conda/bin/python(PyRun_FileExFlags+0xa1) [0x560fb07d3b41]
+[frame 29]: /opt/conda/bin/python(PyRun_SimpleFileExFlags+0x1c3) [0x560fb07d3d43]
+[frame 30]: /opt/conda/bin/python(Py_Main+0x613) [0x560fb07d7833]
+[frame 31]: /opt/conda/bin/python(main+0xee) [0x560fb06a188e]
+[frame 32]: /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xe7) [0x7ffa0c27fb97]
+[frame 33]: /opt/conda/bin/python(+0x1c3160) [0x560fb0781160]
+
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '0.128', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']

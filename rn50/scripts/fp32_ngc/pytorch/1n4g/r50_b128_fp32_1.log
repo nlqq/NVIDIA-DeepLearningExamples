@@ -1,0 +1,93 @@
++ python /workspace/rn50/multiproc.py --nnodes 1 --node_rank 0 --nproc_per_node 4 --master_addr 127.0.0.1 --master_port=29500 /workspace/rn50/main.py --data-backend dali-cpu --raport-file /workspace/rn50/raport.json -j5 -p 1 --lr 0.512 --optimizer-batch-size -1 --warmup 8 --arch resnet50 -c fanin --label-smoothing 0.1 --lr-schedule cosine --mom 0.125 --wd 3.0517578125e-05 --workspace /workspace/rn50 -b 128 --epochs 1 --prof 150 --training-only --no-checkpoints /data/image
+=> creating model '('resnet50', 'fanin', 1000)'
+Version: {'net': <class 'image_classification.resnet.ResNet'>, 'block': <class 'image_classification.resnet.Bottleneck'>, 'layers': [3, 4, 6, 3], 'widths': [64, 128, 256, 512], 'expansion': 4}
+Config: {'conv': <class 'torch.nn.modules.conv.Conv2d'>, 'conv_init': 'fan_in', 'nonlinearity': 'relu', 'last_bn_0_init': False, 'activation': <function <lambda> at 0x7fadd225e9d8>}
+Num classes: 1000
+i'm distributed in dali~~~~~~~~~~~~~~~~~
+rank in dali:  0
+world_size in dali:  4
+read 3545488 files from 2792 directories
+read 50000 files from 1000 directories
+DLL 2020-09-28 21:05:06.113903 - PARAMETER data : /data/image  data_backend : dali-cpu  arch : resnet50  model_config : fanin  num_classes : 1000  workers : 5  epochs : 1  run_epochs : -1  batch_size : 128  optimizer_batch_size : -1  lr : 0.512  lr_schedule : cosine  warmup : 8  label_smoothing : 0.1  mixup : 0.0  momentum : 0.125  weight_decay : 3.0517578125e-05  bn_weight_decay : False  nesterov : False  print_freq : 1  resume : None  pretrained_weights :   fp16 : False  static_loss_scale : 1  dynamic_loss_scale : False  prof : 150  amp : False  seed : None  gather_checkpoints : False  raport_file : /workspace/rn50/raport.json  evaluate : False  training_only : True  save_checkpoints : False  checkpoint_filename : checkpoint.pth.tar  workspace : /workspace/rn50  memory_format : nchw  distributed : True  local_rank : 0  gpu : 8  world_size : 4 
+ ! Weight decay NOT applied to BN parameters 
+98
+63
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+    main(args)
+  File "/workspace/rn50/main.py", line 502, in main
+    model_and_loss.distributed()
+  File "/workspace/rn50/image_classification/training.py", line 96, in distributed
+    self.model = DDP(self.model)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 253, in __init__
+    flat_dist_call([param.data for param in self.module.parameters()], dist.broadcast, (0,) )
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 75, in flat_dist_call
+    apply_flat_dist_call(bucket, call, extra_args)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 38, in apply_flat_dist_call
+    coalesced = flatten(bucket)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 28, in flatten
+    return flatten_impl(bucket)
+RuntimeError: CUDA out of memory. Tried to allocate 98.00 MiB (GPU 0; 15.78 GiB total capacity; 245.73 MiB already allocated; 26.44 MiB free; 266.00 MiB reserved in total by PyTorch)
+An error occurred in nvJPEG worker thread:
+Error in thread 3: [/opt/dali/dali/operators/decoder/nvjpeg/decoupled_api/nvjpeg_decoder_decoupled_api.h:367] NVJPEG error "6" : NVJPEG_STATUS_EXECUTION_FAILED n01491361/ILSVRC2012_val_00029300.JPEG
+Stacktrace (7 entries):
+[frame 0]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(+0x2cf43e) [0x7fadd5a9543e]
+[frame 1]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(+0x38e41c) [0x7fadd5b5441c]
+[frame 2]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali_operators.so(+0x38ef8c) [0x7fadd5b54f8c]
+[frame 3]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali.so(dali::ThreadPool::ThreadMain(int, int, bool)+0x1b9) [0x7fadd44b72b9]
+[frame 4]: /opt/conda/lib/python3.6/site-packages/nvidia/dali/libdali.so(+0x734e30) [0x7fadd4ab4e30]
+[frame 5]: /lib/x86_64-linux-gnu/libpthread.so.0(+0x76db) [0x7faeeaca16db]
+[frame 6]: /lib/x86_64-linux-gnu/libc.so.6(clone+0x3f) [0x7faeea9ca88f]
+
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+    main(args)
+  File "/workspace/rn50/main.py", line 502, in main
+    model_and_loss.distributed()
+  File "/workspace/rn50/image_classification/training.py", line 96, in distributed
+    main(args)
+  File "/workspace/rn50/main.py", line 502, in main
+    self.model = DDP(self.model)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 253, in __init__
+    model_and_loss.distributed()
+    flat_dist_call([param.data for param in self.module.parameters()], dist.broadcast, (0,) )
+  File "/workspace/rn50/image_classification/training.py", line 96, in distributed
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 75, in flat_dist_call
+    apply_flat_dist_call(bucket, call, extra_args)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 41, in apply_flat_dist_call
+    main(args)
+    self.model = DDP(self.model)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 253, in __init__
+  File "/workspace/rn50/main.py", line 502, in main
+    call(coalesced, *extra_args)
+  File "/opt/conda/lib/python3.6/site-packages/torch/distributed/distributed_c10d.py", line 804, in broadcast
+    flat_dist_call([param.data for param in self.module.parameters()], dist.broadcast, (0,) )
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 75, in flat_dist_call
+    apply_flat_dist_call(bucket, call, extra_args)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 41, in apply_flat_dist_call
+    call(coalesced, *extra_args)
+  File "/opt/conda/lib/python3.6/site-packages/torch/distributed/distributed_c10d.py", line 804, in broadcast
+    model_and_loss.distributed()
+  File "/workspace/rn50/image_classification/training.py", line 96, in distributed
+    self.model = DDP(self.model)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 253, in __init__
+    work = _default_pg.broadcast([tensor], opts)
+    work = _default_pg.broadcast([tensor], opts)
+RuntimeError: Connection reset by peer
+RuntimeError: Connection reset by peer
+    flat_dist_call([param.data for param in self.module.parameters()], dist.broadcast, (0,) )
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 75, in flat_dist_call
+    apply_flat_dist_call(bucket, call, extra_args)
+  File "/opt/conda/lib/python3.6/site-packages/apex/parallel/distributed.py", line 41, in apply_flat_dist_call
+    call(coalesced, *extra_args)
+  File "/opt/conda/lib/python3.6/site-packages/torch/distributed/distributed_c10d.py", line 804, in broadcast
+    work = _default_pg.broadcast([tensor], opts)
+RuntimeError: Connection reset by peer
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '0.512', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '0.512', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '0.512', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '0.512', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']

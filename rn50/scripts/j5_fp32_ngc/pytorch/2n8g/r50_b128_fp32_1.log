@@ -1,0 +1,73 @@
++ python /workspace/rn50/multiproc.py --nnodes 2 --node_rank 0 --nproc_per_node 8 --master_addr 10.11.0.2 --master_port=22333 /workspace/rn50/main.py --data-backend dali-cpu --raport-file /workspace/rn50/raport.json -j5 -p 1 --lr 1.024 --optimizer-batch-size -1 --warmup 8 --arch resnet50 -c fanin --label-smoothing 0.1 --lr-schedule cosine --mom 0.125 --wd 3.0517578125e-05 --workspace /workspace/rn50 -b 128 --epochs 1 --prof 150 --training-only --no-checkpoints /data/image
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+    main(args)
+  File "/workspace/rn50/main.py", line 411, in main
+    memory_format=memory_format,
+  File "/workspace/rn50/image_classification/training.py", line 76, in __init__
+    model = model.cuda().to(memory_format=memory_format)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in cuda
+    return self._apply(lambda t: t.cuda(device))
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 203, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 225, in _apply
+    param_applied = fn(param)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in <lambda>
+    return self._apply(lambda t: t.cuda(device))
+RuntimeError: CUDA error: out of memory
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+    main(args)
+  File "/workspace/rn50/main.py", line 411, in main
+    memory_format=memory_format,
+  File "/workspace/rn50/image_classification/training.py", line 76, in __init__
+    model = model.cuda().to(memory_format=memory_format)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in cuda
+    return self._apply(lambda t: t.cuda(device))
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 203, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 225, in _apply
+    param_applied = fn(param)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in <lambda>
+    return self._apply(lambda t: t.cuda(device))
+RuntimeError: CUDA error: out of memory
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+    main(args)
+  File "/workspace/rn50/main.py", line 411, in main
+    memory_format=memory_format,
+  File "/workspace/rn50/image_classification/training.py", line 76, in __init__
+    model = model.cuda().to(memory_format=memory_format)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in cuda
+    return self._apply(lambda t: t.cuda(device))
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 203, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 225, in _apply
+    param_applied = fn(param)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in <lambda>
+    return self._apply(lambda t: t.cuda(device))
+RuntimeError: CUDA error: out of memory
+Traceback (most recent call last):
+  File "/workspace/rn50/main.py", line 542, in <module>
+    main(args)
+  File "/workspace/rn50/main.py", line 411, in main
+    memory_format=memory_format,
+  File "/workspace/rn50/image_classification/training.py", line 76, in __init__
+    model = model.cuda().to(memory_format=memory_format)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in cuda
+    return self._apply(lambda t: t.cuda(device))
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 203, in _apply
+    module._apply(fn)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 225, in _apply
+    param_applied = fn(param)
+  File "/opt/conda/lib/python3.6/site-packages/torch/nn/modules/module.py", line 307, in <lambda>
+    return self._apply(lambda t: t.cuda(device))
+RuntimeError: CUDA error: out of memory
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
+['/opt/conda/bin/python', '-u', '/workspace/rn50/main.py', '--data-backend', 'dali-cpu', '--raport-file', '/workspace/rn50/raport.json', '-j5', '-p', '1', '--lr', '1.024', '--optimizer-batch-size', '-1', '--warmup', '8', '--arch', 'resnet50', '-c', 'fanin', '--label-smoothing', '0.1', '--lr-schedule', 'cosine', '--mom', '0.125', '--wd', '3.0517578125e-05', '--workspace', '/workspace/rn50', '-b', '128', '--epochs', '1', '--prof', '150', '--training-only', '--no-checkpoints', '/data/image']
