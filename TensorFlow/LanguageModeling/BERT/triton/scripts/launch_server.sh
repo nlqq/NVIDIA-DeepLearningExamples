@@ -1,7 +1,14 @@
 NV_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-"all"}
+<<<<<<< HEAD
 
 # Start TRITON server in detached state
 docker run --gpus $NV_VISIBLE_DEVICES --rm -d \
+=======
+DETACHED=${DETACHED:-"-d"}
+
+# Start TRITON server in DETACHED state
+docker run --gpus $NV_VISIBLE_DEVICES --rm $DETACHED \
+>>>>>>> repo1
    --shm-size=1g \
    --ulimit memlock=-1 \
    --ulimit stack=67108864 \
@@ -11,4 +18,8 @@ docker run --gpus $NV_VISIBLE_DEVICES --rm -d \
    --name triton_server_cont \
    -e NVIDIA_VISIBLE_DEVICES=$NV_VISIBLE_DEVICES \
    -v $PWD/results/triton_models:/models \
+<<<<<<< HEAD
    nvcr.io/nvidia/tritonserver:20.06-v1-py3 tritonserver --model-store=/models --strict-model-config=false
+=======
+   nvcr.io/nvidia/tritonserver:20.09-py3 tritonserver --model-store=/models --strict-model-config=false --log-verbose=1
+>>>>>>> repo1

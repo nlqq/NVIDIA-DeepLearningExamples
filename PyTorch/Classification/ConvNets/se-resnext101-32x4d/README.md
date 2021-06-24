@@ -31,11 +31,19 @@ achieve state-of-the-art accuracy, and is tested and maintained by NVIDIA.
     * [Inference performance benchmark](#inference-performance-benchmark)
   * [Results](#results)
     * [Training accuracy results](#training-accuracy-results)
+<<<<<<< HEAD
       * [Training accuracy: NVIDIA DGX A100 (8x A100 40GB)](#training-accuracy-nvidia-dgx-a100-8x-a100-40gb)
       * [Training accuracy: NVIDIA DGX-1 (8x V100 16GB)](#training-accuracy-nvidia-dgx-1-8x-v100-16gb)
       * [Example plots](#example-plots)
     * [Training performance results](#training-performance-results)
       * [Training performance: NVIDIA DGX A100 (8x A100 40GB)](#training-performance-nvidia-dgx-a100-8x-a100-40gb)
+=======
+      * [Training accuracy: NVIDIA DGX A100 (8x A100 80GB)](#training-accuracy-nvidia-dgx-a100-8x-a100-80gb)
+      * [Training accuracy: NVIDIA DGX-1 (8x V100 16GB)](#training-accuracy-nvidia-dgx-1-8x-v100-16gb)
+      * [Example plots](#example-plots)
+    * [Training performance results](#training-performance-results)
+      * [Training performance: NVIDIA DGX A100 (8x A100 80GB)](#training-performance-nvidia-dgx-a100-8x-a100-80gb)
+>>>>>>> repo1
       * [Training performance: NVIDIA DGX-1 16GB (8x V100 16GB)](#training-performance-nvidia-dgx-1-16gb-8x-v100-16gb)
       * [Training performance: NVIDIA DGX-1 32GB (8x V100 32GB)](#training-performance-nvidia-dgx-1-32gb-8x-v100-32gb)
   * [Inference performance results](#inference-performance-results)
@@ -45,7 +53,10 @@ achieve state-of-the-art accuracy, and is tested and maintained by NVIDIA.
   * [Changelog](#changelog)
   * [Known issues](#known-issues)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> repo1
 ## Model overview
 
 The SE-ResNeXt101-32x4d is a [ResNeXt101-32x4d](https://arxiv.org/pdf/1611.05431.pdf)
@@ -106,13 +117,23 @@ This model uses the following data augmentation:
   * Scale to 256x256
   * Center crop to 224x224
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> repo1
 ### Feature support matrix
 
 The following features are supported by this model:
 
+<<<<<<< HEAD
 | Feature               | ResNeXt101-32x4d
 |-----------------------|--------------------------
 |[DALI](https://docs.nvidia.com/deeplearning/dali/release-notes/index.html)   |   Yes
+=======
+| Feature               | SE-ResNeXt101-32x4d
+|-----------------------|--------------------------
+|[DALI](https://docs.nvidia.com/deeplearning/sdk/dali-release-notes/index.html)   |   Yes
+>>>>>>> repo1
 |[APEX AMP](https://nvidia.github.io/apex/amp.html) | Yes |
 
 #### Features
@@ -129,11 +150,19 @@ which speeds up data loading when CPU becomes a bottleneck.
 DALI can use CPU or GPU, and outperforms the PyTorch native dataloader.
 
 Run training with `--data-backends dali-gpu` or `--data-backends dali-cpu` to enable DALI.
+<<<<<<< HEAD
 For ResNeXt101-32x4d, for DGX1 and DGX2 we recommend `--data-backends dali-cpu`.
 
 ### Mixed precision training
 
 Mixed precision is the combined use of different numerical precisions in a computational method. [Mixed precision](https://arxiv.org/abs/1710.03740) training offers significant computational speedup by performing operations in half-precision format, while storing minimal information in single-precision to retain as much information as possible in critical parts of the network. Since the introduction of [Tensor Cores](https://developer.nvidia.com/tensor-cores) in the Volta and Turing architecture, significant training speedups are experienced by switching to mixed precision -- up to 3x overall speedup on the most arithmetically intense model architectures. Using mixed precision training requires two steps:
+=======
+For DGXA100 and DGX1 we recommend `--data-backends dali-cpu`.
+
+### Mixed precision training
+
+Mixed precision is the combined use of different numerical precisions in a computational method. [Mixed precision](https://arxiv.org/abs/1710.03740) training offers significant computational speedup by performing operations in half-precision format, while storing minimal information in single-precision to retain as much information as possible in critical parts of the network. Since the introduction of [Tensor Cores](https://developer.nvidia.com/tensor-cores) in Volta, and following with both the Turing and Ampere architectures, significant training speedups are experienced by switching to mixed precision -- up to 3x overall speedup on the most arithmetically intense model architectures. Using mixed precision training requires two steps:
+>>>>>>> repo1
 1.  Porting the model to use the FP16 data type where appropriate.
 2.  Adding loss scaling to preserve small gradient values.
 
@@ -191,7 +220,11 @@ The following section lists the requirements that you need to meet in order to s
 This repository contains Dockerfile which extends the PyTorch NGC container and encapsulates some dependencies. Aside from these dependencies, ensure you have the following components:
 
 * [NVIDIA Docker](https://github.com/NVIDIA/nvidia-docker)
+<<<<<<< HEAD
 * [PyTorch 20.06-py3 NGC container](https://ngc.nvidia.com/registry/nvidia-pytorch) or newer
+=======
+* [PyTorch 21.03-py3 NGC container](https://ngc.nvidia.com/registry/nvidia-pytorch) or newer
+>>>>>>> repo1
 * Supported GPUs:
     * [NVIDIA Volta architecture](https://www.nvidia.com/en-us/data-center/volta-gpu-architecture/)
     * [NVIDIA Turing architecture](https://www.nvidia.com/en-us/geforce/turing/)
@@ -216,7 +249,11 @@ cd DeepLearningExamples/PyTorch/Classification/
 
 ### 2. Download and preprocess the dataset.
 
+<<<<<<< HEAD
 The ResNeXt101-32x4d script operates on ImageNet 1k, a widely popular image classification dataset from the ILSVRC challenge.
+=======
+The SE-ResNeXt101-32x4d script operates on ImageNet 1k, a widely popular image classification dataset from the ILSVRC challenge.
+>>>>>>> repo1
 
 PyTorch can work directly on JPEGs, therefore, preprocessing/augmentation is not needed.
 
@@ -243,14 +280,22 @@ For the specifics concerning training and inference, see the [Advanced](#advance
 
 The directory in which the `train/` and `val/` directories are placed, is referred to as `<path to imagenet>` in this document.
 
+<<<<<<< HEAD
 ### 3. Build the SE-RNXT101-32x4d PyTorch NGC container.
 
 ```
 docker build . -t nvidia_se-rnxt101-32x4d
+=======
+### 3. Build the SE-ResNeXt101-32x4d PyTorch NGC container.
+
+```
+docker build . -t nvidia_se-resnext101-32x4d
+>>>>>>> repo1
 ```
 
 ### 4. Start an interactive session in the NGC container to run training/inference.
 ```
+<<<<<<< HEAD
 nvidia-docker run --rm -it -v <path to imagenet>:/imagenet --ipc=host nvidia_se-rnxt101-32x4d
 ```
 
@@ -259,10 +304,22 @@ nvidia-docker run --rm -it -v <path to imagenet>:/imagenet --ipc=host nvidia_se-
 To run training for a standard configuration (DGXA100/DGX1/DGX2, AMP/TF32/FP32, 90/250 Epochs),
 run one of the scripts in the `./se-resnext101-32x4d/training` directory
 called `./se-resnext101-32x4d/training/{AMP, TF32, FP32}/{DGXA100, DGX1, DGX2}_SE-RNXT101-32x4d_{AMP, TF32, FP32}_{90,250}E.sh`.
+=======
+nvidia-docker run --rm -it -v <path to imagenet>:/imagenet --ipc=host nvidia_se-resnext101-32x4d
+```
+
+
+### 5. Start training
+
+To run training for a standard configuration (DGXA100/DGX1V, AMP/TF32/FP32, 90/250 Epochs),
+run one of the scripts in the `./se-resnext101-32x4d/training` directory
+called `./se-resnext101-32x4d/training/{AMP, TF32, FP32}/{ DGXA100, DGX1V }_se-resnext101-32x4d_{AMP, TF32, FP32}_{ 90, 250 }E.sh`.
+>>>>>>> repo1
 
 Ensure ImageNet is mounted in the `/imagenet` directory.
 
 Example:
+<<<<<<< HEAD
     `bash ./se-resnext101-32x4d/training/AMP/DGX1_SE-RNXT101-32x4d_AMP_250E.sh <path were to store checkpoints and logs>`
 
 ### 6. Start inference
@@ -278,6 +335,27 @@ To run inference on JPEG image, you have to first extract the model weights from
 Then run classification script:
 
 `python classify.py --arch se-resnext101-32x4d -c fanin --weights <path to weights from previous step> --precision AMP|FP32 --image <path to JPEG image>`
+=======
+    `bash ./se-resnext101-32x4d/training/AMP/DGX1_se-resnext101-32x4d_AMP_250E.sh <path were to store checkpoints and logs>`
+
+### 6. Start inference
+
+You can download pretrained weights from NGC:
+
+```bash
+wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/seresnext101_32x4d_pyt_amp/versions/20.06.0/zip -O seresnext101_32x4d_pyt_amp_20.06.0.zip
+
+unzip seresnext101_32x4d_pyt_amp_20.06.0.zip
+```
+
+To run inference on ImageNet, run:
+
+`python ./main.py --arch se-resnext101-32x4d --evaluate --epochs 1 --pretrained-weights nvidia_se-resnext101-32x4d_200821.pth.tar -b <batch size> <path to imagenet>`
+
+To run inference on JPEG image using pretrained weights:
+
+`python classify.py --arch se-resnext101-32x4d -c fanin --weights nvidia_se-resnext101-32x4d_200821.pth.tar --precision AMP|FP32 --image <path to JPEG image>`
+>>>>>>> repo1
 
 
 ## Advanced
@@ -316,7 +394,11 @@ usage: main.py [-h] [--data-backend BACKEND] [--arch ARCH]
                [--lr-schedule SCHEDULE] [--warmup E] [--label-smoothing S]
                [--mixup ALPHA] [--momentum M] [--weight-decay W]
                [--bn-weight-decay] [--nesterov] [--print-freq N]
+<<<<<<< HEAD
                [--resume PATH] [--pretrained-weights PATH] [--fp16]
+=======
+               [--resume PATH] [--pretrained-weights PATH]
+>>>>>>> repo1
                [--static-loss-scale STATIC_LOSS_SCALE] [--dynamic-loss-scale]
                [--prof N] [--amp] [--seed SEED] [--gather-checkpoints]
                [--raport-file RAPORT_FILE] [--evaluate] [--training-only]
@@ -335,8 +417,15 @@ optional arguments:
                         data backend: pytorch | syntetic | dali-gpu | dali-cpu
                         (default: dali-cpu)
   --arch ARCH, -a ARCH  model architecture: resnet18 | resnet34 | resnet50 |
+<<<<<<< HEAD
                         resnet101 | resnet152 | resnext101-32x4d | se-
                         resnext101-32x4d (default: resnet50)
+=======
+                        resnet101 | resnet152 | resnext50-32x4d |
+                        resnext101-32x4d | resnext101-32x8d |
+                        resnext101-32x8d-basic | se-resnext101-32x4d (default:
+                        resnet50)
+>>>>>>> repo1
   --model-config CONF, -c CONF
                         model configs: classic | fanin | grp-fanin | grp-
                         fanout(default: classic)
@@ -365,10 +454,16 @@ optional arguments:
   --resume PATH         path to latest checkpoint (default: none)
   --pretrained-weights PATH
                         load weights from here
+<<<<<<< HEAD
   --fp16                Run model fp16 mode.
   --static-loss-scale STATIC_LOSS_SCALE
                         Static loss scale, positive power of 2 values can
                         improve fp16 convergence.
+=======
+  --static-loss-scale STATIC_LOSS_SCALE
+                        Static loss scale, positive power of 2 values can
+                        improve amp convergence.
+>>>>>>> repo1
   --dynamic-loss-scale  Use dynamic loss scaling. If supplied, this argument
                         supersedes --static-loss-scale.
   --prof N              Run only N iterations
@@ -386,6 +481,10 @@ optional arguments:
   --workspace DIR       path to directory where checkpoints will be stored
   --memory-format {nchw,nhwc}
                         memory layout, nchw or nhwc
+<<<<<<< HEAD
+=======
+
+>>>>>>> repo1
 ```
 
 
@@ -396,6 +495,7 @@ To use your own dataset, divide it in directories as in the following scheme:
  - Training images - `train/<class id>/<image>`
  - Validation images - `val/<class id>/<image>`
 
+<<<<<<< HEAD
 If your dataset's has number of classes different than 1000, you need to add a custom config
 in the `image_classification/resnet.py` file.
 
@@ -415,6 +515,9 @@ resnet_versions = {
 ```
 
 After adding the config, run the training script with `--arch resnext101-32x4d-custom` flag.
+=======
+If your dataset's has number of classes different than 1000, you need to pass `--num-classes N` flag to the training script.
+>>>>>>> repo1
 
 ### Training process
 
@@ -432,6 +535,22 @@ Metrics gathered through training:
  - `train.data_time` - time spent on waiting on data
  - `train.compute_time` - time spent in forward/backward pass
 
+<<<<<<< HEAD
+=======
+To restart training from checkpoint use `--resume` option.
+
+To start training from pretrained weights (e.g. downloaded from NGC) use `--pretrained-weights` option.
+
+The difference between those two is that the pretrained weights contain only model weights,
+and checkpoints, apart from model weights, contain optimizer state, LR scheduler state.
+
+Checkpoints are suitable for dividing the training into parts, for example in order
+to divide the training job into shorter stages, or restart training after infrastructure fail.
+
+Pretrained weights can be used as a base for finetuning the model to a different dataset,
+or as a backbone to detection models.
+
+>>>>>>> repo1
 ### Inference process
 
 Validation is done every epoch, and can be also run separately on a checkpointed model.
@@ -457,6 +576,29 @@ Then run classification script:
 
 `python classify.py --arch se-resnext101-32x4d -c fanin --weights <path to weights from previous step> --precision AMP|FP32 --image <path to JPEG image>`
 
+<<<<<<< HEAD
+=======
+You can also run ImageNet validation on pretrained weights:
+
+`python ./main.py --arch se-resnext101-32x4d --evaluate --epochs 1 --pretrained-weights <path to pretrained weights> -b <batch size> <path to imagenet>`
+
+#### NGC Pretrained weights:
+
+Pretrained weights can be downloaded from NGC:
+
+```bash
+wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/seresnext101_32x4d_pyt_amp/versions/20.06.0/zip -O seresnext101_32x4d_pyt_amp_20.06.0.zip
+
+unzip seresnext101_32x4d_pyt_amp_20.06.0.zip
+```
+To run inference on ImageNet, run:
+
+`python ./main.py --arch se-resnext101-32x4d --evaluate --epochs 1 --pretrained-weights nvidia_se-resnext101-32x4d_200821.pth.tar -b <batch size> <path to imagenet>`
+
+To run inference on JPEG image using pretrained weights:
+
+`python classify.py --arch se-resnext101-32x4d --weights nvidia_se-resnext101-32x4d_200821.pth.tar --precision AMP|FP32 --image <path to JPEG image>`
+>>>>>>> repo1
 
 
 ## Performance
@@ -470,6 +612,7 @@ The following section shows how to run benchmarks measuring the model performanc
 To benchmark training, run:
 
 * For 1 GPU
+<<<<<<< HEAD
     * FP32
 `python ./main.py --arch se-resnext101-32x4d -b <batch_size> --training-only -p 1 --raport-file benchmark.json --epochs 1 --prof 100 <path to imagenet>`
     * AMP
@@ -491,10 +634,29 @@ Batch size should be picked appropriately depending on the hardware configuratio
 | DGX-1      | AMP         | 128          |
 | DGX-1      | FP32        | 64           |
 
+=======
+    * FP32 (V100 GPUs only)
+        `python ./launch.py --model se-resnext101-32x4d --precision FP32 --mode benchmark_training --platform DGX1V <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+    * TF32 (A100 GPUs only)
+        `python ./launch.py --model se-resnext101-32x4d --precision TF32 --mode benchmark_training --platform DGXA100 <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+    * AMP
+        `python ./launch.py --model se-resnext101-32x4d --precision AMP --mode benchmark_training --platform <DGX1V|DGXA100> <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+* For multiple GPUs
+    * FP32 (V100 GPUs only)
+        `python ./launch.py --model se-resnext101-32x4d --precision FP32 --mode benchmark_training --platform DGX1V <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+    * TF32 (A100 GPUs only)
+        `python ./multiproc.py --nproc_per_node 8 ./launch.py --model se-resnext101-32x4d --precision TF32 --mode benchmark_training --platform DGXA100 <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+    * AMP
+        `python ./multiproc.py --nproc_per_node 8 ./launch.py --model se-resnext101-32x4d --precision AMP --mode benchmark_training --platform <DGX1V|DGXA100> <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+
+Each of these scripts will run 100 iterations and save results in the `benchmark.json` file.
+
+>>>>>>> repo1
 #### Inference performance benchmark
 
 To benchmark inference, run:
 
+<<<<<<< HEAD
 * FP32
 
 `python ./main.py --arch se-resnext101-32x4d -b <batch_size> -p 1 --raport-file benchmark.json --epochs 1 --prof 100 --evaluate <path to imagenet>`
@@ -535,6 +697,44 @@ To achieve these same results, follow the steps in the [Quick Start Guide](#quic
 |   90   |    80.04 +/- 0.10    | 79.93 +/- 0.10 |
 | 250 | 80.96 +/- 0.04 | 80.97 +/- 0.09 |
 
+=======
+* FP32 (V100 GPUs only)
+
+`python ./launch.py --model se-resnext101-32x4d --precision FP32 --mode benchmark_inference --platform DGX1V <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+
+* TF32 (A100 GPUs only)
+
+`python ./launch.py --model se-resnext101-32x4d --precision TF32 --mode benchmark_inference --platform DGXA100 <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+
+* AMP
+
+`python ./launch.py --model se-resnext101-32x4d --precision AMP --mode benchmark_inference --platform <DGX1V|DGXA100> <path to imagenet> --raport-file benchmark.json --epochs 1 --prof 100`
+
+Each of these scripts will run 100 iterations and save results in the `benchmark.json` file.
+
+### Results
+
+#### Training accuracy results
+
+Our results were obtained by running the applicable training script the pytorch-20.12 NGC container.
+
+To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
+
+##### Training accuracy: NVIDIA DGX A100 (8x A100 80GB)
+
+| **Epochs** | **Mixed Precision Top1** | **TF32 Top1**  |
+|:----------:|:------------------------:|:--------------:|
+|     90     |      80.03 +/- 0.11      | 79.92 +/- 0.07 |
+|    250     |      80.9 +/- 0.08       | 80.98 +/- 0.07 |
+
+
+##### Training accuracy: NVIDIA DGX-1 (8x V100 16GB)
+
+| **Epochs** | **Mixed Precision Top1** | **FP32 Top1**  |
+|:----------:|:------------------------:|:--------------:|
+|     90     |      80.04 +/- 0.07      | 79.93 +/- 0.10 |
+|    250     |      80.92 +/- 0.09      | 80.97 +/- 0.09 |
+>>>>>>> repo1
 
 
 ##### Example plots
@@ -549,6 +749,7 @@ The following images show a 250 epochs configuration on a DGX-1V.
 
 #### Training performance results
 
+<<<<<<< HEAD
 ##### Training performance: NVIDIA DGX A100 (8x A100 40GB)
 
 |**GPUs**|**Mixed Precision**|  **TF32**   |**Mixed Precision Speedup**|**Mixed Precision Strong Scaling**|**Mixed Precision Training Time (90E)**|**TF32 Strong Scaling**|**TF32 Training Time (90E)**|
@@ -572,10 +773,47 @@ The following images show a 250 epochs configuration on a DGX-1V.
 
 #### Inference performance results
 
+=======
+Our results were obtained by running the applicable training script the pytorch-21.03 NGC container.
+
+To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
+
+##### Training performance: NVIDIA DGX A100 (8x A100 80GB)
+
+| **GPUs** | **Throughput - TF32** | **Throughput - mixed precision** | **Throughput speedup (TF32 to mixed precision)** | **TF32 Strong Scaling** | **Mixed Precision Strong Scaling** | **Mixed Precision Training Time (90E)** | **TF32 Training Time (90E)** |
+|:--------:|:---------------------:|:--------------------------------:|:------------------------------------------------:|:-----------------------:|:----------------------------------:|:---------------------------------------:|:----------------------------:|
+|    1     |       395 img/s       |            855 img/s             |                      2.16 x                      |          1.0 x          |               1.0 x                |                ~40 hours                |          ~86 hours           |
+|    8     |      2991 img/s       |            5779 img/s            |                      1.93 x                      |         7.56 x          |               6.75 x               |                ~6 hours                 |          ~12 hours           |
+
+
+##### Training performance: NVIDIA DGX-1 16GB (8x V100 16GB)
+
+| **GPUs** | **Throughput - FP32** | **Throughput - mixed precision** | **Throughput speedup (FP32 to mixed precision)** | **FP32 Strong Scaling** | **Mixed Precision Strong Scaling** | **Mixed Precision Training Time (90E)** | **FP32 Training Time (90E)** |
+|:--------:|:---------------------:|:--------------------------------:|:------------------------------------------------:|:-----------------------:|:----------------------------------:|:---------------------------------------:|:----------------------------:|
+|    1     |       132 img/s       |            443 img/s             |                      3.34 x                      |          1.0 x          |               1.0 x                |                ~76 hours                |          ~254 hours          |
+|    8     |      1004 img/s       |            2971 img/s            |                      2.95 x                      |         7.57 x          |               6.7 x                |                ~12 hours                |          ~34 hours           |
+
+
+##### Training performance: NVIDIA DGX-1 32GB (8x V100 32GB)
+
+| **GPUs** | **Throughput - FP32** | **Throughput - mixed precision** | **Throughput speedup (FP32 to mixed precision)** | **FP32 Strong Scaling** | **Mixed Precision Strong Scaling** | **Mixed Precision Training Time (90E)** | **FP32 Training Time (90E)** |
+|:--------:|:---------------------:|:--------------------------------:|:------------------------------------------------:|:-----------------------:|:----------------------------------:|:---------------------------------------:|:----------------------------:|
+|    1     |       130 img/s       |            427 img/s             |                      3.26 x                      |          1.0 x          |               1.0 x                |                ~79 hours                |          ~257 hours          |
+|    8     |       992 img/s       |            2925 img/s            |                      2.94 x                      |         7.58 x          |               6.84 x               |                ~12 hours                |          ~34 hours           |
+
+
+#### Inference performance results
+
+Our results were obtained by running the applicable training script the pytorch-21.03 NGC container.
+
+To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
+
+>>>>>>> repo1
 ##### Inference performance: NVIDIA DGX-1 (1x V100 16GB)
 
 ###### FP32 Inference Latency
 
+<<<<<<< HEAD
 | **batch size** | **Throughput Avg** | **Latency Avg** | **Latency 90%** | **Latency 95%** | **Latency 99%** |
 |:-:|:-:|:-:|:-:|:-:|:-:|
 | 1 | 33.58 img/s | 29.72ms | 30.92ms | 31.77ms | 34.65ms |
@@ -600,12 +838,41 @@ The following images show a 250 epochs configuration on a DGX-1V.
 | 64 | 880.49 img/s | 72.10ms | 72.29ms | 72.34ms | 76.46ms |
 | 128 | 977.86 img/s | 130.19ms | 130.34ms | 130.41ms | 131.12ms |
 
+=======
+| **Batch Size** | **Throughput Avg** | **Latency Avg** | **Latency 95%** | **Latency 99%** |
+|:--------------:|:------------------:|:---------------:|:---------------:|:---------------:|
+|       1        |      40 img/s      |    24.92 ms     |    26.78 ms     |    31.12 ms     |
+|       2        |      80 img/s      |    24.89 ms     |    27.63 ms     |    30.81 ms     |
+|       4        |     127 img/s      |    31.58 ms     |    35.92 ms     |    39.64 ms     |
+|       8        |     250 img/s      |    32.29 ms     |     34.5 ms     |    38.14 ms     |
+|       16       |     363 img/s      |     44.5 ms     |    44.16 ms     |    44.37 ms     |
+|       32       |     423 img/s      |    76.86 ms     |    75.89 ms     |    76.17 ms     |
+|       64       |     472 img/s      |    138.36 ms    |    135.85 ms    |    136.52 ms    |
+|      128       |     501 img/s      |    262.64 ms    |    255.48 ms    |    256.02 ms    |
+|      256       |     508 img/s      |    519.84 ms    |    500.71 ms    |    501.5 ms     |
+
+
+###### Mixed Precision Inference Latency
+
+| **Batch Size** | **Throughput Avg** | **Latency Avg** | **Latency 95%** | **Latency 99%** |
+|:--------------:|:------------------:|:---------------:|:---------------:|:---------------:|
+|       1        |      29 img/s      |    33.83 ms     |     39.1 ms     |    41.57 ms     |
+|       2        |      58 img/s      |    34.35 ms     |    36.92 ms     |    41.66 ms     |
+|       4        |     117 img/s      |    34.33 ms     |    38.67 ms     |    41.05 ms     |
+|       8        |     232 img/s      |    34.66 ms     |    39.51 ms     |    42.16 ms     |
+|       16       |     459 img/s      |    35.23 ms     |    36.77 ms     |    38.11 ms     |
+|       32       |     871 img/s      |    37.62 ms     |    39.36 ms     |    41.26 ms     |
+|       64       |     1416 img/s     |    46.95 ms     |    45.26 ms     |    47.48 ms     |
+|      128       |     1533 img/s     |    87.49 ms     |    83.54 ms     |    83.75 ms     |
+|      256       |     1576 img/s     |    170.79 ms    |    161.97 ms    |    162.93 ms    |
+>>>>>>> repo1
 
 
 ##### Inference performance: NVIDIA T4
 
 ###### FP32 Inference Latency
 
+<<<<<<< HEAD
 | **batch size** | **Throughput Avg** | **Latency Avg** | **Latency 90%** | **Latency 95%** | **Latency 99%** |
 |:-:|:-:|:-:|:-:|:-:|:-:|
 | 1 | 40.47 img/s | 24.72ms | 26.94ms | 29.33ms | 33.03ms |
@@ -632,6 +899,34 @@ The following images show a 250 epochs configuration on a DGX-1V.
 
 
 
+=======
+| **Batch Size** | **Throughput Avg** | **Latency Avg** | **Latency 95%** | **Latency 99%** |
+|:--------------:|:------------------:|:---------------:|:---------------:|:---------------:|
+|       1        |      40 img/s      |    25.12 ms     |    28.83 ms     |    31.59 ms     |
+|       2        |      75 img/s      |    26.82 ms     |    30.54 ms     |    33.13 ms     |
+|       4        |     136 img/s      |    29.79 ms     |    33.33 ms     |    37.65 ms     |
+|       8        |     155 img/s      |    51.74 ms     |    52.57 ms     |    53.12 ms     |
+|       16       |     164 img/s      |    97.99 ms     |    98.76 ms     |    99.21 ms     |
+|       32       |     173 img/s      |    186.31 ms    |    186.43 ms    |    187.4 ms     |
+|       64       |     171 img/s      |    378.1 ms     |    377.19 ms    |    378.82 ms    |
+|      128       |     165 img/s      |    785.83 ms    |    778.23 ms    |    782.64 ms    |
+|      256       |     158 img/s      |   1641.96 ms    |   1601.74 ms    |   1614.52 ms    |
+
+
+###### Mixed Precision Inference Latency
+
+| **Batch Size** | **Throughput Avg** | **Latency Avg** | **Latency 95%** | **Latency 99%** |
+|:--------------:|:------------------:|:---------------:|:---------------:|:---------------:|
+|       1        |      31 img/s      |    32.51 ms     |    37.26 ms     |    39.53 ms     |
+|       2        |      61 img/s      |    32.76 ms     |    37.61 ms     |    39.62 ms     |
+|       4        |     123 img/s      |    32.98 ms     |    38.97 ms     |    42.66 ms     |
+|       8        |     262 img/s      |    31.01 ms     |     36.3 ms     |    39.11 ms     |
+|       16       |     482 img/s      |    33.76 ms     |    34.54 ms     |     38.5 ms     |
+|       32       |     512 img/s      |    63.68 ms     |    63.29 ms     |    63.73 ms     |
+|       64       |     527 img/s      |    123.57 ms    |    122.69 ms    |    123.56 ms    |
+|      128       |     525 img/s      |    248.97 ms    |    245.39 ms    |    246.66 ms    |
+|      256       |     527 img/s      |    496.23 ms    |    485.68 ms    |    488.3 ms     |
+>>>>>>> repo1
 
 
 ## Release notes
@@ -643,9 +938,17 @@ The following images show a 250 epochs configuration on a DGX-1V.
 2. July 2020
   * Added A100 scripts
   * Updated README
+<<<<<<< HEAD
+=======
+3. February 2021
+  * Moved from APEX AMP to Native AMP
+>>>>>>> repo1
 
 ### Known issues
 
 There are no known issues with this model.
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> repo1

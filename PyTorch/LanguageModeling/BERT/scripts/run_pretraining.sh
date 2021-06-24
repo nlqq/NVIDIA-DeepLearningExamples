@@ -14,7 +14,11 @@
 # limitations under the License.
 
 echo "Container nvidia build = " $NVIDIA_BUILD_ID
+<<<<<<< HEAD
 train_batch_size=${1:-128}
+=======
+train_batch_size=${1:-8192}
+>>>>>>> repo1
 learning_rate=${2:-"6e-3"}
 precision=${3:-"fp16"}
 num_gpus=${4:-8}
@@ -25,7 +29,11 @@ resume_training=${8:-"false"}
 create_logfile=${9:-"true"}
 accumulate_gradients=${10:-"true"}
 gradient_accumulation_steps=${11:-128}
+<<<<<<< HEAD
 seed=${12:-42}
+=======
+seed=${12:-12439}
+>>>>>>> repo1
 job_name=${13:-"bert_lamb_pretraining"}
 allreduce_post_accumulation=${14:-"true"}
 allreduce_post_accumulation_fp16=${15:-"true"}
@@ -184,7 +192,11 @@ CMD=" $CODEDIR/run_pretraining.py"
 CMD+=" --input_dir=$DATA_DIR_PHASE2"
 CMD+=" --output_dir=$CHECKPOINTS_DIR"
 CMD+=" --config_file=$BERT_CONFIG"
+<<<<<<< HEAD
 CMD+=" --bert_model=bert-base-uncased"
+=======
+CMD+=" --bert_model=bert-large-uncased"
+>>>>>>> repo1
 CMD+=" --train_batch_size=$train_batch_size_phase2"
 CMD+=" --max_seq_length=512"
 CMD+=" --max_predictions_per_seq=80"

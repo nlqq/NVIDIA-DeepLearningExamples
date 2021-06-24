@@ -30,7 +30,11 @@ import argparse
 from tacotron2.text import symbols
 
 
+<<<<<<< HEAD
 def parse_tacotron2_args(parent, add_help=False):
+=======
+def tacotron2_parser(parent, add_help=False):
+>>>>>>> repo1
     """
     Parse commandline arguments.
     """

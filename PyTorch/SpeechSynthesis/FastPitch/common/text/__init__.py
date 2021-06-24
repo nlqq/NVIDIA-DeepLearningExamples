@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 """ from https://github.com/keithito/tacotron """
 import re
 from common.text import cleaners
@@ -72,3 +73,8 @@ def _arpabet_to_sequence(text):
 
 def _should_keep_symbol(s):
   return s in _symbol_to_id and s is not '_' and s is not '~'
+=======
+from .cmudict import CMUDict
+
+cmudict = CMUDict()
+>>>>>>> repo1

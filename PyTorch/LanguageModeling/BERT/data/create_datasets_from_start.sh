@@ -23,6 +23,11 @@ fi
 python3 /workspace/bert/data/bertPrep.py --action download --dataset wikicorpus_en
 python3 /workspace/bert/data/bertPrep.py --action download --dataset google_pretrained_weights  # Includes vocab
 python3 /workspace/bert/data/bertPrep.py --action download --dataset squad
+<<<<<<< HEAD
+=======
+python3 /workspace/bert/data/bertPrep.py --action download --dataset mrpc
+python3 /workspace/bert/data/bertPrep.py --action download --dataset sst-2
+>>>>>>> repo1
 
 # Properly format the text files
 if [ "$to_download" = "wiki_books" ] ; then
@@ -42,8 +47,16 @@ python3 /workspace/bert/data/bertPrep.py --action sharding --dataset $DATASET
 
 # Create HDF5 files Phase 1
 python3 /workspace/bert/data/bertPrep.py --action create_hdf5_files --dataset $DATASET --max_seq_length 128 \
+<<<<<<< HEAD
 --max_predictions_per_seq 20 --vocab_file $BERT_PREP_WORKING_DIR/download/google_pretrained_weights/uncased_L-12_H-768_A-12/vocab.txt --do_lower_case 1
 
 # Create HDF5 files Phase 2
 python3 /workspace/bert/data/bertPrep.py --action create_hdf5_files --dataset $DATASET --max_seq_length 512 \
 --max_predictions_per_seq 80 --vocab_file $BERT_PREP_WORKING_DIR/download/google_pretrained_weights/uncased_L-12_H-768_A-12/vocab.txt --do_lower_case 1
+=======
+--max_predictions_per_seq 20 --vocab_file $BERT_PREP_WORKING_DIR/download/google_pretrained_weights/uncased_L-24_H-1024_A-16/vocab.txt --do_lower_case 1
+
+# Create HDF5 files Phase 2
+python3 /workspace/bert/data/bertPrep.py --action create_hdf5_files --dataset $DATASET --max_seq_length 512 \
+--max_predictions_per_seq 80 --vocab_file $BERT_PREP_WORKING_DIR/download/google_pretrained_weights/uncased_L-24_H-1024_A-16/vocab.txt --do_lower_case 1
+>>>>>>> repo1

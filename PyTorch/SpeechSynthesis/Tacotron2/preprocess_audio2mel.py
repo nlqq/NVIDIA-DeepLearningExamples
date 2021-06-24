@@ -2,7 +2,11 @@ import argparse
 import torch
 
 from tacotron2.data_function import TextMelLoader
+<<<<<<< HEAD
 from common.utils import load_filepaths_and_text
+=======
+from tacotron2_common.utils import load_filepaths_and_text
+>>>>>>> repo1
 
 def parse_args(parser):
     """

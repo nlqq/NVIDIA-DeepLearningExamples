@@ -73,6 +73,11 @@ def parse_args(parser):
                         help='Input length')
     parser.add_argument('-bs', '--batch-size', type=int, default=1,
                         help='Batch size')
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> repo1
     return parser
 
 
@@ -177,7 +182,10 @@ def main():
                 num_mels = mel.size(0)*mel.size(2)
                 num_samples = audios.size(0)*audios.size(1)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> repo1
                 with MeasureTime(measurements, "type_conversion", args.cpu):
                     audios = audios.float()
 

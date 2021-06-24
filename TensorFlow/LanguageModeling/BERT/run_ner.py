@@ -25,7 +25,12 @@ import tf_metrics
 
 import time
 import horovod.tensorflow as hvd
+<<<<<<< HEAD
 from utils.utils import LogEvalRunHook, LogTrainRunHook
+=======
+from utils.utils import LogEvalRunHook, LogTrainRunHook, setup_xla_flags
+from utils.gpu_affinity import set_affinity
+>>>>>>> repo1
 import utils.dllogger_class
 from dllogger import Verbosity
 
@@ -272,7 +277,11 @@ class CLEFEProcessor(DataProcessor):
 
     @classmethod
     def _read_data2(cls, input_file):
+<<<<<<< HEAD
         with tf.io.gfile.Open(input_file, "r") as f:
+=======
+        with tf.io.gfile.GFile(input_file, "r") as f:
+>>>>>>> repo1
             lines = []
             words = []
             labels = []
@@ -306,10 +315,17 @@ class I2b22012Processor(CLEFEProcessor):
 def write_tokens(tokens, labels, mode):
     if mode == "test":
         path = os.path.join(FLAGS.output_dir, "token_" + mode + ".txt")
+<<<<<<< HEAD
         if tf.io.gfile.Exists(path):
             wf = tf.io.gfile.Open(path, 'a')
         else:
             wf = tf.io.gfile.Open(path, 'w')
+=======
+        if tf.io.gfile.exists(path):
+            wf = tf.io.gfile.GFile(path, 'a')
+        else:
+            wf = tf.io.gfile.GFile(path, 'w')
+>>>>>>> repo1
         for token, label in zip(tokens, labels):
             if token != "**NULL**":
                 wf.write(token + ' ' + str(label) + '\n')
@@ -626,11 +642,15 @@ def result_to_pair(predict_line, pred_ids, id2label, writer, err_writer):
 
 
 def main(_):
+<<<<<<< HEAD
     # causes memory fragmentation for bert leading to OOM
     if os.environ.get("TF_XLA_FLAGS", None) is not None:
         os.environ["TF_XLA_FLAGS"] += "--tf_xla_enable_lazy_compilation=false"
     else:
         os.environ["TF_XLA_FLAGS"] = "--tf_xla_enable_lazy_compilation=false"
+=======
+    setup_xla_flags()
+>>>>>>> repo1
 
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
     dllogging = utils.dllogger_class.dllogger_class(FLAGS.dllog_path)
@@ -680,12 +700,21 @@ def main(_):
       master_process = (hvd.rank() == 0)
       hvd_rank = hvd.rank()
       config.gpu_options.visible_device_list = str(hvd.local_rank())
+<<<<<<< HEAD
+=======
+      set_affinity(hvd.local_rank())
+>>>>>>> repo1
       if hvd.size() > 1:
         training_hooks.append(hvd.BroadcastGlobalVariablesHook(0))
 
     if FLAGS.use_xla:
         config.graph_options.optimizer_options.global_jit_level = tf.compat.v1.OptimizerOptions.ON_1
+<<<<<<< HEAD
         tf.enable_resource_variables()
+=======
+        if FLAGS.amp:
+            tf.enable_resource_variables()
+>>>>>>> repo1
     run_config = tf.estimator.RunConfig(
       model_dir=FLAGS.output_dir if master_process else None,
       session_config=config,
@@ -795,11 +824,19 @@ def main(_):
             drop_remainder=eval_drop_remainder)
         result = estimator.evaluate(input_fn=eval_input_fn, steps=eval_steps)
         output_eval_file = os.path.join(FLAGS.output_dir, "eval_results.txt")
+<<<<<<< HEAD
         with tf.io.gfile.Open(output_eval_file, "w") as writer:
             tf.compat.v1.logging.info("***** Eval results *****")
             for key in sorted(result.keys()):
                 tf.compat.v1.logging.info("  %s = %s", key, str(result[key]))
                 dllogging.logger.log(step=(), data={key: float(strresult[key])}, verbosity=Verbosity.DEFAULT)
+=======
+        with tf.io.gfile.GFile(output_eval_file, "w") as writer:
+            tf.compat.v1.logging.info("***** Eval results *****")
+            for key in sorted(result.keys()):
+                tf.compat.v1.logging.info("  %s = %s", key, str(result[key]))
+                dllogging.logger.log(step=(), data={key: float(str(result[key]))}, verbosity=Verbosity.DEFAULT)
+>>>>>>> repo1
                 writer.write("%s = %s\n" % (key, str(result[key])))
     if FLAGS.do_predict and master_process:
         predict_examples = processor.get_test_examples(FLAGS.data_dir)
@@ -808,12 +845,21 @@ def main(_):
                                                  FLAGS.max_seq_length, tokenizer,
                                                  predict_file, mode="test")
 
+<<<<<<< HEAD
         with tf.io.gfile.Open(os.path.join(FLAGS.output_dir, 'label2id.pkl'), 'rb') as rf:
             label2id = pickle.load(rf)
             id2label = {value: key for key, value in label2id.items()}
         token_path = os.path.join(FLAGS.output_dir, "token_test.txt")
         if tf.io.gfile.Exists(token_path):
             tf.io.gfile.Remove(token_path)
+=======
+        with tf.io.gfile.GFile(os.path.join(FLAGS.output_dir, 'label2id.pkl'), 'rb') as rf:
+            label2id = pickle.load(rf)
+            id2label = {value: key for key, value in label2id.items()}
+        token_path = os.path.join(FLAGS.output_dir, "token_test.txt")
+        if tf.io.gfile.exists(token_path):
+            tf.io.gfile.remove(token_path)
+>>>>>>> repo1
 
         tf.compat.v1.logging.info("***** Running prediction*****")
         tf.compat.v1.logging.info("  Num examples = %d", len(predict_examples))
@@ -833,9 +879,15 @@ def main(_):
         output_predict_file = os.path.join(FLAGS.output_dir, "label_test.txt")
         test_labels_file = os.path.join(FLAGS.output_dir, "test_labels.txt")
         test_labels_err_file = os.path.join(FLAGS.output_dir, "test_labels_errs.txt")
+<<<<<<< HEAD
         with tf.io.gfile.Open(output_predict_file, 'w') as writer, \
                 tf.io.gfile.Open(test_labels_file, 'w') as tl, \
                 tf.io.gfile.Open(test_labels_err_file, 'w') as tle:
+=======
+        with tf.io.gfile.GFile(output_predict_file, 'w') as writer, \
+                tf.io.gfile.GFile(test_labels_file, 'w') as tl, \
+                tf.io.gfile.GFile(test_labels_err_file, 'w') as tle:
+>>>>>>> repo1
             print(id2label)
             i=0
             for prediction in estimator.predict(input_fn=predict_input_fn, hooks=eval_hooks,
@@ -881,11 +933,19 @@ def main(_):
         tf.compat.v1.logging.info("-----------------------------")
 
         tf.compat.v1.logging.info('Reading: %s', test_labels_file)
+<<<<<<< HEAD
         with tf.io.gfile.Open(test_labels_file, "r") as f:
             counts = evaluate(f)
         eval_result = report_notprint(counts)
         print(''.join(eval_result))
         with tf.io.gfile.Open(os.path.join(FLAGS.output_dir, 'test_results_conlleval.txt'), 'w') as fd:
+=======
+        with tf.io.gfile.GFile(test_labels_file, "r") as f:
+            counts = evaluate(f)
+        eval_result = report_notprint(counts)
+        print(''.join(eval_result))
+        with tf.io.gfile.GFile(os.path.join(FLAGS.output_dir, 'test_results_conlleval.txt'), 'w') as fd:
+>>>>>>> repo1
             fd.write(''.join(eval_result))
 
 

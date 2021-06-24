@@ -19,7 +19,11 @@ RUN apt-get update && apt-get install -y pbzip2 pv bzip2 cabextract
 ENV BERT_PREP_WORKING_DIR /workspace/bert/data
 
 WORKDIR /workspace
+<<<<<<< HEAD
 RUN git clone https://github.com/attardi/wikiextractor.git
+=======
+RUN git clone https://github.com/attardi/wikiextractor.git && cd wikiextractor && git checkout 6408a430fc504a38b04d37ce5e7fc740191dee16 && cd ..
+>>>>>>> repo1
 RUN git clone https://github.com/soskek/bookcorpus.git
 
 # Copy the perf_client over
@@ -34,7 +38,11 @@ WORKDIR /workspace/bert
 RUN pip install --upgrade --no-cache-dir pip \
  && pip install --no-cache-dir \
  tqdm boto3 requests six ipdb h5py html2text nltk progressbar onnxruntime \
+<<<<<<< HEAD
  git+https://github.com/NVIDIA/dllogger
+=======
+ git+https://github.com/NVIDIA/dllogger wget
+>>>>>>> repo1
 
 RUN apt-get install -y iputils-ping
 

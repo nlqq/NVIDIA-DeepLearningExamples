@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .DS_Store
 .ipynb_checkpoints
 node_modules
@@ -11,10 +12,13 @@ node_modules
 /tools/git/gen
 /pip_test
 /_python_build
+=======
+>>>>>>> repo1
 *.pyc
 __pycache__
 *.swp
 .vscode/
+<<<<<<< HEAD
 \.idea/
 \.git/
 core
@@ -30,3 +34,12 @@ tf-models/
 
 # Data Directories
 data_dir/
+=======
+.idea/
+.git/
+
+# Debug Dirs
+profiling/
+nvtx_plugins/
+nsys/
+>>>>>>> repo1

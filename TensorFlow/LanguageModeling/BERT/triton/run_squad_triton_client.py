@@ -13,7 +13,11 @@
 
 import modeling
 import tokenization
+<<<<<<< HEAD
 from tensorrtserver.api import ProtocolType, InferContext, ServerStatusContext, grpc_service_pb2_grpc, grpc_service_pb2, model_config_pb2
+=======
+import tritongrpcclient
+>>>>>>> repo1
 from utils.create_squad_data import *
 import grpc
 from run_squad import write_predictions, get_predictions, RawResult
@@ -32,10 +36,13 @@ flags = tf.flags
 FLAGS = flags.FLAGS
 
 ## Required parameters
+<<<<<<< HEAD
 flags.DEFINE_string(
     "bert_config_file", None,
     "The config json file corresponding to the pre-trained BERT model. "
     "This specifies the model architecture.")
+=======
+>>>>>>> repo1
 
 flags.DEFINE_string("vocab_file", None,
                     "The vocabulary file that the BERT model was trained on.")
@@ -86,6 +93,12 @@ flags.DEFINE_bool(
     "verbose_logging", False,
     "If true, all of the warnings related to data processing will be printed. "
     "A number of warnings are expected for a normal SQuAD evaluation.")
+<<<<<<< HEAD
+=======
+flags.DEFINE_bool(
+    "trt_engine", False,
+    "If true, expects a trt engine defined input/output")
+>>>>>>> repo1
 
 # Triton Specific flags
 flags.DEFINE_string("triton_model_name", "bert", "exports to appropriate directory for Triton")
@@ -112,8 +125,13 @@ class UserData:
 # Callback function used for async_run(), it can capture
 # additional information using functools.partial as long as the last
 # two arguments are reserved for InferContext and request id
+<<<<<<< HEAD
 def completion_callback(user_data, idx, start_time, inputs, infer_ctx, request_id):
     user_data._completed_requests.put((infer_ctx, request_id, idx, start_time, inputs))
+=======
+def completion_callback(user_data, idx, start_time, inputs, result, error):
+    user_data._completed_requests.put((result, error, idx, start_time, inputs))
+>>>>>>> repo1
 
 def batch(iterable, n=1):
     l = len(iterable)
@@ -127,6 +145,16 @@ def batch(iterable, n=1):
             input_ids_data = input_ids_data+ (np.array(iterable[ndx + i].input_ids, dtype=np.int32),)
             input_mask_data = input_mask_data+ (np.array(iterable[ndx + i].input_mask, dtype=np.int32),)
             segment_ids_data = segment_ids_data+ (np.array(iterable[ndx + i].segment_ids, dtype=np.int32),)
+<<<<<<< HEAD
+=======
+        if FLAGS.trt_engine and len(label_ids_data) != n: #TRT needs exact batch size. Pad as necessary
+            pad_size = n - len(label_ids_data)
+            label_ids_data = label_ids_data + ((np.array([0], dtype=np.int32),) * pad_size)
+            input_ids_data = input_ids_data + ((np.zeros(FLAGS.max_seq_length, dtype=np.int32),) * pad_size)
+            input_mask_data = input_mask_data + ((np.zeros(FLAGS.max_seq_length, dtype=np.int32),) * pad_size)
+            segment_ids_data = segment_ids_data + ((np.zeros(FLAGS.max_seq_length, dtype=np.int32),) * pad_size)
+
+>>>>>>> repo1
 
         inputs_dict = {label_id_key: label_ids_data,
                        'input_ids': input_ids_data,
@@ -144,6 +172,7 @@ def main(_):
     """
     os.environ["TF_XLA_FLAGS"] = "--tf_xla_enable_lazy_compilation=false" #causes memory fragmentation for bert leading to OOM
 
+<<<<<<< HEAD
     tokenizer = tokenization.FullTokenizer(vocab_file=FLAGS.vocab_file, do_lower_case=FLAGS.do_lower_case)
 
     # Get the Data
@@ -160,13 +189,39 @@ def main(_):
     else:
         raise ValueError("Either predict_file or question+answer need to defined")
     
+=======
+    tf.compat.v1.logging.info("***** Configuaration *****")
+    for key in FLAGS.__flags.keys():
+      tf.compat.v1.logging.info('  {}: {}'.format(key, getattr(FLAGS, key)))
+    tf.compat.v1.logging.info("**************************")
+
+    tokenizer = tokenization.FullTokenizer(vocab_file=FLAGS.vocab_file, do_lower_case=FLAGS.do_lower_case)
+
+    # Get the Data
+    if FLAGS.question and FLAGS.context:
+        input_data = [{"paragraphs":[{"context":FLAGS.context,
+                        "qas":[{"id":0, "question":FLAGS.question}]}]}]
+        eval_examples = read_squad_examples(input_file=None, is_training=False,
+            version_2_with_negative=FLAGS.version_2_with_negative, input_data=input_data)
+    elif FLAGS.predict_file:
+        eval_examples = read_squad_examples(
+            input_file=FLAGS.predict_file, is_training=False,
+            version_2_with_negative=FLAGS.version_2_with_negative)
+    else:
+        raise ValueError("Either predict_file or question+answer need to defined")
+
+>>>>>>> repo1
     # Get Eval Features = Preprocessing
     eval_features = []
     def append_feature(feature):
         eval_features.append(feature)
 
     convert_examples_to_features(
+<<<<<<< HEAD
         examples=eval_examples[0:],
+=======
+        examples=eval_examples,
+>>>>>>> repo1
         tokenizer=tokenizer,
         max_seq_length=FLAGS.max_seq_length,
         doc_stride=FLAGS.doc_stride,
@@ -176,6 +231,7 @@ def main(_):
 
     protocol_str = 'grpc' # http or grpc
     url = FLAGS.triton_server_url
+<<<<<<< HEAD
     verbose = True
     model_name = FLAGS.triton_model_name
     model_version = FLAGS.triton_model_version
@@ -190,6 +246,19 @@ def main(_):
     model_config_pb2.ModelConfig()
 
     status_result = status_ctx.get_server_status()
+=======
+    verbose = False
+    model_name = FLAGS.triton_model_name
+    model_version = str(FLAGS.triton_model_version)
+    batch_size = FLAGS.predict_batch_size
+
+    triton_client = tritongrpcclient.InferenceServerClient(url, verbose)
+    model_metadata = triton_client.get_model_metadata(
+        model_name=model_name, model_version=model_version)
+    model_config = triton_client.get_model_config(
+        model_name=model_name, model_version=model_version)
+
+>>>>>>> repo1
     user_data = UserData()
 
     max_outstanding = 20
@@ -205,6 +274,7 @@ def main(_):
             return outstanding
 
         # Wait for deferred items from callback functions
+<<<<<<< HEAD
         (infer_ctx, ready_id, idx, start_time, inputs) = user_data._completed_requests.get()
 
         if (ready_id is None):
@@ -215,6 +285,16 @@ def main(_):
         stop = time.time()
 
         if (result is None):
+=======
+        (result, error, idx, start_time, inputs) = user_data._completed_requests.get()
+
+        if (result is None):
+            return outstanding
+
+        stop = time.time()
+
+        if (error is not None):
+>>>>>>> repo1
             raise ValueError("Context returned null for async id marked as done")
 
         outstanding -= 1
@@ -222,11 +302,29 @@ def main(_):
         time_list.append(stop - start_time)
 
         batch_count = len(inputs[label_id_key])
+<<<<<<< HEAD
 
         for i in range(batch_count):
             unique_id = int(inputs[label_id_key][i][0])
             start_logits = [float(x) for x in result["start_logits"][i].flat]
             end_logits = [float(x) for x in result["end_logits"][i].flat]
+=======
+        if FLAGS.trt_engine:
+            cls_squad_logits = result.as_numpy("cls_squad_logits")
+            try: #when batch size > 1
+                start_logits_results = np.array(cls_squad_logits.squeeze()[:, :, 0])
+                end_logits_results = np.array(cls_squad_logits.squeeze()[:, :, 1])
+            except:
+                start_logits_results = np.expand_dims(np.array(cls_squad_logits.squeeze()[:, 0]), axis=0)
+                end_logits_results = np.expand_dims(np.array(cls_squad_logits.squeeze()[:, 1]), axis=0)
+        else:
+            start_logits_results = result.as_numpy("start_logits")
+            end_logits_results = result.as_numpy("end_logits")
+        for i in range(batch_count):
+            unique_id = int(inputs[label_id_key][i][0])
+            start_logits = [float(x) for x in start_logits_results[i].flat]
+            end_logits = [float(x) for x in end_logits_results[i].flat]
+>>>>>>> repo1
             all_results.append(
                 RawResult(
                     unique_id=unique_id,
@@ -234,7 +332,11 @@ def main(_):
                     end_logits=end_logits))
 
         recv_prog.update(n=batch_count)
+<<<<<<< HEAD
        	return outstanding
+=======
+        return outstanding
+>>>>>>> repo1
 
     all_results = []
     time_list = []
@@ -247,12 +349,47 @@ def main(_):
 
         present_batch_size = len(inputs_dict[label_id_key])
 
+<<<<<<< HEAD
         outputs_dict = {'start_logits': InferContext.ResultFormat.RAW,
                         'end_logits': InferContext.ResultFormat.RAW}
 
         start_time = time.time()
         ctx.async_run(partial(completion_callback, user_data, idx, start_time, inputs_dict),
         	inputs_dict, outputs_dict, batch_size=present_batch_size)
+=======
+        if not FLAGS.trt_engine:
+            label_ids_data = np.stack(inputs_dict[label_id_key])
+        input_ids_data = np.stack(inputs_dict['input_ids'])
+        input_mask_data = np.stack(inputs_dict['input_mask'])
+        segment_ids_data = np.stack(inputs_dict['segment_ids'])
+
+        inputs = []
+        inputs.append(tritongrpcclient.InferInput('input_ids', input_ids_data.shape, "INT32"))
+        inputs[0].set_data_from_numpy(input_ids_data)
+        inputs.append(tritongrpcclient.InferInput('input_mask', input_mask_data.shape, "INT32"))
+        inputs[1].set_data_from_numpy(input_mask_data)
+        inputs.append(tritongrpcclient.InferInput('segment_ids', segment_ids_data.shape, "INT32"))
+        inputs[2].set_data_from_numpy(segment_ids_data)
+        if not FLAGS.trt_engine:
+            inputs.append(tritongrpcclient.InferInput(label_id_key, label_ids_data.shape, "INT32"))
+            inputs[3].set_data_from_numpy(label_ids_data)
+
+        outputs = []
+        if FLAGS.trt_engine:
+            outputs.append(tritongrpcclient.InferRequestedOutput('cls_squad_logits'))
+        else:
+            outputs.append(tritongrpcclient.InferRequestedOutput('start_logits'))
+            outputs.append(tritongrpcclient.InferRequestedOutput('end_logits'))
+
+        start_time = time.time()
+        triton_client.async_infer(
+            model_name,
+            inputs,
+            partial(completion_callback, user_data, idx, start_time, inputs_dict),
+            request_id=str(idx),
+            model_version=model_version,
+            outputs=outputs)
+>>>>>>> repo1
         outstanding += 1
         idx += 1
 
@@ -313,13 +450,20 @@ def main(_):
         all_predictions, all_nbest_json, scores_diff_json = get_predictions(
                   eval_examples, eval_features, all_results,
                   FLAGS.n_best_size, FLAGS.max_answer_length,
+<<<<<<< HEAD
                   FLAGS.do_lower_case, FLAGS.version_2_with_negative, 
+=======
+                  FLAGS.do_lower_case, FLAGS.version_2_with_negative,
+>>>>>>> repo1
                   FLAGS.verbose_logging)
         print("Context is: %s \n\nQuestion is: %s \n\nPredicted Answer is: %s" %(FLAGS.context, FLAGS.question, all_predictions[0]))
 
 
 if __name__ == "__main__":
   flags.mark_flag_as_required("vocab_file")
+<<<<<<< HEAD
   flags.mark_flag_as_required("bert_config_file")
+=======
+>>>>>>> repo1
   tf.compat.v1.app.run()
 

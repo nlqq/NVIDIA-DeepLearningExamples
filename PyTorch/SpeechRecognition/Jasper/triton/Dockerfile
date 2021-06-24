@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ARG FROM_IMAGE_NAME=nvcr.io/nvidia/pytorch:19.09-py3
 
 FROM tensorrtserver_client as trtis-client
@@ -33,6 +34,15 @@ COPY --from=trtis-client /workspace/install/bin/perf_client /workspace/install/b
 #Copy the python wheel and install with pip
 COPY --from=trtis-client /workspace/install/python/tensorrtserver*.whl /tmp/
 RUN pip install /tmp/tensorrtserver*.whl && rm /tmp/tensorrtserver*.whl
+=======
+ARG FROM_IMAGE_NAME=nvcr.io/nvidia/tritonserver:20.10-py3-clientsdk
+FROM ${FROM_IMAGE_NAME}
+
+RUN apt update && apt install -y python3-pyaudio libsndfile1
+
+RUN pip3 install -U pip
+RUN pip3 install onnxruntime unidecode inflect soundfile
+>>>>>>> repo1
 
 WORKDIR /workspace/jasper
 COPY . .

@@ -2,6 +2,12 @@
 __pycache__/
 data/
 results/
+<<<<<<< HEAD
 *.out
 *.log
 *.json
+=======
+pytorch/LM-TFM/*
+*.out
+*.log
+>>>>>>> repo1

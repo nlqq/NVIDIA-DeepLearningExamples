@@ -11,7 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+<<<<<<< HEAD
 """ Scripts that simplifies running evaluation benchmark """
+=======
+""" Script that simplifies running evaluation benchmark """
+>>>>>>> repo1
 
 import argparse
 import os
@@ -19,6 +23,7 @@ import shutil
 import subprocess
 
 
+<<<<<<< HEAD
 def main():
     # CLI flags
     parser = argparse.ArgumentParser(description="MaskRCNN evaluation benchmark")
@@ -30,10 +35,43 @@ def main():
 
     flags = parser.parse_args()
     main_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../mask_rcnn_main.py'))
+=======
+class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
+    pass
+
+
+if __name__ == '__main__':
+
+    # CLI flags
+    # noinspection PyTypeChecker
+    parser = argparse.ArgumentParser(
+        description=(
+            'NVIDIA MaskRCNN TF2 evaluation benchmark'
+            '\n\nNote: Any additional flags not specified below will be passed to main.py'
+        ),
+        formatter_class=lambda prog: CustomFormatter(prog, max_help_position=100)
+    )
+    parser.add_argument('--batch_size', type=int, required=True,
+                        help='Batch size used during training')
+    parser.add_argument('--amp', action='store_true',
+                        help='Enable automatic mixed precision')
+    parser.add_argument('--no_xla', action='store_true',
+                        help='Disables XLA - accelerated linear algebra')
+    parser.add_argument('--data_dir', type=str, metavar='DIR', default='/data',
+                        help='Input directory containing the dataset')
+    parser.add_argument('--weights_dir', type=str, metavar='DIR', default='/weights',
+                        help='Directory containing pre-trained resnet weights')
+
+    flags, remainder = parser.parse_known_args()
+
+    main_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../main.py'))
+    checkpoint_path = os.path.join(flags.weights_dir, "rn50_tf_amp_ckpt_v20.06.0/nvidia_rn50_tf_amp")
+>>>>>>> repo1
 
     # build command
     cmd = (
         f'python {main_path}'
+<<<<<<< HEAD
         f' --mode eval'
         f' --model_dir "{flags.model_dir}"'
         f' --checkpoint "{os.path.join(flags.weights_dir, "resnet/resnet-nhwc-2018-02-07/model.ckpt-112603")}"'
@@ -58,3 +96,27 @@ def main():
 
 if __name__ == '__main__':
     main()
+=======
+        f' infer'
+        f' --data_dir "{flags.data_dir}"'
+        f' --backbone_checkpoint "{checkpoint_path}"'
+        f' --eval_samples {200 * flags.batch_size}'
+        f' --log_warmup_steps 100'
+        f' --log_every 10'
+        f' --eval_batch_size {flags.batch_size}'
+    )
+
+    if not flags.no_xla:
+        cmd += ' --xla'
+    if flags.amp:
+        cmd += ' --amp'
+    if remainder:
+        cmd += ' ' + ' '.join(remainder)
+
+    # print command
+    line = '-' * shutil.get_terminal_size()[0]
+    print(line, cmd, line, sep='\n', flush=True)
+
+    # run model
+    exit(subprocess.call(cmd, shell=True))
+>>>>>>> repo1

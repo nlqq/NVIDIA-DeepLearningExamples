@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Copyright (c) 2019 NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +25,14 @@ from utils.log_uniform_sampler import sample_logits
 from utils.proj_adaptive_softmax import ProjectedAdaptiveLogSoftmax
 
 
+<<<<<<< HEAD
+=======
+@torch.jit.script
+def add_and_scale(tensor1, tensor2, alpha: float):
+    return alpha * (tensor1 + tensor2)
+
+
+>>>>>>> repo1
 class PositionalEmbedding(nn.Module):
     def __init__(self, demb):
         super(PositionalEmbedding, self).__init__()
@@ -122,7 +134,11 @@ class MultiHeadAttn(nn.Module):
         # [bsz x n_head x qlen x klen]
         attn_score = torch.einsum('ibnd,jbnd->bnij', (head_q, head_k))
         attn_score.mul_(self.scale)
+<<<<<<< HEAD
         if attn_mask is not None and attn_mask.any().item():
+=======
+        if attn_mask is not None:
+>>>>>>> repo1
             if attn_mask.dim() == 2:
                 attn_score.masked_fill_(attn_mask[None, None, :, :], -float('inf'))
             elif attn_mask.dim() == 3:
@@ -266,11 +282,18 @@ class RelPartialLearnableMultiHeadAttn(RelMultiHeadAttn):
         BD = self._rel_shift(BD)
 
         # [bsz x n_head x qlen x klen]
+<<<<<<< HEAD
         attn_score = AC + BD
         attn_score.mul_(self.scale)
 
         # compute attention probability
         if attn_mask is not None and attn_mask.any().item():
+=======
+        attn_score = add_and_scale(AC, BD, self.scale)
+
+        # compute attention probability
+        if attn_mask is not None:
+>>>>>>> repo1
             if attn_mask.dim() == 2:
                 attn_score.masked_fill_(attn_mask[None, None, :, :], -float('inf'))
             elif attn_mask.dim() == 3:
@@ -354,11 +377,18 @@ class RelLearnableMultiHeadAttn(RelMultiHeadAttn):
         BD = self._rel_shift(B_ + D_)
 
         # [bsz x qlen x klen x n_head]
+<<<<<<< HEAD
         attn_score = AC + BD
         attn_score.mul_(self.scale)
 
         # compute attention probability
         if attn_mask is not None and attn_mask.any().item():
+=======
+        attn_score = add_and_scale(AC, BD, self.scale)
+
+        # compute attention probability
+        if attn_mask is not None:
+>>>>>>> repo1
             if attn_mask.dim() == 2:
                 attn_score.masked_fill_(attn_mask[None, None, :, :], -float('inf'))
             elif attn_mask.dim() == 3:
@@ -492,14 +522,22 @@ class AdaptiveEmbedding(nn.Module):
                 l_idx, r_idx = self.cutoff_ends[i], self.cutoff_ends[i + 1]
 
                 mask_i = (inp_flat >= l_idx) & (inp_flat < r_idx)
+<<<<<<< HEAD
                 indices_i = mask_i.nonzero().squeeze()
+=======
+                indices_i = mask_i.nonzero(as_tuple=False).squeeze()
+>>>>>>> repo1
 
                 if indices_i.numel() == 0:
                     continue
 
                 inp_i = inp_flat.index_select(0, indices_i) - l_idx
                 emb_i = self.emb_layers[i](inp_i)
+<<<<<<< HEAD
                 emb_i = F.linear(emb_i, self.emb_projs[i])
+=======
+                emb_i = F.linear(emb_i, self.emb_projs[i]).to(emb_flat.dtype)
+>>>>>>> repo1
 
                 emb_flat.index_copy_(0, indices_i, emb_i)
 
@@ -627,6 +665,15 @@ class MemTransformerLM(nn.Module):
                     self.n_layer, self.max_klen, self.d_model).zero_())
 
     def reset_length(self, tgt_len, ext_len, mem_len):
+<<<<<<< HEAD
+=======
+        if tgt_len < 1:
+            raise RuntimeError(f'tgt_len should be >= 1, but got {tgt_len}')
+        if ext_len < 0:
+            raise RuntimeError(f'ext_len should be >= 0, but got {ext_len}')
+        if mem_len < 0:
+            raise RuntimeError(f'mem_len should be >= 0, but got {mem_len}')
+>>>>>>> repo1
         self.tgt_len = tgt_len
         self.mem_len = mem_len
         self.ext_len = ext_len
@@ -634,7 +681,11 @@ class MemTransformerLM(nn.Module):
     def init_mems(self):
         if self.mem_len > 0:
             param = next(self.parameters())
+<<<<<<< HEAD
             mems = torch.empty(self.n_layer + 1, 0, dtype=param.dtype,
+=======
+            mems = torch.empty(self.n_layer, 0, dtype=param.dtype,
+>>>>>>> repo1
                                device=param.device)
             return mems
         else:
@@ -654,6 +705,7 @@ class MemTransformerLM(nn.Module):
         # the tokens from `mlen + qlen - self.ext_len - self.mem_len`
         # to `mlen + qlen - self.ext_len`.
         with torch.no_grad():
+<<<<<<< HEAD
             end_idx = mlen + max(0, qlen - 0 - self.ext_len)
             beg_idx = max(0, end_idx - self.mem_len)
             stacked = torch.stack(hids)
@@ -662,6 +714,23 @@ class MemTransformerLM(nn.Module):
             else:
                 cat = stacked
             new_mems = cat[:, beg_idx:end_idx].detach()
+=======
+            stacked = torch.stack(hids)
+            if (
+                self.mem_len == self.tgt_len
+                and self.ext_len == 0
+                and stacked.size(1) == self.mem_len
+            ):
+                new_mems = stacked.detach()
+            else:
+                end_idx = mlen + max(0, qlen - self.ext_len)
+                beg_idx = max(0, end_idx - self.mem_len)
+                if mems.numel():
+                    cat = torch.cat([mems, stacked], dim=1)
+                else:
+                    cat = stacked
+                new_mems = cat[:, beg_idx:end_idx].detach()
+>>>>>>> repo1
 
         return new_mems
 
@@ -697,18 +766,31 @@ class MemTransformerLM(nn.Module):
             core_out = self.drop(word_emb)
             pos_emb = self.drop(pos_emb)
 
+<<<<<<< HEAD
             hids.append(core_out.detach())
             for i, layer in enumerate(self.layers):
+=======
+            for i, layer in enumerate(self.layers):
+                hids.append(core_out.detach())
+>>>>>>> repo1
                 mems_i = None if mems is None else mems[i]
                 core_out = layer(core_out, pos_emb, self.r_w_bias,
                                  self.r_r_bias, dec_attn_mask=dec_attn_mask,
                                  mems=mems_i)
+<<<<<<< HEAD
                 hids.append(core_out.detach())
         # learnable
         elif self.attn_type == 1:
             core_out = self.drop(word_emb)
             hids.append(core_out.detach())
             for i, layer in enumerate(self.layers):
+=======
+        # learnable
+        elif self.attn_type == 1:
+            core_out = self.drop(word_emb)
+            for i, layer in enumerate(self.layers):
+                hids.append(core_out.detach())
+>>>>>>> repo1
                 if self.clamp_len > 0:
                     r_emb = self.r_emb[i][-self.clamp_len:]
                     r_bias = self.r_bias[i][-self.clamp_len:]
@@ -718,7 +800,10 @@ class MemTransformerLM(nn.Module):
                 mems_i = None if mems is None else mems[i]
                 core_out = layer(core_out, r_emb, self.r_w_bias[i],
                                  r_bias, dec_attn_mask=dec_attn_mask, mems=mems_i)
+<<<<<<< HEAD
                 hids.append(core_out.detach())
+=======
+>>>>>>> repo1
         # absolute
         elif self.attn_type == 2:
             pos_seq = torch.arange(klen - 1, -1, -1.0, device=word_emb.device,
@@ -729,19 +814,32 @@ class MemTransformerLM(nn.Module):
 
             core_out = self.drop(word_emb + pos_emb[-qlen:])
 
+<<<<<<< HEAD
             hids.append(core_out.detach())
             for i, layer in enumerate(self.layers):
+=======
+            for i, layer in enumerate(self.layers):
+                hids.append(core_out.detach())
+>>>>>>> repo1
                 mems_i = None if mems is None else mems[i]
                 if mems_i is not None and len(mems_i) and i == 0:
                     mems_i += pos_emb[:mlen]
                 core_out = layer(core_out, dec_attn_mask=dec_attn_mask,
                                  mems=mems_i)
+<<<<<<< HEAD
                 hids.append(core_out.detach())
         elif self.attn_type == 3:
             core_out = self.drop(word_emb)
 
             hids.append(core_out.detach())
             for i, layer in enumerate(self.layers):
+=======
+        elif self.attn_type == 3:
+            core_out = self.drop(word_emb)
+
+            for i, layer in enumerate(self.layers):
+                hids.append(core_out.detach())
+>>>>>>> repo1
                 mems_i = None if mems is None else mems[i]
                 if mems_i is not None and len(mems_i) and mlen > 0:
                     cur_emb = self.r_emb[i][:-qlen]
@@ -756,7 +854,10 @@ class MemTransformerLM(nn.Module):
 
                 core_out = layer(core_out, dec_attn_mask=dec_attn_mask,
                                  mems=mems_i)
+<<<<<<< HEAD
                 hids.append(core_out.detach())
+=======
+>>>>>>> repo1
 
         core_out = self.drop(core_out)
 

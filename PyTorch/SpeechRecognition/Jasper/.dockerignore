@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+*.pt
+>>>>>>> repo1
 results/
 *__pycache__
 checkpoints/
@@ -5,5 +9,8 @@ checkpoints/
 datasets/
 external/tensorrt-inference-server/
 checkpoints/
+<<<<<<< HEAD
 triton/model_repo
 triton/deploy
+=======
+>>>>>>> repo1

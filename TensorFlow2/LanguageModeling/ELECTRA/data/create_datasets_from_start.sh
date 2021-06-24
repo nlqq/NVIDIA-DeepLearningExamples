@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 # Download
 #python3 /workspace/electra/data/dataPrep.py --action download --dataset bookscorpus
 #python3 /workspace/electra/data/dataPrep.py --action download --dataset wikicorpus_en
@@ -41,3 +42,37 @@ python3 /workspace/electra/data/dataPrep.py --action download --dataset squad
 # Create HDF5 files Phase 2
 #python3 /workspace/electra/data/dataPrep.py --action create_hdf5_files --dataset books_wiki_en_corpus --max_seq_length 512 \
 # --max_predictions_per_seq 80 --vocab_file $DATA_PREP_WORKING_DIR/download/google_pretrained_weights/uncased_L-24_H-1024_A-16/vocab.txt --do_lower_case 1
+=======
+to_download=${1:-"wiki_only"}
+
+#Download
+if [ "$to_download" = "wiki_books" ] ; then
+    python3 /workspace/electra/data/dataPrep.py --action download --dataset bookscorpus
+fi
+python3 /workspace/electra/data/dataPrep.py --action download --dataset wikicorpus_en
+
+#Download SQuAD
+python3 /workspace/electra/data/dataPrep.py --action download --dataset squad
+
+# Properly format the text files
+if [ "$to_download" = "wiki_books" ] ; then
+    python3 /workspace/electra/data/dataPrep.py --action text_formatting --dataset bookscorpus
+fi
+python3 /workspace/electra/data/dataPrep.py --action text_formatting --dataset wikicorpus_en
+
+if [ "$to_download" = "wiki_books" ] ; then
+    DATASET="books_wiki_en_corpus"
+else
+    DATASET="wikicorpus_en"
+    # Shard the text files
+fi
+
+# Shard the text files (group wiki+books then shard)
+python3 /workspace/electra/data/dataPrep.py --action sharding --dataset $DATASET --n_test_shards 2048 --n_training_shards 2048
+
+# Create tfrecoreds files Phase 1
+python3 /workspace/electra/data/dataPrep.py --action create_tfrecord_files --dataset $DATASET --max_seq_length 128 --n_test_shards 2048 --n_training_shards 2048 --vocab_file=vocab/vocab.txt --do_lower_case=1
+
+# Create tfrecoreds files Phase 2
+python3 /workspace/electra/data/dataPrep.py --action create_tfrecord_files --dataset $DATASET --max_seq_length 512 --n_test_shards 2048 --n_training_shards 2048 --vocab_file=vocab/vocab.txt --do_lower_case=1
+>>>>>>> repo1

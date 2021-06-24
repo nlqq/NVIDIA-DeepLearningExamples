@@ -382,7 +382,11 @@ have the following components:
 * [PyTorch 20.06-py3 NGC container](https://ngc.nvidia.com/registry/nvidia-pytorch)
 * GPU architecture:
   * [NVIDIA Volta](https://www.nvidia.com/en-us/data-center/volta-gpu-architecture/)
+<<<<<<< HEAD
   * [NVIDIA Turing](https://www.nvidia.com/pl-pl/geforce/turing/)
+=======
+  * [NVIDIA Turing](https://www.nvidia.com/en-us/geforce/turing/)
+>>>>>>> repo1
   * [NVIDIA Ampere architecture](https://www.nvidia.com/en-us/data-center/nvidia-ampere-gpu-architecture/)
 
 For more information about how to get started with NGC containers, see the
@@ -1387,11 +1391,16 @@ table summarizes the final perplexity on the test set.
 The Transformer-XL large model was trained for 25,000 training steps, starting
 from 10 different initial random seeds. After every 1,000 training steps, the
 model was evaluated on the validation dataset and validation perplexity was
+<<<<<<< HEAD
 recorded. The training was performed in the pytorch-19.11-py3 NGC container on
+=======
+recorded. The training was performed in the pytorch-20.06-py3 NGC container on
+>>>>>>> repo1
 8x NVIDIA DGX-2H with 16x V100 32GB GPUs. The following table summarizes the
 perplexity of our validation dataset.
 
 |**Training step**|**Average perplexity**|**Standard deviation**|**Minimum**|**Maximum**|**Median**|
+<<<<<<< HEAD
 |----------------:|---------------------:|---------------------:|----------:|----------:|---------:|
 | 1000  | 605.76 | 3.60068 | 598.00 | 610.41 | 606.04 |
 | 2000  | 142.91 | 1.12225 | 141.79 | 145.56 | 142.47 |
@@ -1418,13 +1427,46 @@ perplexity of our validation dataset.
 | 23000 | 17.97  | 0.03982 | 17.92  | 18.04  | 17.96  |
 | 24000 | 17.89  | 0.03974 | 17.81  | 17.94  | 17.90  |
 | 25000 | 17.87  | 0.04264 | 17.80  | 17.92  | 17.88  |
+=======
+|----------------:|----------:|---------------------:|----------:|----------:|---------:|
+| 1000  | 608.09 | 3.80116 | 600.65 | 613.73 | 609.40 |
+| 2000  | 142.75 | 0.94452 | 141.21 | 143.84 | 143.07 |
+| 3000  | 62.19  | 0.44544 | 61.38  | 63.01  | 62.18  |
+| 4000  | 40.22  | 0.16397 | 39.93  | 40.54  | 40.20  |
+| 5000  | 32.00  | 0.15850 | 31.61  | 32.19  | 32.02  |
+| 6000  | 28.05  | 0.17854 | 27.81  | 28.41  | 28.05  |
+| 7000  | 25.65  | 0.10946 | 25.51  | 25.87  | 25.65  |
+| 8000  | 24.20  | 0.11385 | 23.98  | 24.36  | 24.20  |
+| 9000  | 23.18  | 0.14936 | 22.84  | 23.37  | 23.20  |
+| 10000 | 22.88  | 0.22752 | 22.54  | 23.33  | 22.94  |
+| 11000 | 21.99  | 0.16232 | 21.73  | 22.29  | 21.97  |
+| 12000 | 21.69  | 0.10824 | 21.46  | 21.81  | 21.73  |
+| 13000 | 21.42  | 0.09154 | 21.25  | 21.57  | 21.44  |
+| 14000 | 21.33  | 0.13821 | 21.15  | 21.55  | 21.27  |
+| 15000 | 21.24  | 0.15526 | 20.95  | 21.57  | 21.20  |
+| 16000 | 21.19  | 0.10521 | 21.01  | 21.44  | 21.18  |
+| 17000 | 20.89  | 0.18239 | 20.69  | 21.18  | 20.82  |
+| 18000 | 20.36  | 0.10715 | 20.21  | 20.53  | 20.34  |
+| 19000 | 19.74  | 0.12803 | 19.45  | 19.92  | 19.75  |
+| 20000 | 19.18  | 0.10020 | 19.05  | 19.39  | 19.15  |
+| 21000 | 18.49  | 0.06319 | 18.36  | 18.60  | 18.49  |
+| 22000 | 18.17  | 0.03674 | 18.11  | 18.22  | 18.16  |
+| 23000 | 17.98  | 0.03682 | 17.90  | 18.04  | 17.99  |
+| 24000 | 17.88  | 0.02880 | 17.84  | 17.92  | 17.89  |
+| 25000 | 17.85  | 0.02793 | 17.80  | 17.90  | 17.86  |
+>>>>>>> repo1
 
 After training, the models were evaluated on the test dataset. The following
 table summarizes the final perplexity on the test set.
 
 |**Average perplexity**|**Standard deviation**|**Minimum**|**Maximum**|**Median**|
+<<<<<<< HEAD
 |---------------------:|---------------------:|----------:|----------:|---------:|
 | 18.29 | 0.05214 | 18.24 | 18.40 | 18.27 |
+=======
+|----------:|---------------------:|----------:|----------:|---------:|
+| 18.30 | 0.02747 | 18.24 | 18.33 | 18.30 |
+>>>>>>> repo1
 
 #### Training performance results
 
@@ -1463,7 +1505,11 @@ training iterations.
 | 2 | 8  | 27,304  | 40,222  | 1.473 | 1.883 | 1.866 |
 | 4 | 8  | 53,756  | 80,226  | 1.492 | 3.708 | 3.722 |
 | 8 | 8  | 106,651 | 159,185 | 1.493 | 7.357 | 7.385 |
+<<<<<<< HEAD
 | 1 | 16 | N/A     | 25,084  | 1.730 | N/A   | 1     |
+=======
+| 1 | 16 | N/A     | 25,084  | 1.730 | N/A   | 1.000 |
+>>>>>>> repo1
 | 2 | 16 | N/A     | 48,562  | 1.779 | N/A   | 1.936 |
 | 4 | 16 | N/A     | 95,997  | 1.786 | N/A   | 3.827 |
 | 8 | 16 | N/A     | 191,148 | 1.792 | N/A   | 7.620 |
@@ -1513,7 +1559,11 @@ training iterations.
 | 2 | 2 | 6,153  | 11,272 | 1.832 | 1.729 | 1.632 |
 | 4 | 2 | 12,492 | 22,530 | 1.804 | 3.511 | 3.262 |
 | 8 | 2 | 24,595 | 40,920 | 1.664 | 6.913 | 5.925 |
+<<<<<<< HEAD
 | 1 | 4 | N/A    | 10,210 | 2.870 | N/A   | 1     |
+=======
+| 1 | 4 | N/A    | 10,210 | 2.870 | N/A   | 1.000 |
+>>>>>>> repo1
 | 2 | 4 | N/A    | 17,984 | 2.923 | N/A   | 1.761 |
 | 4 | 4 | N/A    | 36,340 | 2.909 | N/A   | 3.559 |
 | 8 | 4 | N/A    | 66,716 | 2.713 | N/A   | 6.535 |

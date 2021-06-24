@@ -1,9 +1,17 @@
 *~
 *.pyc
 __pycache__
+<<<<<<< HEAD
 output
 LJSpeech-1.1*
 runs*
 pretrained_models
+=======
+output*
+LJSpeech-1.1*
+runs*
+pretrained_models
+workspace/
+>>>>>>> repo1
 
 .git

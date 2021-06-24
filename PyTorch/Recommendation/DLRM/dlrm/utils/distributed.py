@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,8 +15,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+<<<<<<< HEAD
 
 import os
+=======
+import math
+import os
+from collections import deque
+>>>>>>> repo1
 from functools import reduce
 from itertools import combinations_with_replacement
 from typing import MutableSequence, Any, Sequence, List
@@ -109,6 +119,7 @@ def get_gpu_batch_sizes(global_batch_size: int, num_gpus: int = 4, batch_std: in
     return max(solutions, key=lambda sizes: reduce(lambda x, y: x * y, sizes))
 
 
+<<<<<<< HEAD
 def distribute_to_buckets(elements: MutableSequence[Any], buckets: Sequence[List[Any]], start_bucket: int = 0):
     current_bucket = start_bucket % len(buckets)
     while elements:
@@ -128,10 +139,54 @@ def get_criteo_device_mapping(num_gpus: int = 4, num_embeddings: int = 26, heavy
         num_gpus (int): Default 4.
         num_embeddings (int):
         heavy_components (tuple):
+=======
+def argsort(sequence, reverse: bool = False):
+    idx_pairs = [(x, i) for i, x in enumerate(sequence)]
+    sorted_pairs = sorted(idx_pairs, key=lambda pair: pair[0], reverse=reverse)
+    return [i for _, i in sorted_pairs]
+
+
+def distribute_to_buckets(sizes: Sequence[int], buckets_num: int):
+    def sum_sizes(indices):
+        return sum(sizes[i] for i in indices)
+
+    max_bucket_size = math.ceil(len(sizes) / buckets_num)
+    idx_sorted = deque(argsort(sizes, reverse=True))
+    buckets = [[] for _ in range(buckets_num)]
+    final_buckets = []
+
+    while idx_sorted:
+        bucket = buckets[0]
+        bucket.append(idx_sorted.popleft())
+
+        if len(bucket) == max_bucket_size:
+            final_buckets.append(buckets.pop(0))
+
+        buckets.sort(key=sum_sizes)
+
+    final_buckets += buckets
+
+    return final_buckets
+
+
+def get_device_mapping(embedding_sizes: Sequence[int], num_gpus: int = 8):
+    """Get device mappings for hybrid parallelism
+
+    Bottom MLP running on device 0. Embeddings will be distributed across among all the devices.
+
+    Optimal solution for partitioning set of N embedding tables into K devices to minimize maximal subset sum
+    is an NP-hard problem. Additionally, embedding tables distribution should be nearly uniform due to the performance
+    constraints. Therefore, suboptimal greedy approach with max bucket size is used.
+
+    Args:
+        embedding_sizes (Sequence[int]): embedding tables sizes
+        num_gpus (int): Default 8.
+>>>>>>> repo1
 
     Returns:
         device_mapping (dict):
     """
+<<<<<<< HEAD
     bottom_mlp_index = -1
     heavy_components = list(heavy_components)
     regular_components = [x for x in range(num_embeddings) if x not in heavy_components]
@@ -145,6 +200,17 @@ def get_criteo_device_mapping(num_gpus: int = 4, num_embeddings: int = 26, heavy
     vectors_per_gpu = [len(bucket) for bucket in gpu_buckets]
 
     gpu_buckets[0].pop(0)  # pop bottom mlp
+=======
+    if num_gpus > 4:
+        # for higher no. of GPUs, make sure the one with bottom mlp has no embeddings
+        gpu_buckets = distribute_to_buckets(embedding_sizes, num_gpus - 1)  # leave one device out for the bottom MLP
+        gpu_buckets.insert(0, [])
+    else:
+        gpu_buckets = distribute_to_buckets(embedding_sizes, num_gpus)
+
+    vectors_per_gpu = [len(bucket) for bucket in gpu_buckets]
+    vectors_per_gpu[0] += 1  # count bottom mlp
+>>>>>>> repo1
 
     return {
         'bottom_mlp': 0,

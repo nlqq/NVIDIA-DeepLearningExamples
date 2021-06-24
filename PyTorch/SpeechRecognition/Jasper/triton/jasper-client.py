@@ -18,7 +18,10 @@ import sys
 import argparse
 import numpy as np
 import os
+<<<<<<< HEAD
 from tensorrtserver.api import *
+=======
+>>>>>>> repo1
 from speech_utils import AudioSegment, SpeechClient
 import soundfile
 import pyaudio as pa
@@ -303,9 +306,15 @@ if __name__ == '__main__':
 
     FLAGS = parser.parse_args()
 
+<<<<<<< HEAD
     protocol = ProtocolType.from_str(FLAGS.protocol)
 
     valid_model_platforms = {"pyt","onnx", "trt"}
+=======
+    protocol = FLAGS.protocol.lower()
+
+    valid_model_platforms = {"ts-trace","onnx", "tensorrt"}
+>>>>>>> repo1
 
     if FLAGS.model_platform not in valid_model_platforms:
         raise ValueError("Invalid model_platform {}. Valid choices are {"
@@ -321,8 +330,11 @@ if __name__ == '__main__':
         verbose=FLAGS.verbose, mode="synchronous",
         from_features=False
     )
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> repo1
     
     filenames = []
     transcripts = []
@@ -361,8 +373,12 @@ if __name__ == '__main__':
                     files_and_speeds = data['files']
                     audio_path = [x['fname'] for x in files_and_speeds if x['speed'] == filter_speed][0]
                     filenames.append(os.path.join(data_dir, audio_path))
+<<<<<<< HEAD
                     transcript_text = data[
                                 'transcript']
+=======
+                    transcript_text = data['transcript']
+>>>>>>> repo1
                     transcript_text = normalize_string(transcript_text, labels=labels, table=table)
                     transcripts.append(transcript_text) #parse_transcript(transcript_text, labels_map, blank_index)) # convert to vocab indices
 

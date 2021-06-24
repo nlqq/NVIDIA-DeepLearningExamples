@@ -14,21 +14,39 @@
 
 #!/usr/bin/env bash
 
+<<<<<<< HEAD
+=======
+SPEEDS=$1
+[ -n "$SPEEDS" ] && SPEED_FLAG="--speed $SPEEDS"
+
+>>>>>>> repo1
 python ./utils/convert_librispeech.py \
     --input_dir /datasets/LibriSpeech/train-clean-100 \
     --dest_dir /datasets/LibriSpeech/train-clean-100-wav \
     --output_json /datasets/LibriSpeech/librispeech-train-clean-100-wav.json \
+<<<<<<< HEAD
     --speed 0.9 1.1
+=======
+    $SPEED_FLAG
+>>>>>>> repo1
 python ./utils/convert_librispeech.py \
     --input_dir /datasets/LibriSpeech/train-clean-360 \
     --dest_dir /datasets/LibriSpeech/train-clean-360-wav \
     --output_json /datasets/LibriSpeech/librispeech-train-clean-360-wav.json \
+<<<<<<< HEAD
     --speed 0.9 1.1
+=======
+    $SPEED_FLAG
+>>>>>>> repo1
 python ./utils/convert_librispeech.py \
     --input_dir /datasets/LibriSpeech/train-other-500 \
     --dest_dir /datasets/LibriSpeech/train-other-500-wav \
     --output_json /datasets/LibriSpeech/librispeech-train-other-500-wav.json \
+<<<<<<< HEAD
     --speed 0.9 1.1
+=======
+    $SPEED_FLAG
+>>>>>>> repo1
 
 
 python ./utils/convert_librispeech.py \

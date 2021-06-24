@@ -3,6 +3,7 @@
 set -e
 
 DATA_DIR="LJSpeech-1.1"
+<<<<<<< HEAD
 MODEL_DIR="pretrained_models"
 
 LJS_ARCH="LJSpeech-1.1.tar.bz2"
@@ -21,11 +22,20 @@ if [ ! -f ${LJS_ARCH} ]; then
 fi
 
 if [ ! -d ${DATA_DIR} ]; then
+=======
+LJS_ARCH="LJSpeech-1.1.tar.bz2"
+LJS_URL="http://data.keithito.com/data/speech/${LJS_ARCH}"
+
+if [ ! -d ${DATA_DIR} ]; then
+  echo "Downloading ${LJS_ARCH} ..."
+  wget -q ${LJS_URL}
+>>>>>>> repo1
   echo "Extracting ${LJS_ARCH} ..."
   tar jxvf ${LJS_ARCH}
   rm -f ${LJS_ARCH}
 fi
 
+<<<<<<< HEAD
 if [ ! -f "${MODEL_DIR}/tacotron2/${TACO_CH}" ]; then
   echo "Downloading ${TACO_CH} ..."
   mkdir -p "$MODEL_DIR"/tacotron2
@@ -37,3 +47,5 @@ if [ ! -f "${MODEL_DIR}/waveglow/${WAVEG_CH}" ]; then
   mkdir -p ${MODEL_DIR}/waveglow
   wget -qO ${MODEL_DIR}/waveglow/${WAVEG_CH} ${WAVEG_URL}
 fi
+=======
+>>>>>>> repo1

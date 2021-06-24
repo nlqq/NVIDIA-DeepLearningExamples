@@ -22,7 +22,11 @@ ANY_SPACE = '<SPACE>'
 class FormatError(Exception):
     pass
 
+<<<<<<< HEAD
 Metrics = namedtuple('Metrics', 'tp fp fn precision recall f1')
+=======
+Metrics = namedtuple('Metrics', 'tp fp fn prec rec fscore')
+>>>>>>> repo1
 
 
 class EvalCounts(object):

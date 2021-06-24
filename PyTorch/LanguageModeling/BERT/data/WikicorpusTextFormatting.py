@@ -13,6 +13,7 @@
 
 import glob
 import os
+<<<<<<< HEAD
 import argparse
 
 class WikicorpusTextFormatting:
@@ -20,12 +21,23 @@ class WikicorpusTextFormatting:
         self.wiki_path = args.wiki_path
         self.recursive = recursive
         self.output_filename = args.output_filename
+=======
+
+class WikicorpusTextFormatting:
+    def __init__(self, wiki_path, output_filename, recursive = False):
+        self.wiki_path = wiki_path
+        self.recursive = recursive
+        self.output_filename = output_filename
+>>>>>>> repo1
 
 
     # This puts one article per line
     def merge(self):
+<<<<<<< HEAD
         print("wiki_path: ", self.wiki_path)
         print("output_filename: ", self.output_filename)
+=======
+>>>>>>> repo1
         with open(self.output_filename, mode='w', newline='\n') as ofile:
             for dirname in glob.glob(self.wiki_path + '/*/', recursive=False):
                 for filename in glob.glob(dirname + 'wiki_*', recursive=self.recursive):
@@ -46,6 +58,7 @@ class WikicorpusTextFormatting:
                                 article_lines = []
                             else:
                                 if article_open:
+<<<<<<< HEAD
                                     article_lines.append(line)
 
 if __name__ == "__main__":
@@ -57,3 +70,6 @@ if __name__ == "__main__":
     wiki_corpus = WikicorpusTextFormatting(args, recursive=True)
     wiki_corpus.merge()
     print("merge done.")
+=======
+                                    article_lines.append(line)
+>>>>>>> repo1

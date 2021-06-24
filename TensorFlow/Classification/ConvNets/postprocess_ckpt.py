@@ -71,4 +71,8 @@ if __name__=='__main__':
         file.write("model_checkpoint_path: "+ "\"" + new_ckpt + "\"")
         
     # Process the input checkpoint, apply transforms and generate a new checkpoint.
+<<<<<<< HEAD
     process_checkpoint(input_ckpt, new_ckpt_path, args.dense_layer)
+=======
+    process_checkpoint(input_ckpt, new_ckpt_path, args.dense_layer)
+>>>>>>> repo1

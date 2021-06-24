@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.swp
 *.swo
 *.pyc
@@ -7,3 +8,21 @@ runs*/
 notebooks/
 LJSpeech-1.1/
 output*
+=======
+runs*/
+LJSpeech-1.1/
+output*
+scripts_joc/
+tests/
+workspace/
+pretrained_models/
+*.pyc
+__pycache__
+
+.idea/
+.DS_Store
+
+*.swp
+*.swo
+*.swn
+>>>>>>> repo1

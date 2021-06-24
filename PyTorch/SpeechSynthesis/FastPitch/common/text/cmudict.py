@@ -18,7 +18,22 @@ _valid_symbol_set = set(valid_symbols)
 
 class CMUDict:
   '''Thin wrapper around CMUDict data. http://www.speech.cs.cmu.edu/cgi-bin/cmudict'''
+<<<<<<< HEAD
   def __init__(self, file_or_path, keep_ambiguous=True):
+=======
+  def __init__(self, file_or_path=None, heteronyms_path=None, keep_ambiguous=True):
+    if file_or_path is None:
+      self._entries = {}
+    else:
+      self.initialize(file_or_path, keep_ambiguous)
+
+    if heteronyms_path is None:
+      self.heteronyms = []
+    else:
+      self.heteronyms = set(lines_to_list(heteronyms_path))
+
+  def initialize(self, file_or_path, keep_ambiguous=True):
+>>>>>>> repo1
     if isinstance(file_or_path, str):
       with open(file_or_path, encoding='latin-1') as f:
         entries = _parse_cmudict(f)
@@ -28,6 +43,7 @@ class CMUDict:
       entries = {word: pron for word, pron in entries.items() if len(pron) == 1}
     self._entries = entries
 
+<<<<<<< HEAD
 
   def __len__(self):
     return len(self._entries)
@@ -39,6 +55,20 @@ class CMUDict:
 
 
 
+=======
+  def __len__(self):
+    if len(self._entries) == 0:
+      raise ValueError("CMUDict not initialized")
+    return len(self._entries)
+
+  def lookup(self, word):
+    '''Returns list of ARPAbet pronunciations of the given word.'''
+    if len(self._entries) == 0:
+      raise ValueError("CMUDict not initialized")
+    return self._entries.get(word.upper())
+
+
+>>>>>>> repo1
 _alt_re = re.compile(r'\([0-9]+\)')
 
 

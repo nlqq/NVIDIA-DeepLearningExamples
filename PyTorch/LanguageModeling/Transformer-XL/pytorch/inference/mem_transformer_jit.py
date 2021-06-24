@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Copyright (c) 2019 NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -124,7 +128,11 @@ class MultiHeadAttn(nn.Module):
         # [bsz x n_head x qlen x klen]
         attn_score = torch.einsum('ibnd,jbnd->bnij', (head_q, head_k))
         attn_score.mul_(self.scale)
+<<<<<<< HEAD
         if attn_mask is not None and attn_mask.any():
+=======
+        if attn_mask is not None:
+>>>>>>> repo1
             if attn_mask.dim() == 2:
                 attn_score.masked_fill_(attn_mask[None, None, :, :], -float('inf'))
             elif attn_mask.dim() == 3:
@@ -279,7 +287,11 @@ class RelPartialLearnableMultiHeadAttn(RelMultiHeadAttn):
         attn_score.mul_(self.scale)
 
         # compute attention probability
+<<<<<<< HEAD
         if attn_mask is not None and attn_mask.any():
+=======
+        if attn_mask is not None:
+>>>>>>> repo1
             if attn_mask.dim() == 2:
                 attn_score.masked_fill_(attn_mask[None, None, :, :], -float('inf'))
             elif attn_mask.dim() == 3:
@@ -370,7 +382,11 @@ class RelLearnableMultiHeadAttn(RelMultiHeadAttn):
         attn_score.mul_(self.scale)
 
         # compute attention probability
+<<<<<<< HEAD
         if attn_mask is not None and attn_mask.any():
+=======
+        if attn_mask is not None:
+>>>>>>> repo1
             if attn_mask.dim() == 2:
                 attn_score.masked_fill_(attn_mask[None, None, :, :], -float('inf'))
             elif attn_mask.dim() == 3:
@@ -521,8 +537,12 @@ class AdaptiveEmbedding(nn.Module):
             emb_flat = torch.zeros([inp_flat.size(0), self.d_proj],
                                    dtype=self.dtype, device=torch.device('cuda'))
 
+<<<<<<< HEAD
             i = 0
             for emb_layer in self.emb_layers:
+=======
+            for i, emb_layer in enumerate(self.emb_layers):
+>>>>>>> repo1
                 l_idx, r_idx = self.cutoff_ends[i], self.cutoff_ends[i + 1]
 
                 mask_i = (inp_flat >= l_idx) & (inp_flat < r_idx)
@@ -534,7 +554,10 @@ class AdaptiveEmbedding(nn.Module):
                     emb_i = F.linear(emb_i, self.emb_projs[i])
 
                     emb_flat.index_copy_(0, indices_i, emb_i)
+<<<<<<< HEAD
                 i += 1
+=======
+>>>>>>> repo1
 
             embed = emb_flat.view(inp.size(0), inp.size(1), self.d_proj)
 
@@ -627,6 +650,7 @@ class MemTransformerLM(nn.Module):
         # default attention
         if self.attn_type == 0:
             self.pos_emb = PositionalEmbedding(self.d_model)
+<<<<<<< HEAD
             self.r_w_bias = nn.Parameter(torch.Tensor(self.n_head, self.d_head))
             self.r_r_bias = nn.Parameter(torch.Tensor(self.n_head, self.d_head))
 
@@ -644,6 +668,17 @@ class MemTransformerLM(nn.Module):
         return mems
 
     def _update_mems(self, hids: List[torch.Tensor], mems: List[torch.Tensor],
+=======
+            self.r_w_bias = nn.Parameter(torch.Tensor(self.n_head, self.d_head).zero_())
+            self.r_r_bias = nn.Parameter(torch.Tensor(self.n_head, self.d_head).zero_())
+
+    def init_mems(self):
+        mems = torch.empty(self.n_layer, 0, dtype=self.dtype, device=torch.device('cuda'))
+
+        return mems
+
+    def _update_mems(self, hids: List[torch.Tensor], mems: torch.Tensor,
+>>>>>>> repo1
                      qlen: int, mlen: int):
         assert len(hids) == len(mems), 'len(hids) != len(mems)'
 
@@ -652,6 +687,7 @@ class MemTransformerLM(nn.Module):
         # will be used as the extended context. Hence, we only cache
         # the tokens from `mlen + qlen - self.ext_len - self.mem_len`
         # to `mlen + qlen - self.ext_len`.
+<<<<<<< HEAD
         new_mems = []
         end_idx = mlen + max(0, qlen - 0 - self.ext_len)
         beg_idx = max(0, end_idx - self.mem_len)
@@ -662,6 +698,20 @@ class MemTransformerLM(nn.Module):
         return new_mems
 
     def _forward(self, dec_inp, mems: List[torch.Tensor]):
+=======
+        stacked = torch.stack(hids)
+        end_idx = mlen + max(0, qlen - self.ext_len)
+        beg_idx = max(0, end_idx - self.mem_len)
+        if mems.numel():
+            cat = torch.cat([mems, stacked], dim=1)
+        else:
+            cat = stacked
+        new_mems = cat[:, beg_idx:end_idx].detach()
+
+        return new_mems
+
+    def _forward(self, dec_inp, mems: torch.Tensor):
+>>>>>>> repo1
         qlen, bsz = dec_inp.size()
 
         word_emb = self.word_emb(dec_inp)
@@ -671,7 +721,11 @@ class MemTransformerLM(nn.Module):
         all_ones = torch.ones((qlen, klen), device=torch.device('cuda'),
                               dtype=self.dtype)
         if self.same_length:
+<<<<<<< HEAD
             mask_len = klen - self.mem_len
+=======
+            mask_len = klen - self.mem_len - 1
+>>>>>>> repo1
             if mask_len > 0:
                 mask_shift_len = qlen - mask_len
             else:
@@ -681,7 +735,10 @@ class MemTransformerLM(nn.Module):
         else:
             dec_attn_mask = torch.triu(all_ones, diagonal=1+mlen).to(torch.bool)
 
+<<<<<<< HEAD
         hids = []
+=======
+>>>>>>> repo1
         pos_seq = torch.arange(klen-1, -1, -1.0, device=word_emb.device,
                                dtype=word_emb.dtype)
         if self.clamp_len > 0:
@@ -691,22 +748,35 @@ class MemTransformerLM(nn.Module):
         core_out = self.drop(word_emb)
         pos_emb = self.drop(pos_emb)
 
+<<<<<<< HEAD
         hids.append(core_out)
         i = 0
         for layer in self.layers:
+=======
+        hids = []
+        for i, layer in enumerate(self.layers):
+            hids.append(core_out)
+>>>>>>> repo1
             mems_i = None if mems is None else mems[i]
             core_out = layer(core_out, pos_emb, self.r_w_bias,
                              self.r_r_bias, dec_attn_mask=dec_attn_mask,
                              mems=mems_i)
+<<<<<<< HEAD
             hids.append(core_out)
             i += 1
+=======
+>>>>>>> repo1
         core_out = self.drop(core_out)
 
         new_mems = self._update_mems(hids, mems, qlen, mlen)
 
         return core_out, new_mems
 
+<<<<<<< HEAD
     def forward(self, data, target, mems: Optional[List[torch.Tensor]]):
+=======
+    def forward(self, data, target, mems: Optional[torch.Tensor]):
+>>>>>>> repo1
         # nn.DataParallel does not allow size(0) tensors to be broadcasted.
         # So, have to initialize size(0) mems inside the model forward.
         # Moreover, have to return new_mems to allow nn.DataParallel to piece

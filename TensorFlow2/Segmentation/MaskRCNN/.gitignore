@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .DS_Store
 .ipynb_checkpoints
 node_modules
@@ -11,21 +12,30 @@ node_modules
 /tools/git/gen
 /pip_test
 /_python_build
+=======
+>>>>>>> repo1
 *.pyc
 __pycache__
 *.swp
 .vscode/
+<<<<<<< HEAD
 \.idea/
 venv/
 
 # Git Directories
 tf-models/
 
+=======
+.idea/
+venv/
+
+>>>>>>> repo1
 # Debug Dirs
 profiling/
 nvtx_plugins/
 nsys/
 
+<<<<<<< HEAD
 # Data Directories
 data_dir/
 
@@ -42,3 +52,7 @@ weights/resnet/extracted_from_maskrcnn/*
 !weights/resnet/extracted_from_maskrcnn/.gitkeep
 !weights/resnet/resnet-nhwc-2018-02-07/.gitkeep
 !weights/resnet/resnet-nhwc-2018-10-14/.gitkeep
+=======
+# DLLogger file
+*dlll.json
+>>>>>>> repo1

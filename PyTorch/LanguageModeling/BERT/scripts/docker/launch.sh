@@ -13,4 +13,8 @@ docker run -it --rm \
   -e LD_LIBRARY_PATH='/workspace/install/lib/' \
   -v $PWD:/workspace/bert \
   -v $PWD/results:/results \
+<<<<<<< HEAD
   fd61e439fa8e $CMD
+=======
+  bert $CMD
+>>>>>>> repo1

@@ -33,6 +33,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 import os
 import sys
 import argparse
@@ -43,6 +44,19 @@ import numpy as np
 import data, dali
 import fit
 import models
+=======
+import argparse
+
+import dllogger
+import horovod.mxnet as hvd
+
+import dali
+import data
+import fit
+import models
+from log_utils import setup_logging
+
+>>>>>>> repo1
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train classification models on ImageNet",
@@ -54,6 +68,7 @@ def parse_args():
     data.add_data_aug_args(parser)
     return parser.parse_args()
 
+<<<<<<< HEAD
 def setup_logging(args):
     head = '{asctime}:{levelname}: {message}'
     logging.basicConfig(level=logging.DEBUG, format=head, style='{',
@@ -63,6 +78,16 @@ def setup_logging(args):
 if __name__ == '__main__':
     args = parse_args()
     setup_logging(args)
+=======
+
+if __name__ == '__main__':
+    args = parse_args()
+    if 'horovod' in args.kv_store:
+        hvd.init()
+
+    setup_logging(args)
+    dllogger.log(step='PARAMETER', data=vars(args))
+>>>>>>> repo1
 
     model = models.get_model(**vars(args))
     data_loader = data.get_data_loader(args)

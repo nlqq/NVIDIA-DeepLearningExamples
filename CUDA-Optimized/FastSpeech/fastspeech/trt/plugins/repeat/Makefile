@@ -22,6 +22,13 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+<<<<<<< HEAD
+=======
+ARCH = "sm_70"  # Volta
+# ARCH = "sm_75"  # Turing
+# ARCH = "sm_80"  # Ampere
+
+>>>>>>> repo1
 CUDA_PATH  =/usr/local/cuda
 
 CUDA_INC_PATH = $(CUDA_PATH)/include
@@ -32,7 +39,12 @@ NVCC = $(CUDA_PATH)/bin/nvcc
 # CCFLAGS = -g -std=c++11 -DNDEBUG
 CCFLAGS = -w -std=c++11 -DNDEBUG
 # CCFLAGS+= -DDEBUG_ME
+<<<<<<< HEAD
 INCLUDES := -I../../../../cub -I$(CUDA_COM_PATH) -I$(CUDA_INC_PATH) -I/usr/include
+=======
+INCLUDES := -I$(CUDA_COM_PATH) -I$(CUDA_INC_PATH) -I/usr/include  # cuda 11
+# INCLUDES := -I../../../../cub -I$(CUDA_COM_PATH) -I$(CUDA_INC_PATH) -I/usr/include  # cuda 10
+>>>>>>> repo1
 
 CUDA_LIB_PATH  = $(CUDA_PATH)/lib64
 LDFLAGS := -L$(CUDA_LIB_PATH) 
@@ -58,10 +70,18 @@ clean:
 
 %.o: %.cu
 	$(NVCC) $(CCFLAGS) -M -MT $@ $(INCLUDES) -o $(@:.o=.d) $<
+<<<<<<< HEAD
 	$(NVCC) $(CCFLAGS) $(INCLUDES) -Xcompiler -fPIC -arch=sm_70 -o $@ -c $<
+=======
+	$(NVCC) $(CCFLAGS) $(INCLUDES) -Xcompiler -fPIC -arch=$(ARCH) -o $@ -c $<
+>>>>>>> repo1
 
 $(SO):
 	$(GCC) $(CCFLAGS) -shared -o $@ $+ $(LDFLAGS)
 
 test: all
+<<<<<<< HEAD
 	python3 test_repeat_plugin.py
+=======
+	python3 test_repeat_plugin.py
+>>>>>>> repo1

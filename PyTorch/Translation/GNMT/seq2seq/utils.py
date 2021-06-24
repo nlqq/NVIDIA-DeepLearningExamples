@@ -207,6 +207,13 @@ def setup_logging(log_all_ranks=True, log_file=os.devnull):
     rank = get_rank()
     rank_filter = RankFilter(rank, log_all_ranks)
 
+<<<<<<< HEAD
+=======
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
+        handler.close()
+
+>>>>>>> repo1
     logging_format = "%(asctime)s - %(levelname)s - %(rank)s - %(message)s"
     logging.basicConfig(level=logging.DEBUG,
                         format=logging_format,

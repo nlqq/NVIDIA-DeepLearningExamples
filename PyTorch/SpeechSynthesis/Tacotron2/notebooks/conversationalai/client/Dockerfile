@@ -11,7 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 FROM nvcr.io/nvidia/tritonserver:20.03-py3-clientsdk AS trtserver
+=======
+FROM nvcr.io/nvidia/tritonserver:20.06-v1-py3-clientsdk AS trtserver
+>>>>>>> repo1
 FROM continuumio/miniconda3
 RUN apt-get update && apt-get install -y pbzip2 pv bzip2 cabextract mc iputils-ping wget
 
@@ -26,7 +30,11 @@ ENV PATH="$PATH:/opt/conda/bin"
 RUN cd /workspace/speech_ai_demo/
 
 # jupyter lab extensions
+<<<<<<< HEAD
 RUN conda install -c conda-forge jupyterlab=1.0 ipywidgets=7.5 nodejs python-sounddevice librosa unidecode inflect
+=======
+RUN conda install -c conda-forge jupyterlab=1.0 ipywidgets=7.5 nodejs=10.13 python-sounddevice librosa unidecode inflect
+>>>>>>> repo1
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
 RUN pip install /workspace/install/python/tensorrtserver*.whl
 

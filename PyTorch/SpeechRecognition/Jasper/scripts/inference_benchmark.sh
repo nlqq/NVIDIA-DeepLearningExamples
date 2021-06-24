@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 
 echo "NVIDIA container build: ${NVIDIA_BUILD_ID}"
 
@@ -66,3 +67,26 @@ else
    grep 'latency' "$LOGFILE"
 fi
 set +x
+=======
+set -a
+
+: ${OUTPUT_DIR:=${3:-"/results"}}
+: ${CUDNN_BENCHMARK:=true}
+: ${PAD_TO_MAX_DURATION:=true}
+: ${NUM_WARMUP_STEPS:=10}
+: ${NUM_STEPS:=500}
+
+: ${AMP:=false}
+: ${DALI_DEVICE:="cpu"}
+: ${BATCH_SIZE_SEQ:="1 2 4 8 16"}
+: ${MAX_DURATION_SEQ:="2 7 16.7"}
+
+for MAX_DURATION in $MAX_DURATION_SEQ; do
+  for BATCH_SIZE in $BATCH_SIZE_SEQ; do
+
+    LOG_FILE="$OUTPUT_DIR/perf-infer_dali-${DALI_DEVICE}_amp-${AMP}_dur${MAX_DURATION}_bs${BATCH_SIZE}.json"
+    bash ./scripts/inference.sh "$@"
+
+  done
+done
+>>>>>>> repo1

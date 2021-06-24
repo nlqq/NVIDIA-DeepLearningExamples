@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +23,11 @@ import numpy as np
 import torch
 from absl import app, flags
 from apex import amp
+<<<<<<< HEAD
+=======
+import nvidia_dlprof_pytorch_nvtx
+import torch.cuda.profiler as profiler
+>>>>>>> repo1
 
 import dlrm.scripts.utils as utils
 from dlrm.data.data_loader import get_data_loaders
@@ -30,18 +39,30 @@ from dlrm.utils.checkpointing.serial import SerialCheckpointWriter, make_serial_
 FLAGS = flags.FLAGS
 
 # Basic run settings
+<<<<<<< HEAD
 flags.DEFINE_enum("mode", default='train', enum_values=['train', 'test', 'inference_benchmark'],
                   help="Select task to be performed")
 
 flags.DEFINE_integer("seed", 12345, "Random seed")
 
 # Training schedule flags
+=======
+flags.DEFINE_enum("mode", default='train', enum_values=['train', 'test', 'inference_benchmark', 'prof-train'],
+                  help="Select task to be performed")
+flags.DEFINE_integer("seed", 12345, "Random seed")
+
+# Training flags
+>>>>>>> repo1
 flags.DEFINE_integer("batch_size", 32768, "Batch size used for training")
 flags.DEFINE_integer("test_batch_size", 32768, "Batch size used for testing/validation")
 flags.DEFINE_float("lr", 28, "Base learning rate")
 flags.DEFINE_integer("epochs", 1, "Number of epochs to train for")
 flags.DEFINE_integer("max_steps", None, "Stop training after doing this many optimization steps")
 
+<<<<<<< HEAD
+=======
+# Learning rate schedule flags
+>>>>>>> repo1
 flags.DEFINE_integer("warmup_factor", 0, "Learning rate warmup factor. Must be a non-negative integer")
 flags.DEFINE_integer("warmup_steps", 6400, "Number of warmup optimization steps")
 flags.DEFINE_integer("decay_steps", 80000, "Polynomial learning rate decay steps. If equal to 0 will not do any decaying")
@@ -56,6 +77,7 @@ flags.DEFINE_enum("embedding_type", "joint_fused", ["joint", "joint_fused", "joi
 flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of embedding space for categorical features")
 flags.DEFINE_list("top_mlp_sizes", [1024, 1024, 512, 256, 1], "Linear layer sizes for the top MLP")
 flags.DEFINE_list("bottom_mlp_sizes", [512, 256, 128], "Linear layer sizes for the bottom MLP")
+<<<<<<< HEAD
 
 flags.DEFINE_enum("interaction_op", default="cuda_dot", enum_values=["cuda_dot", "dot", "cat"],
                   help="Type of interaction operation to perform.")
@@ -78,13 +100,33 @@ flags.DEFINE_boolean("shuffle_batch_order", False, "Read batch in train dataset 
 flags.DEFINE_integer("num_numerical_features", 13,
                      "Number of numerical features in the dataset. Defaults to 13 for the Criteo Terabyte Dataset")
 
+=======
+flags.DEFINE_enum("interaction_op", default="cuda_dot", enum_values=["cuda_dot", "dot", "cat"],
+                  help="Type of interaction operation to perform.")
+
+# Data configuration
+flags.DEFINE_string("dataset", None, "Path to dataset")
+flags.DEFINE_enum("dataset_type", default="split", enum_values=['binary', 'split', 'synthetic_gpu'],
+                  help='The type of the dataset to use')
+flags.DEFINE_boolean("shuffle_batch_order", False, "Read batch in train dataset by random order", short_name="shuffle")
+flags.DEFINE_integer("num_numerical_features", 13,
+                     "Number of numerical features in the dataset. Defaults to 13 for the Criteo Terabyte Dataset")
+>>>>>>> repo1
 flags.DEFINE_integer("max_table_size", None,
                      "Maximum number of rows per embedding table, by default equal to the number of unique values for each categorical variable")
 flags.DEFINE_boolean("hash_indices", False,
                      "If True the model will compute `index := index % table size` to ensure that the indices match table sizes")
 
+<<<<<<< HEAD
 flags.DEFINE_float("dataset_subset", None,
      "Use only a subset of the training data. If None (default) will use all of it. Must be either None, or a float in range [0,1]")
+=======
+# Synthetic data configuration
+flags.DEFINE_list("synthetic_dataset_table_sizes", default=','.join(26 * [str(10**5)]),
+                  help="Embedding table sizes to use with the synthetic dataset")
+flags.DEFINE_integer("synthetic_dataset_num_entries", default=int(2**15 * 1024), # 1024 batches by default
+                     help="Number of samples per epoch for the synthetic dataset")
+>>>>>>> repo1
 
 # Checkpointing
 flags.DEFINE_string("load_checkpoint_path", None, "Path from which to load a checkpoint")
@@ -96,7 +138,10 @@ flags.DEFINE_string("log_path", "./log.json", "Destination for the log file with
 flags.DEFINE_integer("test_freq", None, "Number of optimization steps between validations. If None will test after each epoch")
 flags.DEFINE_float("test_after", 0, "Don't test the model unless this many epochs has been completed")
 flags.DEFINE_integer("print_freq", 200, "Number of optimizations steps between printing training status to stdout")
+<<<<<<< HEAD
 
+=======
+>>>>>>> repo1
 flags.DEFINE_integer("benchmark_warmup_steps", 0, "Number of initial iterations to exclude from throughput measurements")
 
 # Machine setting flags
@@ -110,9 +155,17 @@ flags.DEFINE_list("inference_benchmark_batch_sizes", default=[1, 64, 4096],
 flags.DEFINE_integer("inference_benchmark_steps", 200,
                      "Number of steps for measuring inference latency and throughput")
 
+<<<<<<< HEAD
 flags.DEFINE_float("auc_threshold", None, "Stop the training after achieving this AUC")
 flags.DEFINE_boolean("optimized_mlp", True, "Use an optimized implementation of MLP from apex")
 
+=======
+# Miscellaneous
+flags.DEFINE_float("auc_threshold", None, "Stop the training after achieving this AUC")
+flags.DEFINE_boolean("optimized_mlp", True, "Use an optimized implementation of MLP from apex")
+flags.DEFINE_enum("auc_device", default="GPU", enum_values=['GPU', 'CPU'],
+                  help="Specifies where ROC AUC metric is calculated")
+>>>>>>> repo1
 
 def validate_flags():
     if FLAGS.max_table_size is not None and not FLAGS.hash_indices:
@@ -131,6 +184,15 @@ def validate_flags():
             print('WARNING: Optimized MLP is not supported on CPU')
             FLAGS.optimized_mlp = False
 
+<<<<<<< HEAD
+=======
+    if FLAGS.embedding_type == 'joint_fused' and FLAGS.embedding_dim != 128:
+        print('WARNING: Joint fused can be used only with embedding_dim=128. Changed embedding type to joint.')
+        FLAGS.embedding_type = 'joint'
+
+    if FLAGS.dataset == None and FLAGS.dataset_type != 'synthetic_gpu':
+        raise ValueError('Dataset argument has to specify a path to the dataset')
+>>>>>>> repo1
 
 def is_data_prefetching_enabled() -> bool:
     return FLAGS.base_device == 'cuda'
@@ -139,6 +201,12 @@ def is_data_prefetching_enabled() -> bool:
 def create_model():
     print("Creating model")
 
+<<<<<<< HEAD
+=======
+    FLAGS.top_mlp_sizes = [int(s) for s in FLAGS.top_mlp_sizes]
+    FLAGS.bottom_mlp_sizes = [int(s) for s in FLAGS.bottom_mlp_sizes]
+
+>>>>>>> repo1
     model_config = {
         'top_mlp_sizes': FLAGS.top_mlp_sizes,
         'bottom_mlp_sizes': FLAGS.bottom_mlp_sizes,
@@ -184,7 +252,14 @@ def main(argv):
 
     optimizer = torch.optim.SGD(model.parameters(), lr=scaled_lr)
 
+<<<<<<< HEAD
     if FLAGS.amp and FLAGS.mode == 'train':
+=======
+    if FLAGS.mode == 'prof-train':
+        nvidia_dlprof_pytorch_nvtx.init(enable_function_stack=True)
+
+    if FLAGS.amp and (FLAGS.mode == 'train' or FLAGS.mode == 'prof-train'):
+>>>>>>> repo1
         (model.top_model, model.bottom_model.mlp), optimizer = amp.initialize([model.top_model, model.bottom_model.mlp],
                                                                               optimizer, opt_level="O2", loss_scale=1)
     elif FLAGS.amp:
@@ -201,7 +276,11 @@ def main(argv):
                    'average_test_throughput': avg_test_throughput}
         dllogger.log(data=results, step=tuple())
 
+<<<<<<< HEAD
         print(F"Finished testing. Test Loss {loss:.4f}, auc {auc:.4f}")
+=======
+        print(f"Finished testing. Test Loss {loss:.4f}, auc {auc:.4f}")
+>>>>>>> repo1
         return
 
     if FLAGS.mode == 'inference_benchmark':
@@ -224,16 +303,31 @@ def main(argv):
 
             mean_latency = np.mean(latencies)
             mean_inference_throughput = batch_size / mean_latency
+<<<<<<< HEAD
             subresult = {F'mean_inference_latency_batch_{batch_size}': mean_latency,
                          F'mean_inference_throughput_batch_{batch_size}': mean_inference_throughput}
             results.update(subresult)
         dllogger.log(data=results, step=tuple())
 
         print(F"Finished inference benchmark.")
+=======
+            subresult = {f'mean_inference_latency_batch_{batch_size}': mean_latency,
+                         f'mean_inference_throughput_batch_{batch_size}': mean_inference_throughput}
+            results.update(subresult)
+        dllogger.log(data=results, step=tuple())
+
+        print(f"Finished inference benchmark.")
+>>>>>>> repo1
         return
 
     if FLAGS.mode == 'train':
         train(model, loss_fn, optimizer, data_loader_train, data_loader_test, scaled_lr)
+<<<<<<< HEAD
+=======
+    if FLAGS.mode == 'prof-train':
+        with torch.autograd.profiler.emit_nvtx():
+            train(model, loss_fn, optimizer, data_loader_train, data_loader_test, scaled_lr)
+>>>>>>> repo1
 
 
 def maybe_save_checkpoint(checkpoint_writer: SerialCheckpointWriter, model, path):
@@ -301,8 +395,18 @@ def train(model, loss_fn, optimizer, data_loader_train, data_loader_test, scaled
                           base_lr=scaled_lr, warmup_factor=FLAGS.warmup_factor,
                           decay_steps=FLAGS.decay_steps, decay_start_step=FLAGS.decay_start_step)
 
+<<<<<<< HEAD
             if FLAGS.max_steps and global_step > FLAGS.max_steps:
                 print(F"Reached max global steps of {FLAGS.max_steps}. Stopping.")
+=======
+            if FLAGS.mode == 'prof-train' and global_step == FLAGS.benchmark_warmup_steps:
+                profiler.start()
+
+            if FLAGS.max_steps and global_step > FLAGS.max_steps:
+                if FLAGS.mode == 'prof-train':
+                    profiler.stop()
+                print(f"Reached max global steps of {FLAGS.max_steps}. Stopping.")
+>>>>>>> repo1
                 break
 
             if prefetching_enabled:
@@ -343,17 +447,29 @@ def train(model, loss_fn, optimizer, data_loader_train, data_loader_test, scaled
                     )
 
                 if global_step < FLAGS.benchmark_warmup_steps:
+<<<<<<< HEAD
                     print(F'Warming up, step [{global_step}/{FLAGS.benchmark_warmup_steps}]')
+=======
+                    print(f'Warming up, step [{global_step}/{FLAGS.benchmark_warmup_steps}]')
+>>>>>>> repo1
                     continue
 
                 eta_str = datetime.timedelta(seconds=int(metric_logger.step_time.global_avg * (steps_per_epoch - step)))
                 metric_logger.print(
+<<<<<<< HEAD
                     header=F"Epoch:[{epoch}/{FLAGS.epochs}] [{step}/{steps_per_epoch}]  eta: {eta_str}")
+=======
+                    header=f"Epoch:[{epoch}/{FLAGS.epochs}] [{step}/{steps_per_epoch}]  eta: {eta_str}")
+>>>>>>> repo1
 
             if (global_step % test_freq == 0 and global_step > 0 and
                     global_step / steps_per_epoch >= FLAGS.test_after):
                 loss, auc, test_step_time = evaluate(model, loss_fn, data_loader_test)
+<<<<<<< HEAD
                 print(F"Epoch {epoch} step {step}. Test loss {loss:.5f}, auc {auc:.6f}")
+=======
+                print(f"Epoch {epoch} step {step}. Test loss {loss:.5f}, auc {auc:.6f}")
+>>>>>>> repo1
 
                 if auc > best_auc:
                     best_auc = auc
@@ -363,16 +479,26 @@ def train(model, loss_fn, optimizer, data_loader_train, data_loader_test, scaled
                 if FLAGS.auc_threshold and auc >= FLAGS.auc_threshold:
                     stop_time = time()
                     run_time_s = int(stop_time - start_time)
+<<<<<<< HEAD
                     print(F"Hit target accuracy AUC {FLAGS.auc_threshold} at epoch "
                           F"{global_step/steps_per_epoch:.2f} in {run_time_s}s. "
                           F"Average speed {global_step * FLAGS.batch_size / run_time_s:.1f} records/s.")
+=======
+                    print(f"Hit target accuracy AUC {FLAGS.auc_threshold} at epoch "
+                          f"{global_step/steps_per_epoch:.2f} in {run_time_s}s. "
+                          f"Average speed {global_step * FLAGS.batch_size / run_time_s:.1f} records/s.")
+>>>>>>> repo1
                     return
 
     stop_time = time()
     run_time_s = int(stop_time - start_time)
 
+<<<<<<< HEAD
     print(F"Finished training in {run_time_s}s. "
           F"Average speed {global_step * FLAGS.batch_size / run_time_s:.1f} records/s.")
+=======
+    print(f"Finished training in {run_time_s}s.")
+>>>>>>> repo1
 
     avg_throughput = FLAGS.batch_size / metric_logger.step_time.avg
 
@@ -429,6 +555,14 @@ def evaluate(model, loss_fn, data_loader):
             output = model(numerical_features, categorical_features).squeeze()
 
             loss = loss_fn(output, click)
+<<<<<<< HEAD
+=======
+
+            if FLAGS.auc_device == "CPU":
+                click = click.cpu()
+                output = output.cpu()
+
+>>>>>>> repo1
             y_true.append(click)
             y_score.append(output)
 
@@ -438,7 +572,11 @@ def evaluate(model, loss_fn, data_loader):
             if timer.measured is not None:
                 metric_logger.update(loss=loss_value, step_time=timer.measured)
                 if step % print_freq == 0 and step > 0:
+<<<<<<< HEAD
                     metric_logger.print(header=F"Test: [{step}/{steps_per_epoch}]")
+=======
+                    metric_logger.print(header=f"Test: [{step}/{steps_per_epoch}]")
+>>>>>>> repo1
 
         y_true = torch.cat(y_true)
         y_score = torch.cat(y_score)

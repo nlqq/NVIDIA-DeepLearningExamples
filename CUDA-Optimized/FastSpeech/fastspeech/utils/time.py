@@ -35,13 +35,33 @@ class TimeElapsed(object):
         self.format = format
     
     def __enter__(self):
+<<<<<<< HEAD
         if self.device == 'cuda' and self.cuda_sync:
             torch.cuda.synchronize()
         self.start_time = time.time()
     
     def __exit__(self, *exc_info):
+=======
+        self.start()
+    
+    def __exit__(self, *exc_info):
+        self.end()
+
+    def start(self):
+        if self.device == 'cuda' and self.cuda_sync:
+            torch.cuda.synchronize()
+        self.start_time = time.time()
+
+    def end(self):
+        if not hasattr(self, "start_time"):
+            return
+>>>>>>> repo1
         if self.device == 'cuda' and self.cuda_sync:
             torch.cuda.synchronize()
         self.end_time = time.time()
         self.time_elapsed = self.end_time - self.start_time
+<<<<<<< HEAD
         tprint(("[{}] Time elapsed: {" + self.format + "}").format(self.name, self.time_elapsed))
+=======
+        tprint(("[{}] Time elapsed: {" + self.format + "}").format(self.name, self.time_elapsed))
+>>>>>>> repo1

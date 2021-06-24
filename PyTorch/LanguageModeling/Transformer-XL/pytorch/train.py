@@ -1,6 +1,10 @@
 # coding: utf-8
 
+<<<<<<< HEAD
 # Copyright (c) 2019 NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,6 +27,10 @@ import os
 import shutil
 import sys
 import time
+<<<<<<< HEAD
+=======
+import warnings
+>>>>>>> repo1
 
 import dllogger
 import numpy as np
@@ -30,7 +38,19 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import yaml
+<<<<<<< HEAD
 from apex import amp
+=======
+try:
+    from apex import amp
+except ModuleNotFoundError:
+    warnings.warn('APEX AMP is unavailable')
+try:
+    import pyprof
+except ModuleNotFoundError:
+    warnings.warn('PyProf is unavailable')
+
+>>>>>>> repo1
 from torch.nn.parallel import DistributedDataParallel
 
 import lamb
@@ -101,9 +121,26 @@ def parse_args():
                          help='Target training throughput (for benchmarking)')
     general.add_argument('--target_perplexity', type=float, default=None,
                          help='Target validation perplexity (for benchmarking)')
+<<<<<<< HEAD
     general.add_argument('--amp_mode', type=str, default='O2',
                          choices=['O0', 'O1', 'O2', 'O3'],
                          help='Optimization level for apex amp')
+=======
+    general.add_argument('--apex_amp_opt_level', type=str, default='O2',
+                         choices=['O0', 'O1', 'O2', 'O3'],
+                         help='Optimization level for apex amp')
+    general.add_argument('--amp', choices=['apex', 'pytorch'], default='apex',
+                         help='Implementation of automatic mixed precision')
+    general.add_argument('--affinity', type=str,
+                         default='socket_unique_interleaved',
+                         choices=['socket', 'single', 'single_unique',
+                                  'socket_unique_interleaved',
+                                  'socket_unique_continuous',
+                                  'disabled'],
+                         help='type of CPU affinity')
+    general.add_argument('--profile', action='store_true',
+                         help='Enable profiling with DLProf')
+>>>>>>> repo1
 
     dataset = parser.add_argument_group('dataset setup')
     dataset.add_argument('--data', type=str, default='../data/wikitext-103',
@@ -220,6 +257,11 @@ def parse_args():
                           help='Use the same attn length for all tokens')
     training.add_argument('--varlen', action='store_true',
                           help='Use variable length')
+<<<<<<< HEAD
+=======
+    training.add_argument('--swap_mem', action='store_true',
+                          help='Swap memory tensors to cpu')
+>>>>>>> repo1
 
     val = parser.add_argument_group('validation setup')
     val.add_argument('--eval_tgt_len', type=int, default=192,
@@ -244,17 +286,54 @@ def parse_args():
     if args.d_embed < 0:
         args.d_embed = args.d_model
 
+<<<<<<< HEAD
     assert args.ext_len >= 0, 'extended context length must be non-negative'
     assert args.batch_size % args.batch_chunk == 0
+=======
+    if args.ext_len < 0:
+        raise RuntimeError('Extended context length must be non-negative')
+
+    if args.mem_len == 0:
+        if args.eval_tgt_len > args.ext_len + args.tgt_len:
+            raise RuntimeError('eval_tgt_len should be <= tgt_len + ext_len; '
+                               f'eval_tgt_len: {args.eval_tgt_len}, '
+                               f'tgt_len: {args.tgt_len}, '
+                               f'ext_len: {args.ext_len}')
+    else:
+        if args.eval_tgt_len > args.mem_len + args.tgt_len:
+            raise RuntimeError('eval_tgt_len should be <= tgt_len + mem_len; '
+                               f'eval_tgt_len: {args.eval_tgt_len}, '
+                               f'tgt_len: {args.tgt_len}, '
+                               f'mem_len: {args.mem_len}')
+
+    if args.batch_size % args.batch_chunk != 0:
+        raise RuntimeError('Batch size needs to be divisible by batch chunk')
+
+    if args.fp16 and args.amp == 'apex' and 'apex' not in sys.modules:
+        raise RuntimeError(
+            'APEX AMP unavailable, install APEX or switch to pytorch AMP'
+        )
+>>>>>>> repo1
 
     return args
 
 
+<<<<<<< HEAD
 def save_checkpoint(args, model, model_config, optimizer, scheduler, vocab,
                     epoch, batch, last_iter, train_step, best_val_loss,
                     is_best, work_dir):
     if args.fp16:
         amp_state = amp.state_dict()
+=======
+def save_checkpoint(args, model, model_config, optimizer, scheduler, scaler,
+                    vocab, epoch, batch, last_iter, train_step, best_val_loss,
+                    is_best, work_dir):
+    if args.fp16:
+        if args.amp == 'pytorch':
+            amp_state = scaler.state_dict()
+        elif args.amp == 'apex':
+            amp_state = amp.state_dict()
+>>>>>>> repo1
     else:
         amp_state = None
 
@@ -401,7 +480,11 @@ def evaluate(eval_iter, model, args):
             loss, mems = model(data, target, mems)
             loss = loss.float().mean()
             if warm:
+<<<<<<< HEAD
                 assert (mems is None) or mems.size(1) == model.mem_len
+=======
+                # assert (mems is None) or mems.size(1) == model.mem_len
+>>>>>>> repo1
                 total_loss += seq_len * loss.item()
                 total_len += seq_len
 
@@ -415,10 +498,47 @@ def evaluate(eval_iter, model, args):
     return total_loss / total_len
 
 
+<<<<<<< HEAD
 def train(tr_iter, va_iter, model, para_model, model_config, optimizer,
           optimizer_sparse, scheduler, scheduler_sparse, vocab, epoch,
           last_batch, last_iter, train_step, best_val_loss, meters,
           timeout_handler, args):
+=======
+def train_iteration(model, i, mems, data_chunks, target_chunks, scaler,
+                    optimizer, device, delay_unscale, args):
+    cpu = torch.device('cpu')
+    data_i = data_chunks[i].contiguous()
+    target_i = target_chunks[i].contiguous()
+
+    if args.swap_mem and mems[i] is not None:
+        mems[i] = mems[i].to(device, non_blocking=True)
+
+    enable_autocast = args.fp16 and args.amp == 'pytorch'
+    with torch.cuda.amp.autocast(enable_autocast):
+        loss, mems[i] = model(data_i, target_i, mems[i])
+        loss = loss.float().mean().type_as(loss) / args.batch_chunk
+
+    if args.swap_mem and mems[i] is not None:
+        mems[i] = mems[i].to(cpu, non_blocking=True)
+
+    if args.fp16:
+        if args.amp == 'pytorch':
+            scaler.scale(loss).backward()
+        elif args.amp == 'apex':
+            with amp.scale_loss(loss, optimizer, delay_unscale=delay_unscale) as scaled_loss:
+                scaled_loss.backward()
+    else:
+        loss.backward()
+
+    train_loss = loss.float().item()
+    return train_loss
+
+
+def train(tr_iter, va_iter, model, para_model, model_config, optimizer,
+          optimizer_sparse, scheduler, scheduler_sparse, scaler, vocab, epoch,
+          last_batch, last_iter, train_step, best_val_loss, meters,
+          timeout_handler, device, args):
+>>>>>>> repo1
     # Turn on training mode which enables dropout.
     model.train()
 
@@ -444,6 +564,7 @@ def train(tr_iter, va_iter, model, para_model, model_config, optimizer,
         target_chunks = torch.chunk(target, args.batch_chunk, 1)
 
         for i in range(args.batch_chunk):
+<<<<<<< HEAD
             data_i = data_chunks[i].contiguous()
             target_i = target_chunks[i].contiguous()
             loss, mems[i] = para_model(data_i, target_i, mems[i])
@@ -465,6 +586,38 @@ def train(tr_iter, va_iter, model, para_model, model_config, optimizer,
         optimizer.step()
         if optimizer_sparse:
             optimizer_sparse.step()
+=======
+            if i < args.batch_chunk - 1 and isinstance(para_model, DistributedDataParallel):
+                with para_model.no_sync():
+                    train_loss_chunk = train_iteration(
+                        para_model, i, mems, data_chunks, target_chunks, scaler,
+                        optimizer, device, True, args
+                    )
+            else:
+                train_loss_chunk = train_iteration(
+                    para_model, i, mems, data_chunks, target_chunks, scaler,
+                    optimizer, device, False, args
+                )
+
+            train_loss += train_loss_chunk
+
+        if args.fp16:
+            if args.amp == 'pytorch':
+                scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
+            elif args.amp == 'apex':
+                torch.nn.utils.clip_grad_norm_(amp.master_params(optimizer), args.clip)
+        else:
+            torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
+
+        if args.fp16 and args.amp == 'pytorch':
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            optimizer.step()
+            if optimizer_sparse:
+                optimizer_sparse.step()
+>>>>>>> repo1
 
         # step-wise learning rate annealing
         train_step += 1
@@ -575,8 +728,13 @@ def train(tr_iter, va_iter, model, para_model, model_config, optimizer,
                 is_best = True
 
             if not args.debug:
+<<<<<<< HEAD
                 save_checkpoint(args, model, model_config, optimizer,
                                 scheduler, vocab, epoch, batch, last_iter,
+=======
+                save_checkpoint(args, model, model_config, optimizer, scheduler,
+                                scaler, vocab, epoch, batch, last_iter,
+>>>>>>> repo1
                                 train_step, best_val_loss, is_best,
                                 args.work_dir)
 
@@ -600,7 +758,18 @@ def train(tr_iter, va_iter, model, para_model, model_config, optimizer,
 
 def main():
     args = parse_args()
+<<<<<<< HEAD
     utils.gpu_affinity.set_affinity(args.local_rank)
+=======
+    if args.affinity != 'disabled':
+        nproc_per_node = torch.cuda.device_count()
+        affinity = utils.gpu_affinity.set_affinity(
+            args.local_rank,
+            nproc_per_node,
+            args.affinity
+        )
+        print(f'{args.local_rank}: thread affinity: {affinity}')
+>>>>>>> repo1
 
     # Initialize device and distributed backend
     torch.cuda.set_device(args.local_rank)
@@ -644,6 +813,15 @@ def main():
         logging.info(f'--local_batch_size was set, adjusting global batch size'
                      f' to {args.batch_size} (local_batch_size * world_size)')
 
+<<<<<<< HEAD
+=======
+    if args.profile:
+        try:
+            pyprof.init(enable_function_stack=True)
+        except NameError:
+            warnings.warn('Called pyprof.init() but pyprof is not available')
+
+>>>>>>> repo1
     logging.info(args)
     dllogger.log(step='PARAMETER', data=vars(args))
 
@@ -772,12 +950,25 @@ def main():
 
     model = model.to(device)
 
+<<<<<<< HEAD
     if args.fp16:
         model, optimizer = amp.initialize(
             model,
             optimizer,
             opt_level=args.amp_mode,
             )
+=======
+    scaler = None
+    if args.fp16:
+        if args.amp == 'pytorch':
+            scaler = torch.cuda.amp.GradScaler()
+        elif args.amp == 'apex':
+            model, optimizer = amp.initialize(
+                model,
+                optimizer,
+                opt_level=args.apex_amp_opt_level,
+                )
+>>>>>>> repo1
 
     if args.multi_gpu == 'ddp' and torch.distributed.is_initialized():
         para_model = DistributedDataParallel(model,
@@ -862,7 +1053,14 @@ def main():
             optimizer.load_state_dict(checkpoint['optimizer_state'])
             scheduler.load_state_dict(checkpoint['scheduler_state'])
             if args.fp16:
+<<<<<<< HEAD
                 amp.load_state_dict(checkpoint['amp_state'])
+=======
+                if args.amp == 'pytorch':
+                    scaler.load_state_dict(checkpoint['amp_state'])
+                elif args.amp == 'apex':
+                    amp.load_state_dict(checkpoint['amp_state'])
+>>>>>>> repo1
             train_step = checkpoint['train_step']
             start_epoch = checkpoint['epoch']
             last_batch = checkpoint['batch']
@@ -871,8 +1069,13 @@ def main():
 
             if train_step >= args.max_step:
                 logging.info(f'Loaded checkpoint after {train_step} steps, but '
+<<<<<<< HEAD
                             f'this run was scheduled for a total of '
                             f'{args.max_step} steps, exiting')
+=======
+                             f'this run was scheduled for a total of '
+                             f'{args.max_step} steps, exiting')
+>>>>>>> repo1
                 sys.exit(1)
 
             model.apply(functools.partial(update_dropout, args=args))
@@ -890,6 +1093,7 @@ def main():
     # Loop over epochs.
     # At any point you can hit Ctrl + C to break out of training early.
     start_time = time.time()
+<<<<<<< HEAD
     with TimeoutHandler() as timeout_handler:
         try:
             for epoch in itertools.count(start=start_epoch):
@@ -912,6 +1116,32 @@ def main():
         except KeyboardInterrupt:
             logging.info('-' * 100)
             logging.info('Exiting from training early')
+=======
+    with torch.autograd.profiler.emit_nvtx(enabled=args.profile):
+        with TimeoutHandler() as timeout_handler:
+            try:
+                for epoch in itertools.count(start=start_epoch):
+                    if args.roll:
+                        tr_iter.roll(seed=args.seed + epoch)
+                    train_step, best_val_loss = train(
+                        tr_iter, va_iter, model, para_model, model_config,
+                        optimizer, optimizer_sparse, scheduler,
+                        scheduler_sparse, scaler, vocab, epoch, last_batch,
+                        last_iter, train_step, best_val_loss, meters,
+                        timeout_handler, device, args
+                        )
+
+                    last_batch = 0
+                    last_iter = 0
+
+                    if train_step == args.max_step:
+                        logging.info('-' * 100)
+                        logging.info('End of training')
+                        break
+            except KeyboardInterrupt:
+                logging.info('-' * 100)
+                logging.info('Exiting from training early')
+>>>>>>> repo1
     elapsed = time.time() - start_time
 
     ###########################################################################
@@ -926,8 +1156,14 @@ def main():
 
         # Run on test data.
         test_start_time = time.time()
+<<<<<<< HEAD
         test_loss = evaluate(te_iter, model, args)
         test_loss = utils.distributed.all_reduce_item(test_loss, 'mean')
+=======
+        with torch.autograd.profiler.emit_nvtx(enabled=args.profile):
+            test_loss = evaluate(te_iter, model, args)
+            test_loss = utils.distributed.all_reduce_item(test_loss, 'mean')
+>>>>>>> repo1
         test_elapsed = time.time() - test_start_time
 
         logging.info('=' * 100)
@@ -984,9 +1220,19 @@ if __name__ == "__main__":
         pass
 
     # Before we do anything with models, we want to ensure that we get fp16
+<<<<<<< HEAD
     # execution of torch.einsum.
     # Otherwise it'll default to "promote" mode, and we'll get fp32 operations.
     # Note that running `--amp_mode O2` will remove the need for this
     # code, but it is still valid.
     amp.register_half_function(torch, 'einsum')
+=======
+    # execution of torch.einsum in APEX AMP.
+    # Otherwise it'll default to "promote" mode, and we'll get fp32 operations.
+    # Note that running `--apex_amp_opt_level O2` will remove the need for this
+    # code, but it is still valid.
+    if 'apex' in sys.modules:
+        amp.register_half_function(torch, 'einsum')
+
+>>>>>>> repo1
     main()

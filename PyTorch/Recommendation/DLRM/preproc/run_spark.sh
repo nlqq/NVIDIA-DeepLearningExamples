@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 # Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
+=======
+#!/bin/bash
+
+# Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +19,7 @@
 # limitations under the License.
 
 #########################################################################
+<<<<<<< HEAD
 # File Name: run-spark.sh
 
 #!/bin/bash
@@ -164,3 +171,27 @@ spark-submit --master $MASTER \
     	--write_mode overwrite --low_mem 2>&1 | tee submit_validation_log.txt
 
 rm -r $temp_test $temp_validation
+=======
+# File Name: run_spark.sh
+
+
+echo "Input mode option: $1"
+if [ "$1" = "CPU" ]
+then
+    echo "Run with CPU.";
+    shift
+    ./run_spark_cpu.sh ${@}
+elif [ "$1" = "GPU" ]
+then
+    echo "Run with GPU.";
+    shift
+    if [ "$DGX_VERSION" = "DGX-2" ]
+    then
+        ./run_spark_gpu_DGX-2.sh ${@}
+    else
+        ./run_spark_gpu_DGX-A100.sh ${@}
+    fi
+else
+   echo "Please choose mode (CPU/GPU).";
+fi
+>>>>>>> repo1

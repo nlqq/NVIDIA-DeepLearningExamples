@@ -44,6 +44,10 @@ from apex.parallel import DistributedDataParallel as DDP
 import models
 import loss_functions
 import data_functions
+<<<<<<< HEAD
+=======
+from tacotron2_common.utils import ParseFromConfigFile
+>>>>>>> repo1
 
 import dllogger as DLLogger
 from dllogger import StdOutBackend, JSONStreamBackend, Verbosity
@@ -73,6 +77,12 @@ def parse_args(parser):
     parser.add_argument('--anneal-factor', type=float, choices=[0.1, 0.3], default=0.1,
                         help='Factor for annealing learning rate')
 
+<<<<<<< HEAD
+=======
+    parser.add_argument('--config-file', action=ParseFromConfigFile,
+                         type=str, help='Path to configuration file')
+
+>>>>>>> repo1
     # training
     training = parser.add_argument_group('training setup')
     training.add_argument('--epochs', type=int, required=True,
@@ -162,7 +172,14 @@ def parse_args(parser):
 def reduce_tensor(tensor, num_gpus):
     rt = tensor.clone()
     dist.all_reduce(rt, op=dist.reduce_op.SUM)
+<<<<<<< HEAD
     rt /= num_gpus
+=======
+    if rt.is_floating_point():
+        rt = rt/num_gpus
+    else:
+        rt = rt//num_gpus
+>>>>>>> repo1
     return rt
 
 
@@ -211,8 +228,12 @@ def save_checkpoint(model, optimizer, epoch, config, amp_run, output_dir, model_
             checkpoint['amp'] = amp.state_dict()
 
         checkpoint_filename = "checkpoint_{}_{}.pt".format(model_name, epoch)
+<<<<<<< HEAD
         checkpoint_path = os.path.join(
             output_dir, checkpoint_filename)
+=======
+        checkpoint_path = os.path.join(output_dir, checkpoint_filename)
+>>>>>>> repo1
         print("Saving model and optimizer state at epoch {} to {}".format(
             epoch, checkpoint_path))
         torch.save(checkpoint, checkpoint_path)
@@ -221,7 +242,11 @@ def save_checkpoint(model, optimizer, epoch, config, amp_run, output_dir, model_
         symlink_dst = os.path.join(
             output_dir, "checkpoint_{}_last.pt".format(model_name))
         if os.path.exists(symlink_dst) and os.path.islink(symlink_dst):
+<<<<<<< HEAD
             print("|||| Updating symlink", symlink_dst, "to point to", symlink_src)
+=======
+            print("Updating symlink", symlink_dst, "to point to", symlink_src)
+>>>>>>> repo1
             os.remove(symlink_dst)
 
         os.symlink(symlink_src, symlink_dst)
@@ -230,10 +255,17 @@ def save_checkpoint(model, optimizer, epoch, config, amp_run, output_dir, model_
 def get_last_checkpoint_filename(output_dir, model_name):
     symlink = os.path.join(output_dir, "checkpoint_{}_last.pt".format(model_name))
     if os.path.exists(symlink):
+<<<<<<< HEAD
         print("|||| Loading checkpoint from symlink", symlink)
         return os.path.join(output_dir, os.readlink(symlink))
     else:
         print("|||| No last checkpoint available - starting from epoch 0 ")
+=======
+        print("Loading checkpoint from symlink", symlink)
+        return os.path.join(output_dir, os.readlink(symlink))
+    else:
+        print("No last checkpoint available - starting from epoch 0 ")
+>>>>>>> repo1
         return ""
 
 
@@ -244,7 +276,16 @@ def load_checkpoint(model, optimizer, epoch, config, amp_run, filepath, local_ra
     epoch[0] = checkpoint['epoch']+1
     device_id = local_rank % torch.cuda.device_count()
     torch.cuda.set_rng_state(checkpoint['cuda_rng_state_all'][device_id])
+<<<<<<< HEAD
     torch.random.set_rng_state(checkpoint['random_rng_states_all'][device_id])
+=======
+    if 'random_rng_states_all' in checkpoint:
+        torch.random.set_rng_state(checkpoint['random_rng_states_all'][device_id])
+    elif 'random_rng_state' in checkpoint:
+        torch.random.set_rng_state(checkpoint['random_rng_state'])
+    else:
+        raise Exception("Model checkpoint must have either 'random_rng_state' or 'random_rng_states_all' key.")
+>>>>>>> repo1
     config = checkpoint['config']
     model.load_state_dict(checkpoint['state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer'])
@@ -311,7 +352,11 @@ def validate(model, criterion, valset, epoch, batch_iter, batch_size,
         DLLogger.log(step=(epoch,), data={'val_items_per_sec':
                                          (val_items_per_sec/num_iters if num_iters > 0 else 0.0)})
 
+<<<<<<< HEAD
         return val_loss
+=======
+        return val_loss, val_items_per_sec
+>>>>>>> repo1
 
 def adjust_learning_rate(iteration, epoch, optimizer, learning_rate,
                          anneal_steps, anneal_factor, rank):
@@ -350,8 +395,13 @@ def main():
     distributed_run = world_size > 1
 
     if local_rank == 0:
+<<<<<<< HEAD
         DLLogger.init(backends=[JSONStreamBackend(Verbosity.DEFAULT,
                                                   args.output+'/'+args.log_file),
+=======
+        log_file = os.path.join(args.output, args.log_file)
+        DLLogger.init(backends=[JSONStreamBackend(Verbosity.DEFAULT, log_file),
+>>>>>>> repo1
                                 StdOutBackend(Verbosity.VERBOSE)])
     else:
         DLLogger.init(backends=[])
@@ -361,7 +411,11 @@ def main():
     DLLogger.log(step="PARAMETER", data={'model_name':'Tacotron2_PyT'})
 
     model_name = args.model_name
+<<<<<<< HEAD
     parser = models.parse_model_args(model_name, parser)
+=======
+    parser = models.model_parser(model_name, parser)
+>>>>>>> repo1
     args, _ = parser.parse_known_args()
 
     torch.backends.cudnn.enabled = args.cudnn_enabled
@@ -519,9 +573,17 @@ def main():
         DLLogger.log(step=(epoch,), data={'train_loss': reduced_loss})
         DLLogger.log(step=(epoch,), data={'train_epoch_time': epoch_time})
 
+<<<<<<< HEAD
         val_loss = validate(model, criterion, valset, epoch, iteration,
                             args.batch_size, world_size, collate_fn,
                             distributed_run, local_rank, batch_to_gpu)
+=======
+        val_loss, val_items_per_sec = validate(model, criterion, valset, epoch,
+                                               iteration, args.batch_size,
+                                               world_size, collate_fn,
+                                               distributed_run, local_rank,
+                                               batch_to_gpu)
+>>>>>>> repo1
 
         if (epoch % args.epochs_per_checkpoint == 0) and args.bench_class == "":
             save_checkpoint(model, optimizer, epoch, model_config,
@@ -537,6 +599,10 @@ def main():
     DLLogger.log(step=tuple(), data={'val_loss': val_loss})
     DLLogger.log(step=tuple(), data={'train_items_per_sec':
                                      (train_epoch_items_per_sec/num_iters if num_iters > 0 else 0.0)})
+<<<<<<< HEAD
+=======
+    DLLogger.log(step=tuple(), data={'val_items_per_sec': val_items_per_sec})
+>>>>>>> repo1
 
     if local_rank == 0:
         DLLogger.flush()

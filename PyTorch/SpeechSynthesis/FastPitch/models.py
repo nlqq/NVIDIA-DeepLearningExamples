@@ -37,6 +37,10 @@ from fastpitch.model import FastPitch as _FastPitch
 from fastpitch.model_jit import FastPitch as _FastPitchJIT
 from tacotron2.model import Tacotron2
 from waveglow.model import WaveGlow
+<<<<<<< HEAD
+=======
+from common.text.symbols import get_symbols, get_pad_idx
+>>>>>>> repo1
 
 
 def parse_model_args(model_name, parser, add_help=False):
@@ -94,25 +98,46 @@ def get_model(model_name, model_config, device,
             model = WaveGlow(**model_config)
 
     elif model_name == 'FastPitch':
+<<<<<<< HEAD
 
         if forward_is_infer:
 
+=======
+        if forward_is_infer:
+>>>>>>> repo1
             if jitable:
                 class FastPitch__forward_is_infer(_FastPitchJIT):
                     def forward(self, inputs, input_lengths, pace: float = 1.0,
                                 dur_tgt: Optional[torch.Tensor] = None,
+<<<<<<< HEAD
                                 pitch_tgt: Optional[torch.Tensor] = None):
                         return self.infer(inputs, input_lengths, pace=pace,
                                           dur_tgt=dur_tgt, pitch_tgt=pitch_tgt)
+=======
+                                pitch_tgt: Optional[torch.Tensor] = None,
+                                speaker: int = 0):
+                        return self.infer(inputs, input_lengths, pace=pace,
+                                          dur_tgt=dur_tgt, pitch_tgt=pitch_tgt,
+                                          speaker=speaker)
+>>>>>>> repo1
             else:
                 class FastPitch__forward_is_infer(_FastPitch):
                     def forward(self, inputs, input_lengths, pace: float = 1.0,
                                 dur_tgt: Optional[torch.Tensor] = None,
                                 pitch_tgt: Optional[torch.Tensor] = None,
+<<<<<<< HEAD
                                 pitch_transform=None):
                         return self.infer(inputs, input_lengths, pace=pace,
                                           dur_tgt=dur_tgt, pitch_tgt=pitch_tgt,
                                           pitch_transform=pitch_transform)
+=======
+                                pitch_transform=None,
+                                speaker: Optional[int] = None):
+                        return self.infer(inputs, input_lengths, pace=pace,
+                                          dur_tgt=dur_tgt, pitch_tgt=pitch_tgt,
+                                          pitch_transform=pitch_transform,
+                                          speaker=speaker)
+>>>>>>> repo1
 
             model = FastPitch__forward_is_infer(**model_config)
         else:
@@ -136,7 +161,11 @@ def get_model_config(model_name, args):
             # audio
             n_mel_channels=args.n_mel_channels,
             # symbols
+<<<<<<< HEAD
             n_symbols=args.n_symbols,
+=======
+            n_symbols=len(get_symbols(args.symbol_set)),
+>>>>>>> repo1
             symbols_embedding_dim=args.symbols_embedding_dim,
             # encoder
             encoder_kernel_size=args.encoder_kernel_size,
@@ -183,7 +212,12 @@ def get_model_config(model_name, args):
             n_mel_channels=args.n_mel_channels,
             max_seq_len=args.max_seq_len,
             # symbols
+<<<<<<< HEAD
             n_symbols=args.n_symbols,
+=======
+            n_symbols=len(get_symbols(args.symbol_set)),
+            padding_idx=get_pad_idx(args.symbol_set),
+>>>>>>> repo1
             symbols_embedding_dim=args.symbols_embedding_dim,
             # input FFT
             in_fft_n_layers=args.in_fft_n_layers,
@@ -215,6 +249,14 @@ def get_model_config(model_name, args):
             pitch_predictor_filter_size=args.pitch_predictor_filter_size,
             p_pitch_predictor_dropout=args.p_pitch_predictor_dropout,
             pitch_predictor_n_layers=args.pitch_predictor_n_layers,
+<<<<<<< HEAD
+=======
+            # pitch conditioning
+            pitch_embedding_kernel_size=args.pitch_embedding_kernel_size,
+            # speakers parameters
+            n_speakers=args.n_speakers,
+            speaker_emb_weight=args.speaker_emb_weight
+>>>>>>> repo1
         )
         return model_config
 

@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 import bz2
 import os
 import urllib
@@ -107,3 +108,38 @@ class GLUEDownloader:
                 label, id1, id2, s1, s2 = row.strip().split('\t')
                 test_fh.write("%d\t%s\t%s\t%s\t%s\n" % (idx, id1, id2, s1, s2))
         print("\tCompleted!")
+=======
+import sys
+import wget
+
+from pathlib import Path
+
+
+def mkdir(path):
+    Path(path).mkdir(parents=True, exist_ok=True)
+
+
+class GLUEDownloader:
+
+    def __init__(self, save_path):
+        self.save_path = save_path + '/glue'
+
+    def download(self, task_name):
+        mkdir(self.save_path)
+        if task_name in {'mrpc', 'mnli'}:
+            task_name = task_name.upper()
+        elif task_name == 'cola':
+            task_name = 'CoLA'
+        else:  # SST-2
+            assert task_name == 'sst-2'
+            task_name = 'SST'
+        wget.download(
+            'https://gist.githubusercontent.com/W4ngatang/60c2bdb54d156a41194446737ce03e2e/raw/1502038877f6a88c225a34450793fbc3ea87eaba/download_glue_data.py',
+            out=self.save_path,
+        )
+        sys.path.append(self.save_path)
+        import download_glue_data
+        download_glue_data.main(
+            ['--data_dir', self.save_path, '--tasks', task_name])
+        sys.path.pop()
+>>>>>>> repo1

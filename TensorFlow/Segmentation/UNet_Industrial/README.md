@@ -160,11 +160,19 @@ if params.use_amp:
  
 #### Enabling TF32
 
+<<<<<<< HEAD
 TensorFloat-32 (TF32) is the new math mode in [NVIDIA A100](#https://www.nvidia.com/en-us/data-center/a100/) GPUs for handling the matrix math also called tensor operations. TF32 running on Tensor Cores in A100 GPUs can provide up to 10x speedups compared to single-precision floating-point math (FP32) on Volta GPUs. 
 
 TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models which require high dynamic range for weights or activations.
 
 For more information, refer to the [TensorFloat-32 in the A100 GPU Accelerates AI Training, HPC up to 20x](#https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/) blog post.
+=======
+TensorFloat-32 (TF32) is the new math mode in [NVIDIA A100](https://www.nvidia.com/en-us/data-center/a100/) GPUs for handling the matrix math also called tensor operations. TF32 running on Tensor Cores in A100 GPUs can provide up to 10x speedups compared to single-precision floating-point math (FP32) on Volta GPUs. 
+
+TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models which require high dynamic range for weights or activations.
+
+For more information, refer to the [TensorFloat-32 in the A100 GPU Accelerates AI Training, HPC up to 20x](https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/) blog post.
+>>>>>>> repo1
 
 TF32 is supported in the NVIDIA Ampere GPU architecture and is enabled by default.
 
@@ -220,7 +228,11 @@ For the specifics concerning training and inference, see the [Advanced](#advance
     # make a directory for results, for example ./results
     mkdir <path/to/results/directory>
     # start the container with nvidia-docker
+<<<<<<< HEAD
     nvidia-docker run -it --rm \
+=======
+    nvidia-docker run -it --rm --gpus all \
+>>>>>>> repo1
         --shm-size=2g --ulimit memlock=-1 --ulimit stack=67108864 \
         -v <path/to/dataset/directory>:/data/ \
         -v <path/to/result/directory>:/results \
@@ -493,7 +505,11 @@ To achieve these same results, follow the steps in the [Quick Start Guide](#quic
 ##### Inference performance: NVIDIA DGX-1 (1x V100 16GB)
 
 Our results were obtained by running the scripts `./scripts/benchmarking/UNet_evalbench{_AMP}.sh`
+<<<<<<< HEAD
 evaluation script in the `20.06-tf1-py3` NGC container on NVIDIA DGX-1 (8x V100 16GB) GPUs.
+=======
+evaluation script in the `20.06-tf1-py3` NGC container on NVIDIA DGX-1 (1x V100 16GB) GPUs.
+>>>>>>> repo1
 
 FP16
 

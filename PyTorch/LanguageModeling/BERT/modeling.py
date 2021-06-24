@@ -149,7 +149,11 @@ class LinearActivation(Module):
         self.in_features = in_features
         self.out_features = out_features
         self.act_fn = nn.Identity()                                                         #
+<<<<<<< HEAD
         self.biased_act_fn = None                                                           # 
+=======
+        self.biased_act_fn = None                                                           #
+>>>>>>> repo1
         self.bias = None                                                                    #
         if isinstance(act, str) or (sys.version_info[0] == 2 and isinstance(act, unicode)): # For TorchScript
             if bias and not 'bias' in act:                                                  # compatibility
@@ -287,7 +291,13 @@ class BertNonFusedLayerNorm(nn.Module):
 
     def forward(self, x):
         u = x.mean(-1, keepdim=True)
+<<<<<<< HEAD
         s = (x - u).pow(2).mean(-1, keepdim=True)
+=======
+        s = (x - u)
+        s = s * s
+        s = s.mean(-1, keepdim=True)
+>>>>>>> repo1
         x = (x - u) / torch.sqrt(s + self.variance_epsilon)
         return self.weight * x + self.bias
 
@@ -323,7 +333,13 @@ class BertLayerNorm(Module):
             x = self.fused_layer_norm(x)
         else:
             u = x.mean(-1, keepdim=True)
+<<<<<<< HEAD
             s = (x - u).pow(2).mean(-1, keepdim=True)
+=======
+            s = (x - u)
+            s = s * s
+            s = s.mean(-1, keepdim=True)
+>>>>>>> repo1
             x = (x - u) / torch.sqrt(s + self.eps)
             x = self.weight * x + self.bias
         return x
@@ -1073,6 +1089,7 @@ class BertForSequenceClassification(BertPreTrainedModel):
         self.classifier = nn.Linear(config.hidden_size, num_labels)
         self.apply(self.init_bert_weights)
 
+<<<<<<< HEAD
     def forward(self, input_ids, token_type_ids=None, attention_mask=None, labels=None):
         _, pooled_output = self.bert(input_ids, token_type_ids, attention_mask)
         pooled_output = self.dropout(pooled_output)
@@ -1084,6 +1101,12 @@ class BertForSequenceClassification(BertPreTrainedModel):
             return loss
         else:
             return logits
+=======
+    def forward(self, input_ids, token_type_ids=None, attention_mask=None):
+        _, pooled_output = self.bert(input_ids, token_type_ids, attention_mask)
+        pooled_output = self.dropout(pooled_output)
+        return self.classifier(pooled_output)
+>>>>>>> repo1
 
 
 class BertForMultipleChoice(BertPreTrainedModel):

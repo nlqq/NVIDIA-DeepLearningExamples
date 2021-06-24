@@ -85,7 +85,11 @@ Other publicly available implementations of BERT include:
 1. [NVIDIA PyTorch](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/LanguageModeling/BERT)
 2. [Hugging Face](https://github.com/huggingface/pytorch-pretrained-BERT)
 3. [codertimo](https://github.com/codertimo/BERT-pytorch)
+<<<<<<< HEAD
 4. [gluon-nlp](https://github.com/dmlc/gluon-nlp/tree/master/scripts/bert)
+=======
+4. [gluon-nlp](https://github.com/dmlc/gluon-nlp/tree/v0.10.x/scripts/bert)
+>>>>>>> repo1
 5. [Google's official implementation](https://github.com/google-research/bert)
 
 This model is trained with mixed precision using Tensor Cores on NVIDIA Volta, Ampere and Turing GPUs. Therefore, researchers can get results up to 4x faster than training without Tensor Cores, while experiencing the benefits of mixed precision training. This model is tested against each NGC monthly container release to ensure consistent accuracy and performance over time.
@@ -269,11 +273,19 @@ The pretraining dataset is 170GB+ and takes 15+ hours to download. The BookCorpu
 Users are welcome to download BookCorpus from other sources to match our accuracy, or repeatedly try our script until the required number of files are downloaded by running the following:
 `bash scripts/data_download.sh wiki_books`
 
+<<<<<<< HEAD
 Note: Not using BookCorpus can potentially change final accuracy on a few downstream tasks.
 
 4. Download the pretrained models from NGC.
 
 We have uploaded checkpoints that have been [fine tuned](https://ngc.nvidia.com/catalog/models/nvidia:bert_tf_v1_1_large_fp32_384) and [pre-trained](https://ngc.nvidia.com/catalog/models/nvidia:bert_tf_pretraining_lamb_16n) for various configurations on the NGC Model Registry. You can browse and download the relevant checkpoints directly from the [NGC model catalog](https://ngc.nvidia.com/catalog/models). Download them to the `results/models/` to easily access them in your scripts. 
+=======
+Note: Ensure a complete Wikipedia download. If in any case, the download breaks, remove the output file `wikicorpus_en.xml.bz2`  and start again. If a partially downloaded file exists, the script assumes successful download which causes the extraction to fail. Not using BookCorpus can potentially change final accuracy on a few downstream tasks.
+
+4. Download the pretrained models from NGC.
+
+We have uploaded checkpoints that have been fine tuned and pre-trained for various configurations on the NGC Model Registry. Our data download scripts, by default download some of them but you can browse and download the relevant checkpoints directly from the [NGC model catalog](https://ngc.nvidia.com/catalog/models). Download them to the `data/download/nvidia_pretrained/` to easily access them in your scripts.
+>>>>>>> repo1
 
 5. Start an interactive session in the NGC container to run training/inference.
 
@@ -729,9 +741,15 @@ Note: Time to train includes upto 16 minutes of start up time for every restart 
 
 Our results were obtained by running the `scripts/run_squad.sh` training script in the TensorFlow 20.06-py3 NGC container on NVIDIA DGX A100 with 8x A100 40GB GPUs.
 
+<<<<<<< HEAD
 | **GPUs** | **Batch size / GPU** | **Accuracy - TF32** | **Accuracy - mixed precision** | **Time to Train - TF32 (Hrs)** | **Time to Train - mixed precision (Hrs)** |
 |:---:|:----:|:----:|:---:|:----:|:----:|
 | 8 | 24 |91.41 |91.52 |0.26|0.26|
+=======
+| **GPUs** | **Batch size / GPU: TF32, FP16 ** | **Accuracy - TF32** | **Accuracy - mixed precision** | **Time to Train - TF32 (Hrs)** | **Time to Train - mixed precision (Hrs)** |
+|:---:|:----:|:----:|:---:|:----:|:----:|
+| 8 | 16, 24 |91.41 |91.52 |0.26|0.26|
+>>>>>>> repo1
 
 ###### Fine-tuning accuracy for GLUE MRPC: NVIDIA DGX A100 (8x A100 40G)
 
@@ -839,9 +857,15 @@ Our results were obtained by running the `scripts/run_squad.sh` training script 
 
 | **GPUs** | **Batch size / GPU: mixed precision, FP32** | **Throughput - mixed precision** | **Throughput - FP32** | **Throughput speedup (FP32 to mixed precision)** | **Weak scaling - FP32** | **Weak scaling - mixed precision** |
 |----------|---------------------------------------------|----------------------------------|-----------------------|--------------------------------------------------|-------------------------|------------------------------------|
+<<<<<<< HEAD
 |        1 | 24, 10                                      |                            51.02 |                 31.33 |                                             1.63 |                    1.00 |                               1.00 |
 |        4 | 24, 10                                      |                           181.37 |                 94.19 |                                             1.93 |                    3.55 |                               3.01 |
 |        8 | 24, 10                                      |                            314.6 |                155.53 |                                             2.02 |                    6.17 |                               4.96 |
+=======
+|        1 | 24, 10                                      |                            51.02 |                 10.42 |                                             4.90 |                    1.00 |                               1.00 |
+|        4 | 24, 10                                      |                           181.37 |                 39.77 |                                             4.56 |                    3.55 |                               3.82 |
+|        8 | 24, 10                                      |                            314.6 |                 79.37 |                                             3.96 |                    6.17 |                               7.62 |
+>>>>>>> repo1
 
 Note: The respective values for FP32 runs that use a batch size of 24 are not available due to out of memory errors that arise.
 
@@ -889,10 +913,17 @@ Our results were obtained by running the `scripts/run_squad.sh` training script 
 
 | **GPUs** | **Batch size / GPU: mixed precision, FP32** | **Throughput - mixed precision** | **Throughput - FP32** | **Throughput speedup (FP32 to mixed precision)** | **Weak scaling - FP32** | **Weak scaling - mixed precision** |
 |----------|---------------------------------------------|----------------------------------|-----------------------|--------------------------------------------------|-------------------------|------------------------------------|
+<<<<<<< HEAD
 |        1 | 24, 10                                      |                            55.28 |                 32.72 |                                             1.69 |                    1.00 |                               1.00 |
 |        4 | 24, 10                                      |                           199.53 |                100.73 |                                             1.98 |                    3.61 |                               3.08 |
 |        8 | 24, 10                                      |                           341.55 |                168.92 |                                             2.02 |                    6.18 |                               5.16 |
 |       16 | 24, 10                                      |                           683.37 |                249.54 |                                             2.74 |                   12.36 |                               7.63 |
+=======
+|        1 | 24, 10                                      |                            55.28 |                 11.15 |                                             4.96 |                    1.00 |                               1.00 |
+|        4 | 24, 10                                      |                           199.53 |                 42.91 |                                             4.65 |                    3.61 |                               3.85 |
+|        8 | 24, 10                                      |                           341.55 |                 85.08 |                                             4.01 |                    6.18 |                               7.63 |
+|       16 | 24, 10                                      |                           683.37 |                156.29 |                                             4.37 |                   12.36 |                              14.02 |
+>>>>>>> repo1
 
 Note: The respective values for FP32 runs that use a batch size of 24 are not available due to out of memory errors that arise.
 
@@ -939,8 +970,13 @@ Our results were obtained by running the `scripts/run_squad.sh` training script 
 | **GPUs** | **Batch size / GPU: mixed precision, TF32** | **Throughput - mixed precision** | **Throughput - TF32** | **Throughput speedup (TF32 to mixed precision)** | **Weak scaling - TF32** | **Weak scaling - mixed precision** |
 |----------|---------------------------------------------|----------------------------------|-----------------------|--------------------------------------------------|-------------------------|------------------------------------|
 |        1 | 32, 16                                      |                           102.26 |                61.364 |                                             1.67 |                    1.00 |                               1.00 |
+<<<<<<< HEAD
 |        4 | 32, 16                                      |                          366.353 |               223.187 |                                             1.64 |                    3.58 |                               3.64 |
 |        8 | 32, 16                                      |                          518.898 |                440.47 |                                             1.18 |                    5.07 |                               7.18 |
+=======
+|        4 | 32, 16                                      |                          366.353 |               223.187 |                                             1.64 |                    3.64 |                               3.58 |
+|        8 | 32, 16                                      |                          767.071 |                440.47 |                                             1.74 |                    7.18 |                               7.50 |
+>>>>>>> repo1
 
 Note: The respective values for TF32 runs that use a batch size of 32 are not available due to out of memory errors that arise.
 
@@ -1090,7 +1126,11 @@ Our results were obtained by running the `scripts/finetune_inference_benchmark.s
 
 ###### Fine-tuning inference performance for SQuAD v1.1 on DGX A100  40GB
 
+<<<<<<< HEAD
 Our results were obtained by running the `scripts/finetune_inference_benchmark.sh` training script in the TensorFlow 20.06-py3 NGC container on NVIDIA DGX A100 with 1x V100 40GB GPUs. Performance numbers (throughput in sentences per second and latency in milliseconds) were averaged from 1024 iterations. Latency is computed as the time taken for a batch to process as they are fed in one after another in the model ie no pipelining.
+=======
+Our results were obtained by running the `scripts/finetune_inference_benchmark.sh` training script in the TensorFlow 20.06-py3 NGC container on NVIDIA DGX A100 with 1x A100 40GB GPUs. Performance numbers (throughput in sentences per second and latency in milliseconds) were averaged from 1024 iterations. Latency is computed as the time taken for a batch to process as they are fed in one after another in the model ie no pipelining.
+>>>>>>> repo1
 
 | Model | Sequence Length | Batch Size | Precision | Throughput-Average(sent/sec) | Latency-Average(ms) | Latency-90%(ms) | Latency-95%(ms) | Latency-99%(ms) |
 |-------|-----------------|------------|-----------|------------------------------|---------------------|-----------------|-----------------|-----------------|

@@ -27,8 +27,13 @@
 
 import torch
 import random
+<<<<<<< HEAD
 import common.layers as layers
 from common.utils import load_wav_to_torch, load_filepaths_and_text, to_gpu
+=======
+import tacotron2_common.layers as layers
+from tacotron2_common.utils import load_wav_to_torch, load_filepaths_and_text, to_gpu
+>>>>>>> repo1
 
 
 class MelAudioLoader(torch.utils.data.Dataset):

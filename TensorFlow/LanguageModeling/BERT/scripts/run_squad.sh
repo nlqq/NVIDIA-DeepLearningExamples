@@ -25,7 +25,11 @@ doc_stride=${7:-"128"}
 bert_model=${8:-"large"}
 
 if [ "$bert_model" = "large" ] ; then
+<<<<<<< HEAD
     export BERT_DIR=data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16
+=======
+    export BERT_DIR=data/download/nvidia_pretrained/bert_tf_pretraining_large_lamb
+>>>>>>> repo1
 else
     export BERT_DIR=data/download/google_pretrained_weights/uncased_L-12_H-768_A-12
 fi
@@ -39,7 +43,11 @@ else
     version_2_with_negative="True"
 fi
 
+<<<<<<< HEAD
 init_checkpoint=${10:-"$BERT_DIR/bert_model.ckpt"}
+=======
+init_checkpoint=${10:-"$BERT_DIR/model.ckpt"}
+>>>>>>> repo1
 epochs=${11:-"2.0"}
 
 echo "Squad directory set as " $SQUAD_DIR " BERT directory set as " $BERT_DIR

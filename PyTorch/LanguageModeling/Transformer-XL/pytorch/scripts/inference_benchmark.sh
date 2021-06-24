@@ -1,6 +1,10 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 # Copyright (c) 2019 NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +37,11 @@ for (( i = 0; i < ${#TYPES[@]}; i++ )); do
          DIR="LM-TFM/inference/${GPU}_${BATCH_SIZES[j]}_${MATHS_FULL[k]}_${TYPES[i]}"
          mkdir -p "${DIR}"
 
+<<<<<<< HEAD
          taskset -c 0 bash run_wt103_"${MODEL}".sh eval 1 \
+=======
+         bash run_wt103_"${MODEL}".sh eval 1 \
+>>>>>>> repo1
             --work_dir "${DIR}" \
             --model "${CHECKPOINT}" \
             --type "${TYPES[i]}" \

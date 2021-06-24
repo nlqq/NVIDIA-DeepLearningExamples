@@ -33,8 +33,11 @@ import torch.utils.data
 
 import common.layers as layers
 from common.utils import load_wav_to_torch, load_filepaths_and_text, to_gpu
+<<<<<<< HEAD
 from common.text import text_to_sequence
 
+=======
+>>>>>>> repo1
 
 class TextMelLoader(torch.utils.data.Dataset):
     """
@@ -42,6 +45,7 @@ class TextMelLoader(torch.utils.data.Dataset):
         2) normalizes text and converts them to sequences of one-hot vectors
         3) computes mel-spectrograms from audio files.
     """
+<<<<<<< HEAD
     def __init__(self, dataset_path, audiopaths_and_text, args, load_mel_from_disk=True):
         self.audiopaths_and_text = load_filepaths_and_text(dataset_path, audiopaths_and_text)
         self.text_cleaners = args.text_cleaners
@@ -53,6 +57,34 @@ class TextMelLoader(torch.utils.data.Dataset):
                 args.filter_length, args.hop_length, args.win_length,
                 args.n_mel_channels, args.sampling_rate, args.mel_fmin,
                 args.mel_fmax)
+=======
+    def __init__(self,
+                 dataset_path,
+                 audiopaths_and_text,
+                 text_cleaners,
+                 n_mel_channels,
+                 symbol_set='english_basic',
+                 n_speakers=1,
+                 load_mel_from_disk=True,
+                 max_wav_value=None,
+                 sampling_rate=None,
+                 filter_length=None,
+                 hop_length=None,
+                 win_length=None,
+                 mel_fmin=None,
+                 mel_fmax=None,
+                 **ignored):
+        self.audiopaths_and_text = load_filepaths_and_text(
+            dataset_path, audiopaths_and_text,
+            has_speakers=(n_speakers > 1))
+        self.load_mel_from_disk = load_mel_from_disk
+        if not load_mel_from_disk:
+            self.max_wav_value = max_wav_value
+            self.sampling_rate = sampling_rate
+            self.stft = layers.TacotronSTFT(
+                filter_length, hop_length, win_length,
+                n_mel_channels, sampling_rate, mel_fmin, mel_fmax)
+>>>>>>> repo1
 
     def get_mel(self, filename):
         if not self.load_mel_from_disk:
@@ -74,14 +106,24 @@ class TextMelLoader(torch.utils.data.Dataset):
         return melspec
 
     def get_text(self, text):
+<<<<<<< HEAD
         text_norm = torch.IntTensor(text_to_sequence(text, self.text_cleaners))
         return text_norm
+=======
+        text_encoded = torch.IntTensor(self.tp.encode_text(text))
+        return text_encoded
+>>>>>>> repo1
 
     def __getitem__(self, index):
         # separate filename and text
         audiopath, text = self.audiopaths_and_text[index]
+<<<<<<< HEAD
         len_text = len(text)
         text = self.get_text(text)
+=======
+        text = self.get_text(text)
+        len_text = len(text)
+>>>>>>> repo1
         mel = self.get_mel(audiopath)
         return (text, mel, len_text)
 

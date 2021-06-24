@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 
 echo "NVIDIA container build: ${NVIDIA_BUILD_ID}"
 
@@ -69,3 +70,11 @@ else
    ) |& tee "$LOGFILE"
 fi
 set +x
+=======
+set -a
+
+: ${PREDICTION_FILE:=}
+: ${DATASET:="test-other"}
+
+bash ./scripts/inference.sh "$@"
+>>>>>>> repo1

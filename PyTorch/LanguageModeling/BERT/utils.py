@@ -14,6 +14,12 @@
 import torch
 import torch.distributed as dist
 
+<<<<<<< HEAD
+=======
+from pathlib import Path
+
+
+>>>>>>> repo1
 def get_rank():
     if not dist.is_available():
         return 0
@@ -21,6 +27,10 @@ def get_rank():
         return 0
     return dist.get_rank()
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> repo1
 def get_world_size():
     if not dist.is_available():
         return 1
@@ -28,9 +38,22 @@ def get_world_size():
         return 1
     return dist.get_world_size()
 
+<<<<<<< HEAD
 def is_main_process():
     return get_rank() == 0
 
+=======
+
+def is_main_process():
+    return get_rank() == 0
+
+
+def barrier():
+    if dist.is_available() and dist.is_initialized():
+        dist.barrier()
+
+
+>>>>>>> repo1
 def format_step(step):
     if isinstance(step, str):
         return step
@@ -42,3 +65,16 @@ def format_step(step):
     if len(step) > 2:
         s += "Validation Iteration: {} ".format(step[2])
     return s
+<<<<<<< HEAD
+=======
+
+
+def mkdir(path):
+    Path(path).mkdir(parents=True, exist_ok=True)
+
+
+def mkdir_by_main_process(path):
+    if is_main_process():
+        mkdir(path)
+    barrier()
+>>>>>>> repo1

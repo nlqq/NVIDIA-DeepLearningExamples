@@ -12,7 +12,10 @@ __pycache__/
 data/*/*/   
 data/*/*.zip
 checkpoints/
+<<<<<<< HEAD
 results
+=======
+>>>>>>> repo1
 results/*
 
 #Editor

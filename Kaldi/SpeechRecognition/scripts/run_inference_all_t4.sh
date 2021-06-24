@@ -16,7 +16,11 @@
 set -e
 
 if [[ "$(docker ps | grep trtis_kaldi_server | wc -l)" == "0" ]]; then
+<<<<<<< HEAD
 	printf "\nThe TensorRT Inference Server is currently not running. Please run scripts/docker/launch_server.sh\n\n"
+=======
+	printf "\nThe Triton server is currently not running. Please run scripts/docker/launch_server.sh\n\n"
+>>>>>>> repo1
 	exit 1
 fi
 

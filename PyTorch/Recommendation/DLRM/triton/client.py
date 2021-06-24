@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+<<<<<<< HEAD
 # Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2021, NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,7 +35,11 @@ import sys
 
 import numpy as np
 import torch
+<<<<<<< HEAD
 import tritonhttpclient
+=======
+import tritonclient.http as http_client
+>>>>>>> repo1
 from sklearn.metrics import roc_auc_score
 from tqdm import tqdm
 
@@ -48,7 +56,12 @@ def get_data_loader(batch_size, *, data_path, model_config):
             numerical_features=True,
             categorical_features=range(len(categorical_sizes)),
             categorical_feature_sizes=categorical_sizes,
+<<<<<<< HEAD
             prefetch_depth=1
+=======
+            prefetch_depth=1,
+            drop_last_batch=model_config.drop_last_batch
+>>>>>>> repo1
         )
     else:
         data = SyntheticDataset(
@@ -59,6 +72,12 @@ def get_data_loader(batch_size, *, data_path, model_config):
             device="cpu"
         )
 
+<<<<<<< HEAD
+=======
+    if model_config.test_batches > 0:
+        data = torch.utils.data.Subset(data, list(range(model_config.test_batches)))
+
+>>>>>>> repo1
     return torch.utils.data.DataLoader(data,
                                        batch_size=None,
                                        num_workers=0,
@@ -69,14 +88,23 @@ def run_infer(model_name, model_version, numerical_features, categorical_feature
     inputs = []
     outputs = []
     num_type = "FP16" if numerical_features.dtype == np.float16 else "FP32"
+<<<<<<< HEAD
     inputs.append(tritonhttpclient.InferInput('input__0', numerical_features.shape, num_type))
     inputs.append(tritonhttpclient.InferInput('input__1', categorical_features.shape, "INT64"))
+=======
+    inputs.append(http_client.InferInput('input__0', numerical_features.shape, num_type))
+    inputs.append(http_client.InferInput('input__1', categorical_features.shape, "INT64"))
+>>>>>>> repo1
 
     # Initialize the data
     inputs[0].set_data_from_numpy(numerical_features, binary_data=True)
     inputs[1].set_data_from_numpy(categorical_features, binary_data=False)
 
+<<<<<<< HEAD
     outputs.append(tritonhttpclient.InferRequestedOutput('output__0', binary_data=True))
+=======
+    outputs.append(http_client.InferRequestedOutput('output__0', binary_data=True))
+>>>>>>> repo1
     results = triton_client.infer(model_name,
                                   inputs,
                                   model_version=str(model_version) if model_version != -1 else '',
@@ -111,12 +139,25 @@ if __name__ == '__main__':
                         help="Path to file with inference data.")
     parser.add_argument("--batch_size", type=int, default=1,
                         help="Inference request batch size")
+<<<<<<< HEAD
     parser.add_argument("--fp16", action="store_true", default=False,
                         help="Use 16bit for numerical input")
 
     FLAGS = parser.parse_args()
     try:
         triton_client = tritonhttpclient.InferenceServerClient(url=FLAGS.triton_server_url, verbose=FLAGS.verbose)
+=======
+    parser.add_argument("--drop_last_batch", type=bool, default=True,
+                        help="Drops the last batch size if it's not full")
+    parser.add_argument("--fp16", action="store_true", default=False,
+                        help="Use 16bit for numerical input")
+    parser.add_argument("--test_batches", type=int, default=0,
+                        help="Specifies number of batches used in the inference")
+
+    FLAGS = parser.parse_args()
+    try:
+        triton_client = http_client.InferenceServerClient(url=FLAGS.triton_server_url, verbose=FLAGS.verbose)
+>>>>>>> repo1
     except Exception as e:
         print("channel creation failed: " + str(e))
         sys.exit(1)
@@ -152,7 +193,11 @@ if __name__ == '__main__':
     tgt_list = np.concatenate(tgt_list)
 
     score = roc_auc_score(tgt_list, results)
+<<<<<<< HEAD
     print(F"Model score: {score}")
+=======
+    print(f"Model score: {score}")
+>>>>>>> repo1
 
     statistics = triton_client.get_inference_statistics(model_name=FLAGS.triton_model_name, headers=headers_dict)
     print(statistics)

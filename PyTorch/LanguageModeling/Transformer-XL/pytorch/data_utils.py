@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Copyright (c) 2019 NVIDIA CORPORATION. All rights reserved.
+=======
+# Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
+>>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -46,7 +50,11 @@ class LMOrderedIterator(object):
         data = data[:n_step * bsz]
 
         # Evenly divide the data across the bsz batches.
+<<<<<<< HEAD
         self.data = data.view(bsz, -1).t().contiguous()
+=======
+        self.data = data.view(bsz, -1).t().contiguous().pin_memory()
+>>>>>>> repo1
 
         if mem_len and warmup:
             self.warmup_batches = (mem_len + bptt - 1) // bptt
@@ -83,8 +91,13 @@ class LMOrderedIterator(object):
         end_idx = i + seq_len
         beg_idx = max(0, i - self.ext_len)
 
+<<<<<<< HEAD
         data = self.data[beg_idx:end_idx].to(self.device)
         target = self.data[i+1:i+1+seq_len].to(self.device)
+=======
+        data = self.data[beg_idx:end_idx].to(self.device, non_blocking=True)
+        target = self.data[i+1:i+1+seq_len].to(self.device, non_blocking=True)
+>>>>>>> repo1
 
         if self.mem_len and self.warmup:
             warm = i >= self.warmup_elems

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 [ ! -n "$WAVEG_CH" ] && WAVEG_CH="pretrained_models/waveglow/waveglow_1076430_14000_amp.pt"
 [ ! -n "$FASTPITCH_CH" ] && FASTPITCH_CH="output/FastPitch_checkpoint_1500.pt"
 [ ! -n "$REPEATS" ] && REPEATS=1000
@@ -18,10 +19,37 @@ for BS in $BS_SEQ ; do
                       -o ${OUTPUT_DIR} \
                       --fastpitch ${FASTPITCH_CH} \
                       --waveglow ${WAVEG_CH} \
+=======
+: ${WAVEGLOW:="pretrained_models/waveglow/nvidia_waveglow256pyt_fp16.pt"}
+: ${FASTPITCH:="output/FastPitch_checkpoint_1500.pt"}
+: ${REPEATS:=1000}
+: ${BS_SEQUENCE:="1 4 8"}
+: ${PHRASES:="phrases/benchmark_8_128.tsv"}
+: ${OUTPUT_DIR:="./output/audio_$(basename ${PHRASES} .tsv)"}
+: ${AMP:=false}
+
+[ "$AMP" = true ] && AMP_FLAG="--amp"
+
+mkdir -p "$OUTPUT_DIR"
+
+for BS in $BS_SEQUENCE ; do
+
+  echo -e "\nAMP: ${AMP}, batch size: ${BS}\n"
+
+  python inference.py --cuda --cudnn-benchmark \
+                      -i ${PHRASES} \
+                      -o ${OUTPUT_DIR} \
+                      --fastpitch ${FASTPITCH} \
+                      --waveglow ${WAVEGLOW} \
+>>>>>>> repo1
                       --wn-channels 256 \
                       --include-warmup \
                       --batch-size ${BS} \
                       --repeats ${REPEATS} \
                       --torchscript \
+<<<<<<< HEAD
                       ${AMP_FLAG} ${SET_AFFINITY_FLAG}
+=======
+                      ${AMP_FLAG}
+>>>>>>> repo1
 done

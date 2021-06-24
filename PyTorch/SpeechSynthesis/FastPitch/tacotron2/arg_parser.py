@@ -27,9 +27,12 @@
 
 import argparse
 
+<<<<<<< HEAD
 from common.text import symbols
 
 
+=======
+>>>>>>> repo1
 def parse_tacotron2_args(parent, add_help=False):
     """
     Parse commandline arguments.
@@ -43,11 +46,15 @@ def parse_tacotron2_args(parent, add_help=False):
                         help='Number of bins in mel-spectrograms')
 
     # symbols parameters
+<<<<<<< HEAD
     global symbols
     len_symbols = len(symbols)
     symbols = parser.add_argument_group('symbols parameters')
     symbols.add_argument('--n-symbols', default=len_symbols, type=int,
                          help='Number of symbols in dictionary')
+=======
+    symbols = parser.add_argument_group('symbols parameters')
+>>>>>>> repo1
     symbols.add_argument('--symbols-embedding-dim', default=512, type=int,
                          help='Input embedding dimension')
 

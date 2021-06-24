@@ -43,8 +43,15 @@ import dllogger as DLLogger
 from dllogger import StdOutBackend, JSONStreamBackend, Verbosity
 
 from common import utils
+<<<<<<< HEAD
 from common.log_helper import unique_dllogger_fpath
 from common.text import text_to_sequence
+=======
+from common.tb_dllogger import (init_inference_metadata, stdout_metric_format,
+                                unique_log_fpath)
+from common.text.text_processing import TextProcessing
+from pitch_transform import pitch_transform_custom
+>>>>>>> repo1
 from waveglow import model as glow
 from waveglow.denoiser import Denoiser
 
@@ -63,6 +70,11 @@ def parse_args(parser):
                         help='Path to a DLLogger log file')
     parser.add_argument('--cuda', action='store_true',
                         help='Run inference on a GPU using CUDA')
+<<<<<<< HEAD
+=======
+    parser.add_argument('--cudnn-benchmark', action='store_true',
+                        help='Enable cudnn benchmark mode')
+>>>>>>> repo1
     parser.add_argument('--fastpitch', type=str,
                         help='Full path to the generator checkpoint file (skip to use ground truth mels)')
     parser.add_argument('--waveglow', type=str,
@@ -77,7 +89,11 @@ def parse_args(parser):
                         help='STFT hop length for estimating audio length from mel size')
     parser.add_argument('--amp', action='store_true',
                         help='Inference with AMP')
+<<<<<<< HEAD
     parser.add_argument('--batch-size', type=int, default=64)
+=======
+    parser.add_argument('-bs', '--batch-size', type=int, default=64)
+>>>>>>> repo1
     parser.add_argument('--include-warmup', action='store_true',
                         help='Include warmup')
     parser.add_argument('--repeats', type=int, default=1,
@@ -88,9 +104,17 @@ def parse_args(parser):
                         help='Use EMA averaged model (if saved in checkpoints)')
     parser.add_argument('--dataset-path', type=str,
                         help='Path to dataset (for loading extra data fields)')
+<<<<<<< HEAD
 
     transform = parser.add_argument_group('transform')
     transform.add_argument('--fade-out', type=int, default=5,
+=======
+    parser.add_argument('--speaker', type=int, default=0,
+                        help='Speaker ID for a multi-speaker model')
+
+    transform = parser.add_argument_group('transform')
+    transform.add_argument('--fade-out', type=int, default=10,
+>>>>>>> repo1
                            help='Number of fadeout frames at the end')
     transform.add_argument('--pace', type=float, default=1.0,
                            help='Adjust the pace of speech')
@@ -98,6 +122,7 @@ def parse_args(parser):
                            help='Flatten the pitch')
     transform.add_argument('--pitch-transform-invert', action='store_true',
                            help='Invert the pitch wrt mean value')
+<<<<<<< HEAD
     transform.add_argument('--pitch-transform-amplify', action='store_true',
                            help='Amplify the pitch variability')
     transform.add_argument('--pitch-transform-shift', type=float, default=0.0,
@@ -105,6 +130,52 @@ def parse_args(parser):
     return parser
 
 
+=======
+    transform.add_argument('--pitch-transform-amplify', type=float, default=1.0,
+                           help='Amplify pitch variability, typical values are in the range (1.0, 3.0).')
+    transform.add_argument('--pitch-transform-shift', type=float, default=0.0,
+                           help='Raise/lower the pitch by <hz>')
+    transform.add_argument('--pitch-transform-custom', action='store_true',
+                           help='Apply the transform from pitch_transform.py')
+
+    text_processing = parser.add_argument_group('Text processing parameters')
+    text_processing.add_argument('--text-cleaners', nargs='*',
+                                 default=['english_cleaners'], type=str,
+                                 help='Type of text cleaners for input text')
+    text_processing.add_argument('--symbol-set', type=str, default='english_basic',
+                                 help='Define symbol set for input text')
+
+    cond = parser.add_argument_group('conditioning on additional attributes')
+    cond.add_argument('--n-speakers', type=int, default=1,
+                      help='Number of speakers in the model.')
+
+    return parser
+
+
+def load_model_from_ckpt(checkpoint_path, ema, model):
+
+    checkpoint_data = torch.load(checkpoint_path)
+    status = ''
+
+    if 'state_dict' in checkpoint_data:
+        sd = checkpoint_data['state_dict']
+        if ema and 'ema_state_dict' in checkpoint_data:
+            sd = checkpoint_data['ema_state_dict']
+            status += ' (EMA)'
+        elif ema and not 'ema_state_dict' in checkpoint_data:
+            print(f'WARNING: EMA weights missing for {checkpoint_data}')
+
+        if any(key.startswith('module.') for key in sd):
+            sd = {k.replace('module.', ''): v for k,v in sd.items()}
+        status += ' ' + str(model.load_state_dict(sd, strict=False))
+    else:
+        model = checkpoint_data['model']
+    print(f'Loaded {checkpoint_path}{status}')
+
+    return model
+
+
+>>>>>>> repo1
 def load_and_setup_model(model_name, parser, checkpoint, amp, device,
                          unk_args=[], forward_is_infer=False, ema=True,
                          jitable=False):
@@ -119,6 +190,7 @@ def load_and_setup_model(model_name, parser, checkpoint, amp, device,
                              jitable=jitable)
 
     if checkpoint is not None:
+<<<<<<< HEAD
         checkpoint_data = torch.load(checkpoint)
         status = ''
 
@@ -136,6 +208,9 @@ def load_and_setup_model(model_name, parser, checkpoint, amp, device,
         else:
             model = checkpoint_data['model']
         print(f'Loaded {model_name}{status}')
+=======
+        model = load_model_from_ckpt(checkpoint, ema, model)
+>>>>>>> repo1
 
     if model_name == "WaveGlow":
         model = model.remove_weightnorm(model)
@@ -156,10 +231,20 @@ def load_fields(fpath):
     return {c:f for c, f in zip(columns, fields)}
 
 
+<<<<<<< HEAD
 def prepare_input_sequence(fields, device, batch_size=128, dataset=None,
                            load_mels=False, load_pitch=False):
     fields['text'] = [torch.LongTensor(text_to_sequence(t, ['english_cleaners']))
                       for t in fields['text']]
+=======
+def prepare_input_sequence(fields, device, symbol_set, text_cleaners,
+                           batch_size=128, dataset=None, load_mels=False,
+                           load_pitch=False):
+    tp = TextProcessing(symbol_set, text_cleaners)
+
+    fields['text'] = [torch.LongTensor(tp.encode_text(text))
+                      for text in fields['text']]
+>>>>>>> repo1
     order = np.argsort([-t.size(0) for t in fields['text']])
 
     fields['text'] = [fields['text'][i] for i in order]
@@ -200,17 +285,35 @@ def prepare_input_sequence(fields, device, batch_size=128, dataset=None,
 
 
 def build_pitch_transformation(args):
+<<<<<<< HEAD
+=======
+    if args.pitch_transform_custom:
+        def custom_(pitch, pitch_lens, mean, std):
+            return (pitch_transform_custom(pitch * std + mean, pitch_lens)
+                    - mean) / std
+        return custom_
+
+>>>>>>> repo1
     fun = 'pitch'
     if args.pitch_transform_flatten:
         fun = f'({fun}) * 0.0'
     if args.pitch_transform_invert:
         fun = f'({fun}) * -1.0'
     if args.pitch_transform_amplify:
+<<<<<<< HEAD
         fun = f'({fun}) * 2.0'
     if args.pitch_transform_shift != 0.0:
         hz = args.pitch_transform_shift
         fun = f'({fun}) + {hz} / std'
     return eval(f'lambda pitch, mean, std: {fun}')
+=======
+        ampl = args.pitch_transform_amplify
+        fun = f'({fun}) * {ampl}'
+    if args.pitch_transform_shift != 0.0:
+        hz = args.pitch_transform_shift
+        fun = f'({fun}) + {hz} / std'
+    return eval(f'lambda pitch, pitch_lens, mean, std: {fun}')
+>>>>>>> repo1
 
 
 class MeasureTime(list):
@@ -232,18 +335,27 @@ def main():
     Launches text to speech (inference).
     Inference is executed on a single GPU.
     """
+<<<<<<< HEAD
 
     torch.backends.cudnn.benchmark = True
 
+=======
+>>>>>>> repo1
     parser = argparse.ArgumentParser(description='PyTorch FastPitch Inference',
                                      allow_abbrev=False)
     parser = parse_args(parser)
     args, unk_args = parser.parse_known_args()
 
+<<<<<<< HEAD
+=======
+    torch.backends.cudnn.benchmark = args.cudnn_benchmark
+
+>>>>>>> repo1
     if args.output is not None:
         Path(args.output).mkdir(parents=False, exist_ok=True)
 
     log_fpath = args.log_file or str(Path(args.output, 'nvlog_infer.json'))
+<<<<<<< HEAD
     log_fpath = unique_dllogger_fpath(log_fpath)
     DLLogger.init(backends=[JSONStreamBackend(Verbosity.DEFAULT, log_fpath),
                             StdOutBackend(Verbosity.VERBOSE)])
@@ -252,6 +364,18 @@ def main():
     device = torch.device('cuda' if args.cuda else 'cpu')
 
     if args.fastpitch is not None:
+=======
+    log_fpath = unique_log_fpath(log_fpath)
+    DLLogger.init(backends=[JSONStreamBackend(Verbosity.DEFAULT, log_fpath),
+                            StdOutBackend(Verbosity.VERBOSE,
+                                          metric_format=stdout_metric_format)])
+    init_inference_metadata()
+    [DLLogger.log("PARAMETER", {k: v}) for k, v in vars(args).items()]
+
+    device = torch.device('cuda' if args.cuda else 'cpu')
+
+    if args.fastpitch != 'SKIP':
+>>>>>>> repo1
         generator = load_and_setup_model(
             'FastPitch', parser, args.fastpitch, args.amp, device,
             unk_args=unk_args, forward_is_infer=True, ema=args.ema,
@@ -262,7 +386,11 @@ def main():
     else:
         generator = None
 
+<<<<<<< HEAD
     if args.waveglow is not None:
+=======
+    if args.waveglow != 'SKIP':
+>>>>>>> repo1
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             waveglow = load_and_setup_model(
@@ -278,8 +406,13 @@ def main():
 
     fields = load_fields(args.input)
     batches = prepare_input_sequence(
+<<<<<<< HEAD
         fields, device, args.batch_size, args.dataset_path,
         load_mels=(generator is None))
+=======
+        fields, device, args.symbol_set, args.text_cleaners, args.batch_size,
+        args.dataset_path, load_mels=(generator is None))
+>>>>>>> repo1
 
     if args.include_warmup:
         # Use real data rather than synthetic - FastPitch predicts len
@@ -287,7 +420,11 @@ def main():
             with torch.no_grad():
                 if generator is not None:
                     b = batches[0]
+<<<<<<< HEAD
                     mel, *_ = generator(b['text'], b['text_lens'])
+=======
+                    mel, *_ = generator(b['text'])
+>>>>>>> repo1
                 if waveglow is not None:
                     audios = waveglow(mel, sigma=args.sigma_infer).float()
                     _ = denoiser(audios, strength=args.denoising_strength)
@@ -296,11 +433,19 @@ def main():
     waveglow_measures = MeasureTime()
 
     gen_kw = {'pace': args.pace,
+<<<<<<< HEAD
+=======
+              'speaker': args.speaker,
+>>>>>>> repo1
               'pitch_tgt': None,
               'pitch_transform': build_pitch_transformation(args)}
 
     if args.torchscript:
         gen_kw.pop('pitch_transform')
+<<<<<<< HEAD
+=======
+        print('NOTE: Pitch transforms are disabled with TorchScript')
+>>>>>>> repo1
 
     all_utterances = 0
     all_samples = 0
@@ -308,6 +453,7 @@ def main():
     all_frames = 0
 
     reps = args.repeats
+<<<<<<< HEAD
     log_enabled = True  # reps == 1
     log = lambda s, d: DLLogger.log(step=s, data=d) if log_enabled else None
 
@@ -320,12 +466,29 @@ def main():
             else:
                 with torch.no_grad(), gen_measures:
                     mel, mel_lens, *_ = generator(
+=======
+    log_enabled = reps == 1
+    log = lambda s, d: DLLogger.log(step=s, data=d) if log_enabled else None
+
+    for rep in (tqdm.tqdm(range(reps)) if reps > 1 else range(reps)):
+        for b in batches:
+            if generator is None:
+                log(rep, {'Synthesizing from ground truth mels'})
+                mel = b['mel']
+            else:
+                with torch.no_grad(), gen_measures:
+                    mel, mel_lens, dur_pred, pitch_pred = generator(
+>>>>>>> repo1
                         b['text'], b['text_lens'], **gen_kw)
 
                 gen_infer_perf = mel.size(0) * mel.size(2) / gen_measures[-1]
                 all_letters += b['text_lens'].sum().item()
                 all_frames += mel.size(0) * mel.size(2)
+<<<<<<< HEAD
                 log(rep, {"fastpitch_frames_per_sec": gen_infer_perf})
+=======
+                log(rep, {"fastpitch_frames/s": gen_infer_perf})
+>>>>>>> repo1
                 log(rep, {"fastpitch_latency": gen_measures[-1]})
 
             if waveglow is not None:
@@ -333,14 +496,22 @@ def main():
                     audios = waveglow(mel, sigma=args.sigma_infer)
                     audios = denoiser(audios.float(),
                                       strength=args.denoising_strength
+<<<<<<< HEAD
                                      ).squeeze(1)
+=======
+                                      ).squeeze(1)
+>>>>>>> repo1
 
                 all_utterances += len(audios)
                 all_samples += sum(audio.size(0) for audio in audios)
                 waveglow_infer_perf = (
                     audios.size(0) * audios.size(1) / waveglow_measures[-1])
 
+<<<<<<< HEAD
                 log(rep, {"waveglow_samples_per_sec": waveglow_infer_perf})
+=======
+                log(rep, {"waveglow_samples/s": waveglow_infer_perf})
+>>>>>>> repo1
                 log(rep, {"waveglow_latency": waveglow_measures[-1]})
 
                 if args.output is not None and reps == 1:
@@ -352,7 +523,11 @@ def main():
                             fade_w = torch.linspace(1.0, 0.0, fade_len)
                             audio[-fade_len:] *= fade_w.to(audio.device)
 
+<<<<<<< HEAD
                         audio = audio/torch.max(torch.abs(audio))
+=======
+                        audio = audio / torch.max(torch.abs(audio))
+>>>>>>> repo1
                         fname = b['output'][i] if 'output' in b else f'audio_{i}.wav'
                         audio_path = Path(args.output, fname)
                         write(audio_path, args.sampling_rate, audio.cpu().numpy())
@@ -364,6 +539,7 @@ def main():
     if generator is not None:
         gm = np.sort(np.asarray(gen_measures))
         rtf = all_samples / (all_utterances * gm.mean() * args.sampling_rate)
+<<<<<<< HEAD
         log('avg', {"fastpitch letters/s": all_letters / gm.sum()})
         log('avg', {"fastpitch_frames/s": all_frames / gm.sum()})
         log('avg', {"fastpitch_latency": gm.mean()})
@@ -390,6 +566,34 @@ def main():
         log('90%', {"latency": m.mean() + norm.ppf((1.0 + 0.90) / 2) * m.std()})
         log('95%', {"latency": m.mean() + norm.ppf((1.0 + 0.95) / 2) * m.std()})
         log('99%', {"latency": m.mean() + norm.ppf((1.0 + 0.99) / 2) * m.std()})
+=======
+        log((), {"avg_fastpitch_letters/s": all_letters / gm.sum()})
+        log((), {"avg_fastpitch_frames/s": all_frames / gm.sum()})
+        log((), {"avg_fastpitch_latency": gm.mean()})
+        log((), {"avg_fastpitch_RTF": rtf})
+        log((), {"90%_fastpitch_latency": gm.mean() + norm.ppf((1.0 + 0.90) / 2) * gm.std()})
+        log((), {"95%_fastpitch_latency": gm.mean() + norm.ppf((1.0 + 0.95) / 2) * gm.std()})
+        log((), {"99%_fastpitch_latency": gm.mean() + norm.ppf((1.0 + 0.99) / 2) * gm.std()})
+    if waveglow is not None:
+        wm = np.sort(np.asarray(waveglow_measures))
+        rtf = all_samples / (all_utterances * wm.mean() * args.sampling_rate)
+        log((), {"avg_waveglow_samples/s": all_samples / wm.sum()})
+        log((), {"avg_waveglow_latency": wm.mean()})
+        log((), {"avg_waveglow_RTF": rtf})
+        log((), {"90%_waveglow_latency": wm.mean() + norm.ppf((1.0 + 0.90) / 2) * wm.std()})
+        log((), {"95%_waveglow_latency": wm.mean() + norm.ppf((1.0 + 0.95) / 2) * wm.std()})
+        log((), {"99%_waveglow_latency": wm.mean() + norm.ppf((1.0 + 0.99) / 2) * wm.std()})
+    if generator is not None and waveglow is not None:
+        m = gm + wm
+        rtf = all_samples / (all_utterances * m.mean() * args.sampling_rate)
+        log((), {"avg_samples/s": all_samples / m.sum()})
+        log((), {"avg_letters/s": all_letters / m.sum()})
+        log((), {"avg_latency": m.mean()})
+        log((), {"avg_RTF": rtf})
+        log((), {"90%_latency": m.mean() + norm.ppf((1.0 + 0.90) / 2) * m.std()})
+        log((), {"95%_latency": m.mean() + norm.ppf((1.0 + 0.95) / 2) * m.std()})
+        log((), {"99%_latency": m.mean() + norm.ppf((1.0 + 0.99) / 2) * m.std()})
+>>>>>>> repo1
     DLLogger.flush()
 
 
