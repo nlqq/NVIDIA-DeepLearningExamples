@@ -1,10 +1,6 @@
 # coding=utf-8
 # Copyright 2018 The Google AI Language Team Authors and The HuggingFace Inc. team.
-<<<<<<< HEAD
-# Copyright (c) 2018, NVIDIA CORPORATION.  All rights reserved.
-=======
 # Copyright (c) 2020, NVIDIA CORPORATION.  All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

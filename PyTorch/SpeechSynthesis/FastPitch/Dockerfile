@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-ARG FROM_IMAGE_NAME=nvcr.io/nvidia/pytorch:20.06-py3
-FROM ${FROM_IMAGE_NAME}
-
-ADD requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-WORKDIR /workspace/fastpitch
-=======
 # Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,5 +36,4 @@ ADD triton/requirements.txt triton/requirements.txt
 RUN pip install -r requirements.txt
 RUN pip install -r triton/requirements.txt
 
->>>>>>> repo1
 COPY . .

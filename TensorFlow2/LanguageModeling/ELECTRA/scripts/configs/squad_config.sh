@@ -18,10 +18,7 @@ dgxa100_8gpu_amp ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="512"
->>>>>>> repo1
     learning_rate="8e-4"
     precision="amp"
     num_gpu="8"
@@ -30,11 +27,7 @@ dgxa100_8gpu_amp ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -44,10 +37,7 @@ dgxa100_8gpu_tf32 ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="512"
->>>>>>> repo1
     learning_rate="8e-4"
     precision="tf32"
     num_gpu="8"
@@ -56,11 +46,7 @@ dgxa100_8gpu_tf32 ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -72,10 +58,7 @@ dgx2_16gpu_amp ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="1e-3"
     precision="amp"
     num_gpu="16"
@@ -84,11 +67,7 @@ dgx2_16gpu_amp ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -98,10 +77,7 @@ dgx2_16gpu_fp32 ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="1e-3"
     precision="fp32"
     num_gpu="16"
@@ -110,11 +86,7 @@ dgx2_16gpu_fp32 ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -126,10 +98,7 @@ dgx1_8gpu_amp ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="16"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="4e-4"
     precision="amp"
     num_gpu="8"
@@ -138,11 +107,7 @@ dgx1_8gpu_amp ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -152,10 +117,7 @@ dgx1_8gpu_fp32 ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="8"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="3e-4"
     precision="fp32"
     num_gpu="8"
@@ -164,17 +126,11 @@ dgx1_8gpu_fp32 ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
 
-<<<<<<< HEAD
-=======
 #Squad 2.0
 dgx1_8gpu_amp_v2 ()
 {
@@ -194,7 +150,6 @@ dgx1_8gpu_amp_v2 ()
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
->>>>>>> repo1
 # 1GPU configs
 
 dgxa100_1gpu_amp ()
@@ -202,10 +157,7 @@ dgxa100_1gpu_amp ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="512"
->>>>>>> repo1
     learning_rate="2e-4"
     precision="amp"
     num_gpu="1"
@@ -214,11 +166,7 @@ dgxa100_1gpu_amp ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -228,10 +176,7 @@ dgxa100_1gpu_tf32 ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="512"
->>>>>>> repo1
     learning_rate="2e-4"
     precision="tf32"
     num_gpu="1"
@@ -240,11 +185,7 @@ dgxa100_1gpu_tf32 ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -256,10 +197,7 @@ dgx2_1gpu_amp ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="2e-4"
     precision="amp"
     num_gpu="1"
@@ -268,11 +206,7 @@ dgx2_1gpu_amp ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -282,10 +216,7 @@ dgx2_1gpu_fp32 ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="32"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="2e-4"
     precision="fp32"
     num_gpu="1"
@@ -294,11 +225,7 @@ dgx2_1gpu_fp32 ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -310,10 +237,7 @@ dgx1_1gpu_amp ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="16"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="1e-4"
     precision="amp"
     num_gpu="1"
@@ -322,11 +246,7 @@ dgx1_1gpu_amp ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }
@@ -336,10 +256,7 @@ dgx1_1gpu_fp32 ()
     electra_model="google/electra-base-discriminator"
     epochs="2"
     batch_size="8"
-<<<<<<< HEAD
-=======
     infer_batch_size="256"
->>>>>>> repo1
     learning_rate="1e-4"
     precision="fp32"
     num_gpu="1"
@@ -348,11 +265,7 @@ dgx1_1gpu_fp32 ()
     squad_dir="/workspace/electra/data/download/squad/v$SQUAD_VERSION"
     OUT_DIR="results/"
     init_checkpoint="checkpoints/electra_base_qa_v2_False_epoch_2_ckpt"
-<<<<<<< HEAD
-    echo $electra_model $epochs $batch_size $batch_size $learning_rate \
-=======
     echo $electra_model $epochs $batch_size $infer_batch_size $learning_rate \
->>>>>>> repo1
      $precision $num_gpu $seed $SQUAD_VERSION $squad_dir \
      $OUT_DIR $init_checkpoint
 }

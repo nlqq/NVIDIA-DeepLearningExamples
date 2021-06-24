@@ -13,31 +13,16 @@
 
 import glob
 import os
-<<<<<<< HEAD
-import argparse
-
-class WikicorpusTextFormatting:
-    def __init__(self, args, recursive = False):
-        self.wiki_path = args.wiki_path
-        self.recursive = recursive
-        self.output_filename = args.output_filename
-=======
 
 class WikicorpusTextFormatting:
     def __init__(self, wiki_path, output_filename, recursive = False):
         self.wiki_path = wiki_path
         self.recursive = recursive
         self.output_filename = output_filename
->>>>>>> repo1
 
 
     # This puts one article per line
     def merge(self):
-<<<<<<< HEAD
-        print("wiki_path: ", self.wiki_path)
-        print("output_filename: ", self.output_filename)
-=======
->>>>>>> repo1
         with open(self.output_filename, mode='w', newline='\n') as ofile:
             for dirname in glob.glob(self.wiki_path + '/*/', recursive=False):
                 for filename in glob.glob(dirname + 'wiki_*', recursive=self.recursive):
@@ -58,18 +43,4 @@ class WikicorpusTextFormatting:
                                 article_lines = []
                             else:
                                 if article_open:
-<<<<<<< HEAD
                                     article_lines.append(line)
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Preprocessing Wiki Corpus...')
-    
-    parser.add_argument("--wiki_path", type=str, default="/workspace/bert/data/extracted", help="input wiki path")
-    parser.add_argument("--output_filename", type=str, default="/workspace/bert/data/formatted_one_article_per_line/wikicorpus_en_one_book_per_line.txt", help="output file name")
-    args = parser.parse_args()
-    wiki_corpus = WikicorpusTextFormatting(args, recursive=True)
-    wiki_corpus.merge()
-    print("merge done.")
-=======
-                                    article_lines.append(line)
->>>>>>> repo1

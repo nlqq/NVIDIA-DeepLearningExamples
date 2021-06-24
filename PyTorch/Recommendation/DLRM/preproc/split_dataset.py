@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,9 +22,6 @@ from tqdm import tqdm
 import numpy as np
 from typing import Sequence
 
-<<<<<<< HEAD
-from dlrm.data.utils import get_categorical_feature_type
-=======
 
 def get_categorical_feature_type(size: int):
     types = (np.int8, np.int16, np.int32)
@@ -38,7 +31,6 @@ def get_categorical_feature_type(size: int):
             return numpy_type
 
     raise RuntimeError(f"Categorical feature of size {size} is too big for defined types")
->>>>>>> repo1
 
 
 def split_binary_file(
@@ -71,11 +63,7 @@ def split_binary_file(
 
         categorical_fs = []
         for i in range(len(categorical_feature_sizes)):
-<<<<<<< HEAD
-            fs = open(os.path.join(output_dir, F'cat_{i}.bin'), 'wb+')
-=======
             fs = open(os.path.join(output_dir, f'cat_{i}.bin'), 'wb+')
->>>>>>> repo1
             categorical_fs.append(fs)
             file_streams.append(fs)
 
@@ -101,17 +89,6 @@ def split_binary_file(
 def split_dataset(dataset_dir: str, output_dir: str, batch_size: int, numerical_features: int):
     categorical_sizes_file = os.path.join(dataset_dir, "model_size.json")
     with open(categorical_sizes_file) as f:
-<<<<<<< HEAD
-        categorical_sizes = list(json.load(f).values())
-
-    train_file = os.path.join(dataset_dir, "train_data.bin")
-    test_file = os.path.join(dataset_dir, "test_data.bin")
-    val_file = os.path.join(dataset_dir, "val_data.bin")
-
-    target_train = os.path.join(output_dir, "train")
-    target_test = os.path.join(output_dir, "test")
-    target_val = os.path.join(output_dir, "val")
-=======
         categorical_sizes = [int(v) for v in json.load(f).values()]
 
     train_file = os.path.join(dataset_dir, "train_data.bin")
@@ -121,7 +98,6 @@ def split_dataset(dataset_dir: str, output_dir: str, batch_size: int, numerical_
     target_train = os.path.join(output_dir, "train")
     target_test = os.path.join(output_dir, "test")
     target_val = os.path.join(output_dir, "validation")
->>>>>>> repo1
 
     os.makedirs(output_dir, exist_ok=True)
     os.makedirs(target_train, exist_ok=True)

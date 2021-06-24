@@ -53,10 +53,6 @@ def main(args):
     print('')
 
     if args.action == 'download':
-<<<<<<< HEAD
-        print("pass download...")
-=======
->>>>>>> repo1
         if not os.path.exists(directory_structure['download']):
             os.makedirs(directory_structure['download'])
 
@@ -80,19 +76,11 @@ def main(args):
             books_formatter.merge()
 
         elif args.dataset == 'wikicorpus_en':
-<<<<<<< HEAD
-        #    if args.skip_wikiextractor == 0:
-        #        path_to_wikiextractor_in_container = '/workspace/wikiextractor/WikiExtractor.py'
-        #        wikiextractor_command = path_to_wikiextractor_in_container + ' ' + directory_structure['download'] + '/' + args.dataset + '/wikicorpus_en.xml ' + '-b 100M --processes ' + str(args.n_processes) + ' -o ' + directory_structure['extracted'] + '/' + args.dataset
-        #        print('WikiExtractor Command:', wikiextractor_command)
-        #        wikiextractor_process = subprocess.run(wikiextractor_command, shell=True, check=True)
-=======
             if args.skip_wikiextractor == 0:
                 path_to_wikiextractor_in_container = '/workspace/wikiextractor/WikiExtractor.py'
                 wikiextractor_command = path_to_wikiextractor_in_container + ' ' + directory_structure['download'] + '/' + args.dataset + '/wikicorpus_en.xml ' + '-b 100M --processes ' + str(args.n_processes) + ' -o ' + directory_structure['extracted'] + '/' + args.dataset
                 print('WikiExtractor Command:', wikiextractor_command)
                 wikiextractor_process = subprocess.run(wikiextractor_command, shell=True, check=True)
->>>>>>> repo1
                 #wikiextractor_process.communicate()
 
             wiki_path = directory_structure['extracted'] + '/wikicorpus_en'
@@ -113,11 +101,6 @@ def main(args):
             output_filename = directory_structure['formatted'] + '/wikicorpus_zh_one_article_per_line.txt'
             wiki_formatter = WikicorpusTextFormatting.WikicorpusTextFormatting(wiki_path, output_filename, recursive=True)
             wiki_formatter.merge()
-<<<<<<< HEAD
-            
-=======
-
->>>>>>> repo1
             assert os.stat(output_filename).st_size > 0, 'File glob did not pick up extracted wiki files from WikiExtractor.'
 
     elif args.action == 'sharding':
@@ -264,10 +247,7 @@ if __name__ == "__main__":
             'google_pretrained_weights',
             'nvidia_pretrained_weights',
             'mrpc',
-<<<<<<< HEAD
-=======
             'sst-2',
->>>>>>> repo1
             'squad',
             'all'
         }

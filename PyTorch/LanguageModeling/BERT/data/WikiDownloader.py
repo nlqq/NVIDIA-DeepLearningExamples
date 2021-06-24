@@ -16,10 +16,7 @@ import os
 import urllib.request
 import subprocess
 import sys
-<<<<<<< HEAD
-=======
 import subprocess
->>>>>>> repo1
 
 class WikiDownloader:
     def __init__(self, language, save_path):
@@ -29,10 +26,7 @@ class WikiDownloader:
             os.makedirs(self.save_path)
 
         self.language = language
-<<<<<<< HEAD
-=======
         # Use a mirror from https://dumps.wikimedia.org/mirrors.html if the below links do not work
->>>>>>> repo1
         self.download_urls = {
             'en' : 'https://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2',
             'zh' : 'https://dumps.wikimedia.org/zhwiki/latest/zhwiki-latest-pages-articles.xml.bz2'
@@ -53,25 +47,15 @@ class WikiDownloader:
             if os.path.isfile(self.save_path + '/' + filename):
                 print('** Download file already exists, skipping download')
             else:
-<<<<<<< HEAD
-                response = urllib.request.urlopen(url)
-                with open(self.save_path + '/' + filename, "wb") as handle:
-                    handle.write(response.read())
-=======
                 cmd = ['wget', url, '--output-document={}'.format(self.save_path + '/' + filename)]
                 print('Running:', cmd)
                 status = subprocess.run(cmd)
                 if status.returncode != 0:
                     raise RuntimeError('Wiki download not successful')
->>>>>>> repo1
 
             # Always unzipping since this is relatively fast and will overwrite
             print('Unzipping:', self.output_files[self.language])
             subprocess.run('bzip2 -dk ' + self.save_path + '/' + filename, shell=True, check=True)
 
         else:
-<<<<<<< HEAD
             assert False, 'WikiDownloader not implemented for this language yet.'
-=======
-            assert False, 'WikiDownloader not implemented for this language yet.'
->>>>>>> repo1

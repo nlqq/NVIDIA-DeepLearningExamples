@@ -36,15 +36,6 @@ if [ "$task" = "squad" ] ; then
 
 
       if [ "$bert_model" = "large" ] ; then
-<<<<<<< HEAD
-        export BERT_DIR=data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16
-      else
-          export BERT_DIR=data/download/google_pretrained_weights/uncased_L-12_H-768_A-12
-      fi
-      echo  "BERT directory set as " $BERT_DIR
-
-      init_checkpoint="$BERT_DIR/bert_model.ckpt"
-=======
           export BERT_DIR=data/download/nvidia_pretrained/bert_tf_pretraining_large_lamb
       else
           export BERT_DIR=data/download/nvidia_pretrained/bert_tf_squad11_base_128
@@ -52,7 +43,6 @@ if [ "$task" = "squad" ] ; then
       echo  "BERT directory set as " $BERT_DIR
 
       init_checkpoint="$BERT_DIR/model.ckpt"
->>>>>>> repo1
 
       for seq_len in 128 384; do
 
@@ -86,10 +76,7 @@ if [ "$task" = "squad" ] ; then
        done
        done
        done
-<<<<<<< HEAD
-=======
     done
->>>>>>> repo1
 
 else
 

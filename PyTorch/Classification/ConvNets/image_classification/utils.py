@@ -27,18 +27,12 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-<<<<<<< HEAD
-=======
 import math
->>>>>>> repo1
 import os
 import numpy as np
 import torch
 import shutil
-<<<<<<< HEAD
-=======
 import signal
->>>>>>> repo1
 import torch.distributed as dist
 
 
@@ -97,11 +91,7 @@ def accuracy(output, target, topk=(1,)):
 
     res = []
     for k in topk:
-<<<<<<< HEAD
-        correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
-=======
         correct_k = correct[:k].float().sum()
->>>>>>> repo1
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
@@ -118,8 +108,6 @@ def reduce_tensor(tensor):
 def first_n(n, generator):
     for i, d in zip(range(n), generator):
         yield d
-<<<<<<< HEAD
-=======
 
 
 class TimeoutHandler:
@@ -174,4 +162,3 @@ def calc_ips(batch_size, time):
     )
     tbs = world_size * batch_size
     return tbs / time
->>>>>>> repo1

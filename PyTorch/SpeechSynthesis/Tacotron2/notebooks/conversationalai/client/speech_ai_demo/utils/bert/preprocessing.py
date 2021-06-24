@@ -14,15 +14,10 @@
 # limitations under the License.
 
 import math
-<<<<<<< HEAD
-import collections
-from utils.bert.tokenization import BasicTokenizer
-=======
 import json
 import numpy as np
 import collections
 from utils.bert.tokenization import (BasicTokenizer, BertTokenizer, whitespace_tokenize)
->>>>>>> repo1
 
 
 class SquadExample(object):
@@ -150,11 +145,8 @@ def convert_example_to_feature(example, tokenizer, max_seq_length,
                 tok_to_orig_index.append(i)
                 all_doc_tokens.append(sub_token)
 
-<<<<<<< HEAD
-=======
         tok_start_position = None
         tok_end_position = None
->>>>>>> repo1
 
         # The -3 accounts for [CLS], [SEP] and [SEP]
         max_tokens_for_doc = max_seq_length - len(query_tokens) - 3

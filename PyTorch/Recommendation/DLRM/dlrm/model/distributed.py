@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
->>>>>>> repo1
 from typing import Sequence, Optional
 
 import torch
@@ -141,12 +138,6 @@ class DistributedDlrm(nn.Module):
 
         self.bottom_model = DlrmBottom(
             num_numerical_features, categorical_feature_sizes, bottom_mlp_sizes,
-<<<<<<< HEAD
-            embedding_type, embedding_dim, hash_indices=hash_indices, use_cpp_mlp=use_cpp_mlp, fp16=fp16, device=device
-        )
-        self.top_model = DlrmTop(top_mlp_sizes, interaction, use_cpp_mlp=use_cpp_mlp).to(device)
-
-=======
             embedding_type, embedding_dim, hash_indices=hash_indices, use_cpp_mlp=use_cpp_mlp,
             fp16=fp16, device=device
         )
@@ -154,7 +145,6 @@ class DistributedDlrm(nn.Module):
 
         self.distributed = dist.get_world_size() > 1
 
->>>>>>> repo1
     def extra_repr(self):
         return f"interaction_op={self._interaction_op}, hash_indices={self._hash_indices}"
 
@@ -173,15 +163,6 @@ class DistributedDlrm(nn.Module):
             batch_sizes_per_gpu (Sequence[int]):
         """
         # bottom mlp output may be not present before all to all communication
-<<<<<<< HEAD
-        bottom_output, _ = self.bottom_model(numerical_input, categorical_inputs)
-
-        from_bottom = bottom_to_top(bottom_output, batch_sizes_per_gpu, self._embedding_dim, self._vectors_per_gpu,
-                                    self._feature_order, self._device_feature_order)
-
-        # TODO: take bottom_mlp GPU from device mapping, do not assume it's always first
-        bottom_mlp_output = from_bottom[:, 0, :]
-=======
         from_bottom, bottom_mlp_output = self.bottom_model(numerical_input, categorical_inputs)
 
         # only perform all_to_all in multiGPU mode
@@ -192,5 +173,4 @@ class DistributedDlrm(nn.Module):
             # TODO: take bottom_mlp GPU from device mapping, do not assume it's always first
             bottom_mlp_output = from_bottom[:, 0, :]
 
->>>>>>> repo1
         return self.top_model(from_bottom, bottom_mlp_output)

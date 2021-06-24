@@ -61,41 +61,21 @@ class FastSpeechTRTInferencer(TRTInferencer):
         super(FastSpeechTRTInferencer, self).__init__(model_name, model, data_loader, ckpt_path, ckpt_file, trt_max_ws_size, trt_file_path, trt_force_build, use_fp16)
 
     def build_engine(self):
-<<<<<<< HEAD
-=======
         engine = None
->>>>>>> repo1
         if self.trt_file_path and os.path.isfile(self.trt_file_path) and not self.trt_force_build:
             with open(self.trt_file_path, 'rb') as f:
                 engine_str = f.read()
             with trt.Runtime(TRT_LOGGER) as runtime:
-<<<<<<< HEAD
-                self.engine = runtime.deserialize_cuda_engine(engine_str)
-
-        if self.engine:
-            tprint('TRT Engine Loaded from {} successfully.'.format(self.trt_file_path))
-            return
-=======
                 engine = runtime.deserialize_cuda_engine(engine_str)
 
         if engine:
             tprint('TRT Engine Loaded from {} successfully.'.format(self.trt_file_path))
             return engine
->>>>>>> repo1
         else:
             tprint('Loading TRT Engine from {} failed.'.format(self.trt_file_path))
 
         tprint('Building a TRT Engine..')
 
-<<<<<<< HEAD
-        self.engine = self.do_build_engine()
-        tprint('TRT Engine Built.')
-        if self.trt_file_path:
-            with open(self.trt_file_path, 'wb') as f:
-                f.write(self.engine.serialize())
-            tprint('TRT Engine Saved in {}.'.format(self.trt_file_path))
-
-=======
         engine = self.do_build_engine()
         tprint('TRT Engine Built.')
         if self.trt_file_path:
@@ -105,7 +85,6 @@ class FastSpeechTRTInferencer(TRTInferencer):
 
         return engine
 
->>>>>>> repo1
     def create_plugins(self):
         # create "adding positional encoding" plugin
         self.plugins['AddPosEncPlugin'] = self.get_plugin_creator(

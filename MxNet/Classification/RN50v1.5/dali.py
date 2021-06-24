@@ -45,20 +45,6 @@ class HybridTrainPipe(Pipeline):
 
         if dali_cpu:
             dali_device = "cpu"
-<<<<<<< HEAD
-            if args.dali_fuse_decoder:
-                self.decode = ops.HostDecoderRandomCrop(device=dali_device, output_type=types.RGB)
-            else:
-                self.decode = ops.HostDecoder(device=dali_device, output_type=types.RGB)
-        else:
-            dali_device = "gpu"
-            if args.dali_fuse_decoder:
-                self.decode = ops.nvJPEGDecoderRandomCrop(device="mixed", output_type=types.RGB,
-                                                          device_memory_padding=nvjpeg_padding, host_memory_padding=nvjpeg_padding)
-            else:
-                self.decode = ops.nvJPEGDecoder(device="mixed", output_type=types.RGB,
-                                                device_memory_padding=nvjpeg_padding, host_memory_padding=nvjpeg_padding)
-=======
             decoder_device = "cpu"
         else:
             dali_device = "gpu"
@@ -70,7 +56,6 @@ class HybridTrainPipe(Pipeline):
         else:
             self.decode = ops.ImageDecoder(device=decoder_device, output_type=types.RGB,
                                            device_memory_padding=nvjpeg_padding, host_memory_padding=nvjpeg_padding)
->>>>>>> repo1
 
         if args.dali_fuse_decoder:
             self.resize = ops.Resize(device=dali_device, resize_x=crop_shape[1], resize_y=crop_shape[0])
@@ -103,14 +88,6 @@ class HybridValPipe(Pipeline):
 
         if dali_cpu:
             dali_device = "cpu"
-<<<<<<< HEAD
-            self.decode = ops.HostDecoder(device=dali_device, output_type=types.RGB)
-        else:
-            dali_device = "gpu"
-            self.decode = ops.nvJPEGDecoder(device="mixed", output_type=types.RGB,
-                                            device_memory_padding=nvjpeg_padding,
-                                            host_memory_padding=nvjpeg_padding)
-=======
             decoder_device = "cpu"
         else:
             dali_device = "gpu"
@@ -119,7 +96,6 @@ class HybridValPipe(Pipeline):
         self.decode = ops.ImageDecoder(device=decoder_device, output_type=types.RGB,
                                        device_memory_padding=nvjpeg_padding,
                                        host_memory_padding=nvjpeg_padding)
->>>>>>> repo1
         self.resize = ops.Resize(device=dali_device, resize_shorter=resize_shp) if resize_shp else None
         self.cmnp = ops.CropMirrorNormalize(device="gpu",
                                             output_dtype=types.FLOAT16 if dtype == 'float16' else types.FLOAT,

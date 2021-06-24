@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2019 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

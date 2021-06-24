@@ -13,29 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-<<<<<<< HEAD
-#### input arguments
-ARCH=${ARCH:-75}
-CHECKPOINT_DIR=${CHECKPOINT_DIR:-/checkpoints}
-CHECKPOINT=${CHECKPOINT:-"jasper_fp16.pt"}
-PRECISION=${PRECISION:-fp16}
-MAX_SEQUENCE_LENGTH_FOR_ENGINE=${MAX_SEQUENCE_LENGTH_FOR_ENGINE:-3600}
-GPU=${GPU:-0}
-####
-
-SCRIPT_DIR=$(cd $(dirname $0); pwd)
-PROJECT_DIR=${SCRIPT_DIR}/../..
-if [ -f /.dockerenv ]; then # inside docker
-	CUDA_VISIBLE_DEVICES=${GPU} CHECKPOINT=${CHECKPOINT} CHECKPOINT_DIR=${CHECKPOINT_DIR} PRECISION=${PRECISION} ARCH=${ARCH} MAX_SEQUENCE_LENGTH_FOR_ENGINE=${MAX_SEQUENCE_LENGTH_FOR_ENGINE} ${PROJECT_DIR}/triton/scripts/export_model_helper.sh || exit 1
-else
-	set -x
-	PROGRAM_PATH="/jasper/triton/scripts/export_model_helper.sh"  \
-	EXTRA_JASPER_ENV="-e PRECISION=${PRECISION} -e CHECKPOINT=${CHECKPOINT} -e CHECKPOINT_DIR=/checkpoints -e ARCH=${ARCH} -e MAX_SEQUENCE_LENGTH_FOR_ENGINE=${MAX_SEQUENCE_LENGTH_FOR_ENGINE} -e CUDA_VISIBLE_DEVICES=${GPU}" \
-	CHECKPOINT_DIR=${CHECKPOINT_DIR} DATA_DIR= RESULT_DIR= \
-	${PROJECT_DIR}/triton/scripts/docker/launch.sh || exit 1
-	set +x
-fi
-=======
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 PROJECT_DIR=${SCRIPT_DIR}/../..
 TRITON_DIR=${PROJECT_DIR}/triton
@@ -99,4 +76,3 @@ for PRECISION in ${CONVERT_PRECISIONS[@]}; do
 	fi
     done
 done
->>>>>>> repo1

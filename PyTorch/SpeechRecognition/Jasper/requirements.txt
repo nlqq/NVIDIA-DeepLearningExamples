@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-pandas==0.24.2
-tqdm==4.31.1
-ascii-graph==1.5.1
-wrapt==1.10.11
-librosa
-toml
-soundfile
-ipdb
-sox
-=======
 ascii-graph==1.5.1
 ipdb
 librosa==0.8.0
@@ -19,4 +8,3 @@ soundfile
 sox==1.4.1
 tqdm==4.53.0
 wrapt==1.10.11
->>>>>>> repo1

@@ -19,10 +19,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from common.utils import mask_from_lens
-<<<<<<< HEAD
-from common.text.symbols import pad_idx, symbols
-=======
->>>>>>> repo1
 
 
 class NoOp(nn.Module):
@@ -191,57 +187,6 @@ class MultiHeadAttn(nn.Module):
 
         return output
 
-<<<<<<< HEAD
-    # disabled; slower
-    def forward_einsum(self, h, attn_mask=None):
-        # multihead attention
-        # [hlen x bsz x n_head x d_head]
-
-        c = h
-
-        if self.pre_lnorm:
-            # layer normalization
-            c = self.layer_norm(c)
-
-        head_q = self.q_net(h)
-        head_k, head_v = torch.chunk(self.kv_net(c), 2, -1)
-
-        head_q = head_q.view(h.size(0), h.size(1), self.n_head, self.d_head)
-        head_k = head_k.view(c.size(0), c.size(1), self.n_head, self.d_head)
-        head_v = head_v.view(c.size(0), c.size(1), self.n_head, self.d_head)
-
-        # [bsz x n_head x qlen x klen]
-        # attn_score = torch.einsum('ibnd,jbnd->bnij', (head_q, head_k))
-        attn_score = torch.einsum('bind,bjnd->bnij', (head_q, head_k))
-        attn_score.mul_(self.scale)
-        if attn_mask is not None and attn_mask.any().item():
-            attn_score.masked_fill_(attn_mask[:, None, None, :], -float('inf'))
-
-        # [bsz x qlen x klen x n_head]
-        attn_prob = F.softmax(attn_score, dim=3)
-        attn_prob = self.dropatt(attn_prob)
-
-        # [bsz x n_head x qlen x klen] * [klen x bsz x n_head x d_head] 
-        #     -> [qlen x bsz x n_head x d_head]
-        attn_vec = torch.einsum('bnij,bjnd->bind', (attn_prob, head_v))
-        attn_vec = attn_vec.contiguous().view(
-            attn_vec.size(0), attn_vec.size(1), self.n_head * self.d_head)
-
-        # linear projection
-        attn_out = self.o_net(attn_vec)
-        attn_out = self.drop(attn_out)
-
-        if self.pre_lnorm:
-            # residual connection
-            output = h + attn_out
-        else:
-            # residual connection + layer normalization
-            output = self.layer_norm(h + attn_out)
-
-        return output
-
-=======
->>>>>>> repo1
 
 class TransformerLayer(nn.Module):
     def __init__(self, n_head, d_model, d_head, d_inner, kernel_size, dropout,
@@ -261,28 +206,13 @@ class TransformerLayer(nn.Module):
 
 
 class FFTransformer(nn.Module):
-<<<<<<< HEAD
-    pad_idx = 0  # XXX
-
-    def __init__(self, n_layer, n_head, d_model, d_head, d_inner, kernel_size,
-                 dropout, dropatt, dropemb=0.0, embed_input=True, d_embed=None,
-                 pre_lnorm=False):
-=======
     def __init__(self, n_layer, n_head, d_model, d_head, d_inner, kernel_size,
                  dropout, dropatt, dropemb=0.0, embed_input=True,
                  n_embed=None, d_embed=None, padding_idx=0, pre_lnorm=False):
->>>>>>> repo1
         super(FFTransformer, self).__init__()
         self.d_model = d_model
         self.n_head = n_head
         self.d_head = d_head
-<<<<<<< HEAD
-
-        self.embed_input = embed_input
-        if embed_input:
-            self.word_emb = nn.Embedding(len(symbols), d_embed or d_model,
-                                         padding_idx=FFTransformer.pad_idx)
-=======
         self.padding_idx = padding_idx
         self.n_embed = n_embed
 
@@ -290,7 +220,6 @@ class FFTransformer(nn.Module):
         if embed_input:
             self.word_emb = nn.Embedding(n_embed, d_embed or d_model,
                                          padding_idx=self.padding_idx)
->>>>>>> repo1
         else:
             self.word_emb = NoOp()
 
@@ -305,21 +234,6 @@ class FFTransformer(nn.Module):
                     dropatt=dropatt, pre_lnorm=pre_lnorm)
             )
 
-<<<<<<< HEAD
-    def forward(self, dec_inp, seq_lens: Optional[torch.Tensor] = None):
-        if self.embed_input:
-            inp = self.word_emb(dec_inp)
-            # [bsz x L x 1]
-            # mask = (dec_inp != FFTransformer.pad_idx).unsqueeze(2)
-            mask = (dec_inp != 0).unsqueeze(2)
-        else:
-            inp = dec_inp
-            assert seq_lens is not None
-            mask = mask_from_lens(seq_lens).unsqueeze(2)
-        pos_seq = torch.arange(inp.size(1), device=inp.device, dtype=inp.dtype)
-        pos_emb = self.pos_emb(pos_seq) * mask
-        out = self.drop(inp + pos_emb)
-=======
     def forward(self, dec_inp, seq_lens: Optional[torch.Tensor] = None,
                 conditioning: Optional[torch.Tensor] = None):
         if not self.embed_input:
@@ -337,7 +251,6 @@ class FFTransformer(nn.Module):
             out = self.drop(inp + pos_emb + conditioning)
         else:
             out = self.drop(inp + pos_emb)
->>>>>>> repo1
 
         for layer in self.layers:
             out = layer(out, mask=mask)

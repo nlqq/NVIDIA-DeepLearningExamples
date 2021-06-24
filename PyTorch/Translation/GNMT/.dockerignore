@@ -2,8 +2,5 @@ __pycache__
 tags
 *.log
 /results
-<<<<<<< HEAD
-=======
 /gnmt
->>>>>>> repo1
 /data

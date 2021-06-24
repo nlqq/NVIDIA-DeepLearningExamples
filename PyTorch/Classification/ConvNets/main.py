@@ -28,20 +28,6 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import argparse
-<<<<<<< HEAD
-import os
-import shutil
-import time
-import random
-
-import numpy as np
-import torch
-from torch.autograd import Variable
-import torch.nn as nn
-import torch.nn.parallel
-import torch.backends.cudnn as cudnn
-import torch.distributed as dist
-=======
 import random
 from copy import deepcopy
 import signal
@@ -49,28 +35,13 @@ import signal
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
 import torch.nn.parallel
->>>>>>> repo1
 import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
-<<<<<<< HEAD
-
-# try:
-#     from apex.parallel import DistributedDataParallel as DDP
-#     from apex.fp16_utils import *
-#     from apex import amp
-# except ImportError:
-#     raise ImportError(
-#         "Please install apex from https://www.github.com/nvidia/apex to run this example."
-#     )
-
-import image_classification.resnet as models
-=======
 from torch.nn.parallel import DistributedDataParallel as DDP
 
->>>>>>> repo1
 import image_classification.logger as log
 
 from image_classification.smoothing import LabelSmoothing
@@ -78,16 +49,6 @@ from image_classification.mixup import NLLMultiLabelSmooth, MixUpWrapper
 from image_classification.dataloaders import *
 from image_classification.training import *
 from image_classification.utils import *
-<<<<<<< HEAD
-
-import dllogger
-
-
-def add_parser_arguments(parser):
-    model_names = models.resnet_versions.keys()
-    model_configs = models.resnet_configs.keys()
-
-=======
 from image_classification.models import (
     resnet50,
     resnext101_32x4d,
@@ -117,7 +78,6 @@ def available_models():
 
 
 def add_parser_arguments(parser, skip_arch=False):
->>>>>>> repo1
     parser.add_argument("data", metavar="DIR", help="path to dataset")
     parser.add_argument(
         "--data-backend",
@@ -128,34 +88,6 @@ def add_parser_arguments(parser, skip_arch=False):
         + " | ".join(DATA_BACKEND_CHOICES)
         + " (default: dali-cpu)",
     )
-<<<<<<< HEAD
-
-    parser.add_argument(
-        "--arch",
-        "-a",
-        metavar="ARCH",
-        default="resnet50",
-        choices=model_names,
-        help="model architecture: " + " | ".join(model_names) + " (default: resnet50)",
-    )
-
-    parser.add_argument(
-        "--model-config",
-        "-c",
-        metavar="CONF",
-        default="classic",
-        choices=model_configs,
-        help="model configs: " + " | ".join(model_configs) + "(default: classic)",
-    )
-
-    parser.add_argument(
-        "--num-classes",
-        metavar="N",
-        default=1000,
-        type=int,
-        help="number of classes in the dataset",
-    )
-=======
     parser.add_argument(
         "--interpolation",
         metavar="INTERPOLATION",
@@ -172,7 +104,6 @@ def add_parser_arguments(parser, skip_arch=False):
             choices=model_names,
             help="model architecture: " + " | ".join(model_names) + " (default: resnet50)",
         )
->>>>>>> repo1
 
     parser.add_argument(
         "-j",
@@ -184,11 +115,7 @@ def add_parser_arguments(parser, skip_arch=False):
     )
     parser.add_argument(
         "--epochs",
-<<<<<<< HEAD
-        default=1,
-=======
         default=90,
->>>>>>> repo1
         type=int,
         metavar="N",
         help="number of total epochs to run",
@@ -201,11 +128,6 @@ def add_parser_arguments(parser, skip_arch=False):
         help="run only N epochs, used for checkpointing runs",
     )
     parser.add_argument(
-<<<<<<< HEAD
-        "-b",
-        "--batch-size",
-        default=128,
-=======
         "--early-stopping-patience",
         default=-1,
         type=int,
@@ -219,7 +141,6 @@ def add_parser_arguments(parser, skip_arch=False):
         "-b",
         "--batch-size",
         default=256,
->>>>>>> repo1
         type=int,
         metavar="N",
         help="mini-batch size (default: 256) per gpu",
@@ -243,33 +164,22 @@ def add_parser_arguments(parser, skip_arch=False):
     )
     parser.add_argument(
         "--lr-schedule",
-<<<<<<< HEAD
-        default="cosine",
-=======
         default="step",
->>>>>>> repo1
         type=str,
         metavar="SCHEDULE",
         choices=["step", "linear", "cosine"],
         help="Type of LR schedule: {}, {}, {}".format("step", "linear", "cosine"),
     )
 
-<<<<<<< HEAD
-=======
     parser.add_argument("--end-lr", default=0, type=float)
 
->>>>>>> repo1
     parser.add_argument(
         "--warmup", default=0, type=int, metavar="E", help="number of warmup epochs"
     )
 
     parser.add_argument(
         "--label-smoothing",
-<<<<<<< HEAD
-        default=0.1,
-=======
         default=0.0,
->>>>>>> repo1
         type=float,
         metavar="S",
         help="label smoothing",
@@ -277,12 +187,9 @@ def add_parser_arguments(parser, skip_arch=False):
     parser.add_argument(
         "--mixup", default=0.0, type=float, metavar="ALPHA", help="mixup alpha"
     )
-<<<<<<< HEAD
-=======
     parser.add_argument(
         "--optimizer", default="sgd", type=str, choices=("sgd", "rmsprop")
     )
->>>>>>> repo1
 
     parser.add_argument(
         "--momentum", default=0.9, type=float, metavar="M", help="momentum"
@@ -301,8 +208,6 @@ def add_parser_arguments(parser, skip_arch=False):
         help="use weight_decay on batch normalization learnable parameters, (default: false)",
     )
     parser.add_argument(
-<<<<<<< HEAD
-=======
         "--rmsprop-alpha",
         default=0.9,
         type=float,
@@ -316,7 +221,6 @@ def add_parser_arguments(parser, skip_arch=False):
     )
 
     parser.add_argument(
->>>>>>> repo1
         "--nesterov",
         action="store_true",
         help="use nesterov momentum, (default: false)",
@@ -338,26 +242,10 @@ def add_parser_arguments(parser, skip_arch=False):
         help="path to latest checkpoint (default: none)",
     )
     parser.add_argument(
-<<<<<<< HEAD
-        "--pretrained-weights",
-        default="",
-        type=str,
-        metavar="PATH",
-        help="load weights from here",
-    )
-
-    parser.add_argument("--fp16", action="store_true", help="Run model fp16 mode.")
-    parser.add_argument(
-        "--static-loss-scale",
-        type=float,
-        default=1,
-        help="Static loss scale, positive power of 2 values can improve fp16 convergence.",
-=======
         "--static-loss-scale",
         type=float,
         default=1,
         help="Static loss scale, positive power of 2 values can improve amp convergence.",
->>>>>>> repo1
     )
     parser.add_argument(
         "--dynamic-loss-scale",
@@ -404,11 +292,6 @@ def add_parser_arguments(parser, skip_arch=False):
     )
 
     parser.add_argument("--checkpoint-filename", default="checkpoint.pth.tar", type=str)
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> repo1
     parser.add_argument(
         "--workspace",
         type=str,
@@ -423,14 +306,6 @@ def add_parser_arguments(parser, skip_arch=False):
         choices=["nchw", "nhwc"],
         help="memory layout, nchw or nhwc",
     )
-<<<<<<< HEAD
-
-
-def main(args):
-    exp_start_time = time.time()
-    global best_prec1
-    best_prec1 = 0
-=======
     parser.add_argument("--use-ema", default=None, type=float, help="use EMA")
     parser.add_argument(
         "--augmentation",
@@ -442,17 +317,13 @@ def main(args):
 
 
 def prepare_for_training(args, model_args, model_arch):
->>>>>>> repo1
 
     args.distributed = False
     if "WORLD_SIZE" in os.environ:
         args.distributed = int(os.environ["WORLD_SIZE"]) > 1
         args.local_rank = int(os.environ["LOCAL_RANK"])
-<<<<<<< HEAD
-=======
     else:
         args.local_rank = 0
->>>>>>> repo1
 
     args.gpu = 0
     args.world_size = 1
@@ -463,13 +334,6 @@ def prepare_for_training(args, model_args, model_arch):
         dist.init_process_group(backend="nccl", init_method="env://")
         args.world_size = torch.distributed.get_world_size()
 
-<<<<<<< HEAD
-    if args.amp and args.fp16:
-        print("Please use only one of the --fp16/--amp flags")
-        exit(1)
-
-=======
->>>>>>> repo1
     if args.seed is not None:
         print("Using seed = {}".format(args.seed))
         torch.manual_seed(args.seed + args.local_rank)
@@ -486,20 +350,9 @@ def prepare_for_training(args, model_args, model_arch):
         def _worker_init_fn(id):
             pass
 
-<<<<<<< HEAD
-    if args.fp16:
-        assert (
-            torch.backends.cudnn.enabled
-        ), "fp16 mode requires cudnn backend to be enabled."
-
-    if args.static_loss_scale != 1.0:
-        if not args.fp16:
-            print("Warning:  if --fp16 is not used, static_loss_scale will be ignored.")
-=======
     if args.static_loss_scale != 1.0:
         if not args.amp:
             print("Warning: if --amp is not used, static_loss_scale will be ignored.")
->>>>>>> repo1
 
     if args.optimizer_batch_size < 0:
         batch_size_multiplier = 1
@@ -514,21 +367,6 @@ def prepare_for_training(args, model_args, model_arch):
         batch_size_multiplier = int(args.optimizer_batch_size / tbs)
         print("BSM: {}".format(batch_size_multiplier))
 
-<<<<<<< HEAD
-    pretrained_weights = None
-    if args.pretrained_weights:
-        if os.path.isfile(args.pretrained_weights):
-            print(
-                "=> loading pretrained weights from '{}'".format(
-                    args.pretrained_weights
-                )
-            )
-            pretrained_weights = torch.load(args.pretrained_weights)
-        else:
-            print("=> no pretrained weights found at '{}'".format(args.resume))
-
-=======
->>>>>>> repo1
     start_epoch = 0
     # optionally resume from a checkpoint
     if args.resume is not None:
@@ -541,24 +379,13 @@ def prepare_for_training(args, model_args, model_arch):
             best_prec1 = checkpoint["best_prec1"]
             model_state = checkpoint["state_dict"]
             optimizer_state = checkpoint["optimizer"]
-<<<<<<< HEAD
-=======
             if "state_dict_ema" in checkpoint:
                 model_state_ema = checkpoint["state_dict_ema"]
->>>>>>> repo1
             print(
                 "=> loaded checkpoint '{}' (epoch {})".format(
                     args.resume, checkpoint["epoch"]
                 )
             )
-<<<<<<< HEAD
-        else:
-            print("=> no checkpoint found at '{}'".format(args.resume))
-            model_state = None
-            optimizer_state = None
-    else:
-        model_state = None
-=======
             if start_epoch >= args.epochs:
                 print(
                     f"Launched training for {args.epochs}, checkpoint already run {start_epoch}"
@@ -572,7 +399,6 @@ def prepare_for_training(args, model_args, model_arch):
     else:
         model_state = None
         model_state_ema = None
->>>>>>> repo1
         optimizer_state = None
 
     loss = nn.CrossEntropyLoss
@@ -584,17 +410,6 @@ def prepare_for_training(args, model_args, model_arch):
     memory_format = (
         torch.channels_last if args.memory_format == "nhwc" else torch.contiguous_format
     )
-<<<<<<< HEAD
-
-    model_and_loss = ModelAndLoss(
-        (args.arch, args.model_config, args.num_classes),
-        loss,
-        pretrained_weights=pretrained_weights,
-        cuda=True,
-        fp16=args.fp16,
-        memory_format=memory_format,
-    )
-=======
     model = model_arch(
         **{
             k: v
@@ -616,7 +431,6 @@ def prepare_for_training(args, model_args, model_arch):
     else:
         model_ema = None
         ema = None
->>>>>>> repo1
 
     # Create data loaders and optimizers as needed
     if args.data_backend == "pytorch":
@@ -631,17 +445,6 @@ def prepare_for_training(args, model_args, model_arch):
     elif args.data_backend == "syntetic":
         get_val_loader = get_syntetic_loader
         get_train_loader = get_syntetic_loader
-<<<<<<< HEAD
-
-    train_loader, train_loader_len = get_train_loader(
-        args.data,
-        args.batch_size,
-        args.num_classes,
-        args.mixup > 0.0,
-        start_epoch=start_epoch,
-        workers=args.workers,
-        fp16=args.fp16,
-=======
     else:
         print("Bad databackend picked")
         exit(1)
@@ -656,7 +459,6 @@ def prepare_for_training(args, model_args, model_arch):
         augmentation=args.augmentation,
         start_epoch=start_epoch,
         workers=args.workers,
->>>>>>> repo1
         memory_format=memory_format,
     )
     if args.mixup != 0.0:
@@ -664,20 +466,12 @@ def prepare_for_training(args, model_args, model_arch):
 
     val_loader, val_loader_len = get_val_loader(
         args.data,
-<<<<<<< HEAD
-        args.batch_size,
-        args.num_classes,
-        False,
-        workers=args.workers,
-        fp16=args.fp16,
-=======
         image_size,
         args.batch_size,
         model_args.num_classes,
         False,
         interpolation = args.interpolation,
         workers=args.workers,
->>>>>>> repo1
         memory_format=memory_format,
     )
 
@@ -700,20 +494,6 @@ def prepare_for_training(args, model_args, model_arch):
         logger = log.Logger(args.print_freq, [], start_epoch=start_epoch - 1)
 
     logger.log_parameter(args.__dict__, verbosity=dllogger.Verbosity.DEFAULT)
-<<<<<<< HEAD
-
-    optimizer = get_optimizer(
-        list(model_and_loss.model.named_parameters()),
-        args.fp16,
-        args.lr,
-        args.momentum,
-        args.weight_decay,
-        nesterov=args.nesterov,
-        bn_weight_decay=args.bn_weight_decay,
-        state=optimizer_state,
-        static_loss_scale=args.static_loss_scale,
-        dynamic_loss_scale=args.dynamic_loss_scale,
-=======
     logger.log_parameter(
         {f"model.{k}": v for k, v in model_args.__dict__.items()},
         verbosity=dllogger.Verbosity.DEFAULT,
@@ -724,7 +504,6 @@ def prepare_for_training(args, model_args, model_arch):
         args.lr,
         args=args,
         state=optimizer_state,
->>>>>>> repo1
     )
 
     if args.lr_schedule == "step":
@@ -732,24 +511,6 @@ def prepare_for_training(args, model_args, model_arch):
             args.lr, [30, 60, 80], 0.1, args.warmup, logger=logger
         )
     elif args.lr_schedule == "cosine":
-<<<<<<< HEAD
-        lr_policy = lr_cosine_policy(args.lr, args.warmup, args.epochs, logger=logger)
-    elif args.lr_schedule == "linear":
-        lr_policy = lr_linear_policy(args.lr, args.warmup, args.epochs, logger=logger)
-
-    if args.amp:
-        model_and_loss, optimizer = amp.initialize(
-            model_and_loss,
-            optimizer,
-            opt_level="O1",
-            loss_scale="dynamic" if args.dynamic_loss_scale else args.static_loss_scale,
-        )
-
-    if args.distributed:
-        model_and_loss.distributed()
-
-    model_and_loss.load_model_state(model_state)
-=======
         lr_policy = lr_cosine_policy(
             args.lr, args.warmup, args.epochs, end_lr=args.end_lr, logger=logger
         )
@@ -783,25 +544,10 @@ def main(args, model_args, model_arch):
 
     model_and_loss, optimizer, lr_policy, scaler, train_loader, val_loader, logger, ema, model_ema, train_loader_len, \
         batch_size_multiplier, start_epoch = prepare_for_training(args, model_args, model_arch)
->>>>>>> repo1
 
     train_loop(
         model_and_loss,
         optimizer,
-<<<<<<< HEAD
-        lr_policy,
-        train_loader,
-        val_loader,
-        args.fp16,
-        logger,
-        should_backup_checkpoint(args),
-        use_amp=args.amp,
-        batch_size_multiplier=batch_size_multiplier,
-        start_epoch=start_epoch,
-        end_epoch=(start_epoch + args.run_epochs)
-        if args.run_epochs != -1
-        else args.epochs,
-=======
         scaler,
         lr_policy,
         train_loader,
@@ -818,7 +564,6 @@ def main(args, model_args, model_arch):
         if args.run_epochs != -1
         else args.epochs,
         early_stopping_patience=args.early_stopping_patience,
->>>>>>> repo1
         best_prec1=best_prec1,
         prof=args.prof,
         skip_training=args.evaluate,
@@ -834,15 +579,6 @@ def main(args, model_args, model_arch):
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
-    parser = argparse.ArgumentParser(description="PyTorch ImageNet Training")
-
-    add_parser_arguments(parser)
-    args = parser.parse_args()
-    cudnn.benchmark = True
-
-    main(args)
-=======
 
     epilog = [
         "Based on the architecture picked by --arch flag, you may use the following options:\n"
@@ -869,4 +605,3 @@ if __name__ == "__main__":
     cudnn.benchmark = True
 
     main(args, model_args, model_arch)
->>>>>>> repo1

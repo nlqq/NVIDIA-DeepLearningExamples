@@ -28,21 +28,15 @@
 
 import librosa
 import soundfile as sf
-<<<<<<< HEAD
-=======
 import math
->>>>>>> repo1
 from os import system
 import numpy as np
 from tensorrtserver.api import *
 import tensorrtserver.api.model_config_pb2 as model_config
-<<<<<<< HEAD
-=======
 import grpc
 from tensorrtserver.api import api_pb2
 from tensorrtserver.api import grpc_service_pb2
 from tensorrtserver.api import grpc_service_pb2_grpc
->>>>>>> repo1
 
 WINDOWS_FNS = {"hanning": np.hanning, "hamming": np.hamming, "none": None}
 

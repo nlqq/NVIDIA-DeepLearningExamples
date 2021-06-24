@@ -29,11 +29,7 @@ def squeeze_excitation_layer(
     ratio,
     training=True,
     data_format='NCHW',
-<<<<<<< HEAD
-    kernel_initializer=tf.variance_scaling_initializer(),
-=======
     kernel_initializer=tf.compat.v1.variance_scaling_initializer(),
->>>>>>> repo1
     bias_initializer=tf.zeros_initializer(),
     name="squeeze_excitation_layer"
 ):

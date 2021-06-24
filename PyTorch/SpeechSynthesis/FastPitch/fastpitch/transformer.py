@@ -17,10 +17,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from common.utils import mask_from_lens
-<<<<<<< HEAD
-from common.text.symbols import pad_idx, symbols
-=======
->>>>>>> repo1
 
 
 class PositionalEmbedding(nn.Module):
@@ -31,12 +27,8 @@ class PositionalEmbedding(nn.Module):
         self.register_buffer('inv_freq', inv_freq)
 
     def forward(self, pos_seq, bsz=None):
-<<<<<<< HEAD
-        sinusoid_inp = torch.ger(pos_seq, self.inv_freq)
-=======
         sinusoid_inp = torch.matmul(torch.unsqueeze(pos_seq, -1),
                                     torch.unsqueeze(self.inv_freq, 0))
->>>>>>> repo1
         pos_emb = torch.cat([sinusoid_inp.sin(), sinusoid_inp.cos()], dim=1)
         if bsz is not None:
             return pos_emb[None, :, :].expand(bsz, -1, -1)
@@ -44,44 +36,6 @@ class PositionalEmbedding(nn.Module):
             return pos_emb[None, :, :]
 
 
-<<<<<<< HEAD
-class PositionwiseFF(nn.Module):
-    def __init__(self, d_model, d_inner, dropout, pre_lnorm=False):
-        super(PositionwiseFF, self).__init__()
-
-        self.d_model = d_model
-        self.d_inner = d_inner
-        self.dropout = dropout
-
-        self.CoreNet = nn.Sequential(
-            nn.Linear(d_model, d_inner), nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(d_inner, d_model),
-            nn.Dropout(dropout),
-        )
-
-        self.layer_norm = nn.LayerNorm(d_model)
-        self.pre_lnorm = pre_lnorm
-
-    def forward(self, inp):
-        if self.pre_lnorm:
-            # layer normalization + positionwise feed-forward
-            core_out = self.CoreNet(self.layer_norm(inp))
-
-            # residual connection
-            output = core_out + inp
-        else:
-            # positionwise feed-forward
-            core_out = self.CoreNet(inp)
-
-            # residual connection + layer normalization
-            output = self.layer_norm(inp + core_out)
-
-        return output
-
-
-=======
->>>>>>> repo1
 class PositionwiseConvFF(nn.Module):
     def __init__(self, d_model, d_inner, kernel_size, dropout, pre_lnorm=False):
         super(PositionwiseConvFF, self).__init__()
@@ -107,11 +61,7 @@ class PositionwiseConvFF(nn.Module):
         if self.pre_lnorm:
             # layer normalization + positionwise feed-forward
             core_out = inp.transpose(1, 2)
-<<<<<<< HEAD
-            core_out = self.CoreNet(self.layer_norm(core_out))
-=======
             core_out = self.CoreNet(self.layer_norm(core_out).to(inp.dtype))
->>>>>>> repo1
             core_out = core_out.transpose(1, 2)
 
             # residual connection
@@ -123,11 +73,7 @@ class PositionwiseConvFF(nn.Module):
             core_out = core_out.transpose(1, 2)
 
             # residual connection + layer normalization
-<<<<<<< HEAD
-            output = self.layer_norm(inp + core_out)
-=======
             output = self.layer_norm(inp + core_out).to(inp.dtype)
->>>>>>> repo1
 
         return output
 
@@ -161,11 +107,7 @@ class MultiHeadAttn(nn.Module):
 
         n_head, d_head = self.n_head, self.d_head
 
-<<<<<<< HEAD
-        head_q, head_k, head_v = torch.chunk(self.qkv_net(inp), 3, dim=-1)
-=======
         head_q, head_k, head_v = torch.chunk(self.qkv_net(inp), 3, dim=2)
->>>>>>> repo1
         head_q = head_q.view(inp.size(0), inp.size(1), n_head, d_head)
         head_k = head_k.view(inp.size(0), inp.size(1), n_head, d_head)
         head_v = head_v.view(inp.size(0), inp.size(1), n_head, d_head)
@@ -178,15 +120,9 @@ class MultiHeadAttn(nn.Module):
         attn_score.mul_(self.scale)
 
         if attn_mask is not None:
-<<<<<<< HEAD
-            attn_mask = attn_mask.unsqueeze(1)
-            attn_mask = attn_mask.repeat(n_head, attn_mask.size(2), 1)
-            attn_score.masked_fill_(attn_mask, -float('inf'))
-=======
             attn_mask = attn_mask.unsqueeze(1).to(attn_score.dtype)
             attn_mask = attn_mask.repeat(n_head, attn_mask.size(2), 1)
             attn_score.masked_fill_(attn_mask.to(torch.bool), -float('inf'))
->>>>>>> repo1
 
         attn_prob = F.softmax(attn_score, dim=2)
         attn_prob = self.dropatt(attn_prob)
@@ -207,57 +143,7 @@ class MultiHeadAttn(nn.Module):
             # residual connection + layer normalization
             output = self.layer_norm(residual + attn_out)
 
-<<<<<<< HEAD
-        return output
-
-    # disabled; slower
-    def forward_einsum(self, h, attn_mask=None):
-        # multihead attention
-        # [hlen x bsz x n_head x d_head]
-
-        c = h
-
-        if self.pre_lnorm:
-            # layer normalization
-            c = self.layer_norm(c)
-
-        head_q = self.q_net(h)
-        head_k, head_v = torch.chunk(self.kv_net(c), 2, -1)
-
-        head_q = head_q.view(h.size(0), h.size(1), self.n_head, self.d_head)
-        head_k = head_k.view(c.size(0), c.size(1), self.n_head, self.d_head)
-        head_v = head_v.view(c.size(0), c.size(1), self.n_head, self.d_head)
-
-        # [bsz x n_head x qlen x klen]
-        # attn_score = torch.einsum('ibnd,jbnd->bnij', (head_q, head_k))
-        attn_score = torch.einsum('bind,bjnd->bnij', (head_q, head_k))
-        attn_score.mul_(self.scale)
-        if attn_mask is not None and attn_mask.any().item():
-            attn_score.masked_fill_(attn_mask[:, None, None, :], -float('inf'))
-
-        # [bsz x qlen x klen x n_head]
-        attn_prob = F.softmax(attn_score, dim=3)
-        attn_prob = self.dropatt(attn_prob)
-
-        # [bsz x n_head x qlen x klen] * [klen x bsz x n_head x d_head] 
-        #     -> [qlen x bsz x n_head x d_head]
-        attn_vec = torch.einsum('bnij,bjnd->bind', (attn_prob, head_v))
-        attn_vec = attn_vec.contiguous().view(
-            attn_vec.size(0), attn_vec.size(1), self.n_head * self.d_head)
-
-        # linear projection
-        attn_out = self.o_net(attn_vec)
-        attn_out = self.drop(attn_out)
-
-        if self.pre_lnorm:
-            # residual connection
-            output = h + attn_out
-        else:
-            # residual connection + layer normalization
-            output = self.layer_norm(h + attn_out)
-=======
         output = output.to(attn_out.dtype)
->>>>>>> repo1
 
         return output
 
@@ -281,29 +167,17 @@ class TransformerLayer(nn.Module):
 
 class FFTransformer(nn.Module):
     def __init__(self, n_layer, n_head, d_model, d_head, d_inner, kernel_size,
-<<<<<<< HEAD
-                 dropout, dropatt, dropemb=0.0, embed_input=True, d_embed=None,
-                 pre_lnorm=False):
-=======
                  dropout, dropatt, dropemb=0.0, embed_input=True,
                  n_embed=None, d_embed=None, padding_idx=0, pre_lnorm=False):
->>>>>>> repo1
         super(FFTransformer, self).__init__()
         self.d_model = d_model
         self.n_head = n_head
         self.d_head = d_head
-<<<<<<< HEAD
-
-        if embed_input:
-            self.word_emb = nn.Embedding(len(symbols), d_embed or d_model,
-                                         padding_idx=pad_idx)
-=======
         self.padding_idx = padding_idx
 
         if embed_input:
             self.word_emb = nn.Embedding(n_embed, d_embed or d_model,
                                          padding_idx=self.padding_idx)
->>>>>>> repo1
         else:
             self.word_emb = None
 
@@ -318,31 +192,19 @@ class FFTransformer(nn.Module):
                     dropatt=dropatt, pre_lnorm=pre_lnorm)
             )
 
-<<<<<<< HEAD
-    def forward(self, dec_inp, seq_lens=None):
-=======
     def forward(self, dec_inp, seq_lens=None, conditioning=0):
->>>>>>> repo1
         if self.word_emb is None:
             inp = dec_inp
             mask = mask_from_lens(seq_lens).unsqueeze(2)
         else:
             inp = self.word_emb(dec_inp)
             # [bsz x L x 1]
-<<<<<<< HEAD
-            mask = (dec_inp != pad_idx).unsqueeze(2)
-
-        pos_seq = torch.arange(inp.size(1), device=inp.device, dtype=inp.dtype)
-        pos_emb = self.pos_emb(pos_seq) * mask
-        out = self.drop(inp + pos_emb)
-=======
             mask = (dec_inp != self.padding_idx).unsqueeze(2)
 
         pos_seq = torch.arange(inp.size(1), device=inp.device).to(inp.dtype)
         pos_emb = self.pos_emb(pos_seq) * mask
 
         out = self.drop(inp + pos_emb + conditioning)
->>>>>>> repo1
 
         for layer in self.layers:
             out = layer(out, mask=mask)

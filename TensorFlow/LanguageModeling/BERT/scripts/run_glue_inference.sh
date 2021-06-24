@@ -15,11 +15,7 @@
 
 echo "Container nvidia build = " $NVIDIA_BUILD_ID
 task_name=${1:-"MRPC"}
-<<<<<<< HEAD
-init_checkpoint=${2:-"$BERT_DIR/bert_model.ckpt"}
-=======
 init_checkpoint=${2:-"$BERT_DIR/model.ckpt"}
->>>>>>> repo1
 batch_size=${3:-"32"}
 precision=${4:-"fp16"}
 use_xla=${5:-"true"}
@@ -28,15 +24,9 @@ doc_stride=${7:-"64"}
 bert_model=${8:-"large"}
 
 if [ "$bert_model" = "large" ] ; then
-<<<<<<< HEAD
-    BERT_DIR=data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16
-else
-    BERT_DIR=data/download/google_pretrained_weights/uncased_L-12_H-768_A-12
-=======
     export BERT_DIR=data/download/nvidia_pretrained/bert_tf_pretraining_large_lamb
 else
     export BERT_DIR=data/download/nvidia_pretrained/bert_tf_squad11_base_128
->>>>>>> repo1
 fi
 GLUE_DIR=data/download
 

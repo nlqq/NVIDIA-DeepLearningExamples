@@ -1,7 +1,3 @@
 Pillow
 tf2onnx
-<<<<<<< HEAD
 munch
-=======
-munch
->>>>>>> repo1

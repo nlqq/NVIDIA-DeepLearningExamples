@@ -6,7 +6,7 @@ clear
 rm GPU_*.log
 
 python ../multiproc.py  \
-    --nproc_per_node 4 --nnodes 2 --node_rank 0 --master_addr 10.252.192.47  --master_port 22333\
+    --nproc_per_node 4 \
         ../main.py /export/nfs/datasets/imageNet/imagenet2012  \
             -j10 -p 100  \
             --data-backend dali-gpu  \

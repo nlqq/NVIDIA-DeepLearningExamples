@@ -51,11 +51,7 @@ were averaged over an entire training epoch.
 The specific training script that was run is documented 
 in the corresponding model's README.
 
-<<<<<<< HEAD
-The following table shows the training accuracy results of the 
-=======
 The following table shows the training performance results of the 
->>>>>>> repo1
 three classification models side-by-side.
 
 
@@ -75,11 +71,7 @@ were averaged over an entire training epoch.
 The specific training script that was run is documented 
 in the corresponding model's README.
 
-<<<<<<< HEAD
-The following table shows the training accuracy results of the 
-=======
 The following table shows the training performance results of the 
->>>>>>> repo1
 three classification models side-by-side.
 
 

@@ -39,17 +39,10 @@ import multiprocessing
 
 from tokenization import BertTokenizer
 import modeling
-<<<<<<< HEAD
-from apex.optimizers import FusedLAMB, FusedAdam
-from schedulers import PolyWarmUpScheduler
-
-from file_utils import PYTORCH_PRETRAINED_BERT_
-=======
 from apex.optimizers import FusedLAMB
 from schedulers import PolyWarmUpScheduler
 
 from file_utils import PYTORCH_PRETRAINED_BERT_CACHE
->>>>>>> repo1
 from utils import is_main_process, format_step, get_world_size, get_rank
 from apex.parallel import DistributedDataParallel as DDP
 from schedulers import LinearWarmUpScheduler
@@ -387,11 +380,7 @@ def prepare_model_and_optimizer(args, device):
         {'params': [p for n, p in param_optimizer if not any(nd in n for nd in no_decay)], 'weight_decay': 0.01},
         {'params': [p for n, p in param_optimizer if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}]
 
-<<<<<<< HEAD
-    optimizer = FusedAdam(optimizer_grouped_parameters, 
-=======
     optimizer = FusedLAMB(optimizer_grouped_parameters, 
->>>>>>> repo1
                           lr=args.learning_rate)
     lr_scheduler = PolyWarmUpScheduler(optimizer, 
                                        warmup=args.warmup_proportion, 
@@ -401,11 +390,7 @@ def prepare_model_and_optimizer(args, device):
         if args.loss_scale == 0:
             model, optimizer = amp.initialize(model, optimizer, opt_level="O2", loss_scale="dynamic", cast_model_outputs=torch.float16)
         else:
-<<<<<<< HEAD
-            model, optimizer = amp.initialize(model,optimizer, opt_level="O2", loss_scale=args.loss_scale, cast_model_outputs=torch.float16)
-=======
             model, optimizer = amp.initialize(model, optimizer, opt_level="O2", loss_scale=args.loss_scale, cast_model_outputs=torch.float16)
->>>>>>> repo1
         amp._amp_state.loss_scalers[0]._loss_scale = args.init_loss_scale
 
     model.checkpoint_activations(args.checkpoint_activations)
@@ -556,11 +541,7 @@ def main():
                 num_files = len(files)
                 # may not exist in all checkpoints
                 epoch = checkpoint.get('epoch', 0)
-<<<<<<< HEAD
-                restored_dataloader = checkpoint.get('data_loader', None)
-=======
                 restored_data_loader = checkpoint.get('data_loader', None)
->>>>>>> repo1
 
             shared_file_list = {}
 

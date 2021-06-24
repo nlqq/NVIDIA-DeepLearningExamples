@@ -24,10 +24,7 @@ import numpy as np
 import os
 import tensorflow as tf
 import tensorflow_transform as tft
-<<<<<<< HEAD
-=======
 from tensorflow.core.protobuf import rewriter_config_pb2
->>>>>>> repo1
 from trainer import features
 from utils.dataloader import separate_input_fn
 from utils.hooks.benchmark_hooks import BenchmarkLoggingHook
@@ -315,12 +312,6 @@ def main(FLAGS):
             json.dump(vars(FLAGS), f, indent=4)
 
     if FLAGS.gpu:
-<<<<<<< HEAD
-        session_config = tf.compat.v1.ConfigProto(log_device_placement=FLAGS.log_device_placement)
-    else:
-        session_config = tf.compat.v1.ConfigProto(device_count={'GPU': 0},
-                                                  log_device_placement=FLAGS.log_device_placement)
-=======
         if FLAGS.amp:
             rewrite_options = rewriter_config_pb2.RewriterConfig(auto_mixed_precision=True)
             session_config = tf.compat.v1.ConfigProto(
@@ -336,7 +327,6 @@ def main(FLAGS):
             device_count={'GPU': 0},
             log_device_placement=FLAGS.log_device_placement
         )
->>>>>>> repo1
 
     if FLAGS.hvd:
         session_config.gpu_options.visible_device_list = str(hvd.local_rank())
@@ -354,11 +344,6 @@ def main(FLAGS):
     print('Steps per epoch: {}'.format(steps_per_epoch))
     max_steps = int(FLAGS.num_epochs * steps_per_epoch)
 
-<<<<<<< HEAD
-    run_config = tf.estimator.RunConfig(model_dir=model_dir) \
-        .replace(session_config=session_config,
-                 save_checkpoints_steps=int(FLAGS.eval_epoch_interval * steps_per_epoch),
-=======
     save_checkpoints_steps = FLAGS.benchmark_steps + 1 if FLAGS.benchmark else \
         int(FLAGS.eval_epoch_interval * steps_per_epoch)
     count_steps = FLAGS.benchmark_steps + 1 if FLAGS.benchmark else 100
@@ -368,7 +353,6 @@ def main(FLAGS):
                  save_checkpoints_steps=save_checkpoints_steps,
                  save_summary_steps=count_steps,
                  log_step_count_steps=count_steps,
->>>>>>> repo1
                  keep_checkpoint_max=1)
 
     def wide_optimizer():
@@ -379,12 +363,8 @@ def main(FLAGS):
         if FLAGS.hvd:
             opt = hvd.DistributedOptimizer(opt)
         if FLAGS.amp:
-<<<<<<< HEAD
-            opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
-=======
             loss_scale = tf.train.experimental.DynamicLossScale()
             opt = tf.compat.v1.train.experimental.MixedPrecisionLossScaleOptimizer(opt, loss_scale)
->>>>>>> repo1
         return opt
 
     def deep_optimizer():
@@ -401,12 +381,8 @@ def main(FLAGS):
         if FLAGS.hvd:
             opt = hvd.DistributedOptimizer(opt)
         if FLAGS.amp:
-<<<<<<< HEAD
-            opt = tf.train.experimental.enable_mixed_precision_graph_rewrite(opt)
-=======
             loss_scale = tf.train.experimental.DynamicLossScale()
             opt = tf.compat.v1.train.experimental.MixedPrecisionLossScaleOptimizer(opt, loss_scale)
->>>>>>> repo1
         return opt
 
     # input functions to read data from disk

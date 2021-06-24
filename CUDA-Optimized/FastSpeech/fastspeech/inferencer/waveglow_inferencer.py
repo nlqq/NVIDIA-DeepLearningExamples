@@ -30,8 +30,6 @@ from fastspeech.utils.logging import tprint
 from fastspeech.utils.pytorch import to_cpu_numpy, to_device_async
 from fastspeech.inferencer.denoiser import Denoiser
 
-<<<<<<< HEAD
-=======
 from waveglow.model import WaveGlow
 import argparse
 
@@ -47,7 +45,6 @@ def unwrap_distributed(state_dict):
         new_key = key.replace('module.', '')
         new_state_dict[new_key] = value
     return new_state_dict
->>>>>>> repo1
 
 class WaveGlowInferencer(object):
 
@@ -58,13 +55,6 @@ class WaveGlowInferencer(object):
         self.use_denoiser = use_denoiser
 
         # model
-<<<<<<< HEAD
-        sys.path.append('waveglow')
-        self.model = torch.load(self.ckpt_file, map_location=self.device)['model']
-        self.model = self.model.remove_weightnorm(self.model)
-        self.model.eval()
-        self.model = to_device_async(self.model, self.device)
-=======
         # sys.path.append('waveglow')
 
         from waveglow.arg_parser import parse_waveglow_args
@@ -95,7 +85,6 @@ class WaveGlowInferencer(object):
 
         self.model.eval()
 
->>>>>>> repo1
         if self.use_fp16:
             self.model = self.model.half()
         self.model = self.model

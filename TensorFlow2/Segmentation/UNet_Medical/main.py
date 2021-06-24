@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021, NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,17 +26,10 @@ Example:
 import horovod.tensorflow as hvd
 
 from model.unet import Unet
-<<<<<<< HEAD
-from run import train, evaluate, predict
-from utils.setup import get_logger, set_flags, prepare_model_dir
-from utils.cmd_util import PARSER, parse_args
-from utils.data_loader import Dataset
-=======
 from runtime.run import train, evaluate, predict
 from runtime.setup import get_logger, set_flags, prepare_model_dir
 from runtime.arguments import PARSER, parse_args
 from data_loading.data_loader import Dataset
->>>>>>> repo1
 
 
 def main():
@@ -58,11 +47,7 @@ def main():
 
     dataset = Dataset(data_dir=params.data_dir,
                       batch_size=params.batch_size,
-<<<<<<< HEAD
-                      fold=params.crossvalidation_idx,
-=======
                       fold=params.fold,
->>>>>>> repo1
                       augment=params.augment,
                       gpu_id=hvd.rank(),
                       num_gpus=hvd.size(),

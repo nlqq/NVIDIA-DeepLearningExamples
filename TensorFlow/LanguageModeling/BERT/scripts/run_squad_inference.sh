@@ -15,11 +15,7 @@
 
 echo "Container nvidia build = " $NVIDIA_BUILD_ID
 
-<<<<<<< HEAD
-init_checkpoint=${1:-"/results/model.ckpt"}
-=======
 init_checkpoint=${1:-"data/download/nvidia_pretrained/bert_tf_squad11_large_384/model.ckpt"}
->>>>>>> repo1
 batch_size=${2:-"8"}
 precision=${3:-"fp16"}
 use_xla=${4:-"true"}
@@ -33,15 +29,9 @@ if [ "$bert_model" = "large" ] ; then
     export BERT_DIR=data/download/google_pretrained_weights/uncased_L-24_H-1024_A-16
 else
     export BERT_DIR=data/download/google_pretrained_weights/uncased_L-12_H-768_A-12
-=======
-    export BERT_DIR=data/download/nvidia_pretrained/bert_tf_pretraining_large_lamb
-else
-    export BERT_DIR=data/download/nvidia_pretrained/bert_tf_squad11_base_128
->>>>>>> repo1
 fi
 
 export SQUAD_DIR=data/download/squad/v${squad_version}
-if [ "$squad_version" = "1.1" ] ; then
     version_2_with_negative="False"
 else
     version_2_with_negative="True"
@@ -93,10 +83,6 @@ python run_squad.py \
 --predict_batch_size=$batch_size \
 --max_seq_length=$seq_length \
 --doc_stride=$doc_stride \
-<<<<<<< HEAD
---predict_batch_size=$batch_size \
-=======
->>>>>>> repo1
 --output_dir=$RESULTS_DIR \
 "$use_fp16" \
 $use_xla_tag --version_2_with_negative=${version_2_with_negative}

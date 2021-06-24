@@ -50,12 +50,8 @@ Once the image is built, you need to run the container with the `--publish
 at port `8888` over all network interfaces (`0.0.0.0`):
 
 ```bash
-<<<<<<< HEAD
-nvidia-docker run \
-=======
 docker run \
   --gpus all \
->>>>>>> repo1
   -v $PWD:/workspace/bert \
   -v $PWD/results:/results \
   --shm-size=1g \
@@ -67,14 +63,6 @@ docker run \
 
 ### 2.c Dataset
 
-<<<<<<< HEAD
-We need to download the vocabulary and the bert_config files:
-
-```python3
-python3 /workspace/bert/data/bertPrep.py --action download --dataset google_pretrained_weights  # Includes vocab
-```
-=======
->>>>>>> repo1
 
 This is only needed during fine-tuning in order to download the Squad dataset:
 
@@ -142,12 +130,8 @@ Once the image is built, you need to run the container with the `--publish
 at port `8888` over all network interfaces (`0.0.0.0`):
 
 ```bash
-<<<<<<< HEAD
-nvidia-docker run \
-=======
 docker run \
   --gpus all \
->>>>>>> repo1
   -v $PWD:/workspace/bert \
   -v $PWD/results:/results \
   --shm-size=1g \

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -63,11 +59,7 @@ class SmoothedValue(object):
     @property
     def median(self):
         d = torch.tensor(list(self.deque))
-<<<<<<< HEAD
-        return d.median().item()
-=======
         return d.median().item() if len(self.deque) else 0
->>>>>>> repo1
 
     @property
     def avg(self):
@@ -76,17 +68,6 @@ class SmoothedValue(object):
 
     @property
     def global_avg(self):
-<<<<<<< HEAD
-        return self.total / self.count
-
-    @property
-    def max(self):
-        return max(self.deque)
-
-    @property
-    def value(self):
-        return self.deque[-1]
-=======
         return self.total / self.count if self.count else 0
 
     @property
@@ -96,7 +77,6 @@ class SmoothedValue(object):
     @property
     def value(self):
         return self.deque[-1] if len(self.deque) else None
->>>>>>> repo1
 
     def __str__(self):
         return self.fmt.format(
@@ -147,11 +127,7 @@ class MetricLogger(object):
             header = ''
         print_str = header
         for name, meter in self.meters.items():
-<<<<<<< HEAD
-            print_str += F"  {name}: {meter}"
-=======
             print_str += f"  {name}: {meter}"
->>>>>>> repo1
         print(print_str)
 
 
@@ -306,21 +282,13 @@ def roc_auc_score(y_true, y_score):
     y_true.squeeze_()
     y_score.squeeze_()
     if y_true.shape != y_score.shape:
-<<<<<<< HEAD
-        raise TypeError(F"Shape of y_true and y_score must match. Got {y_true.shape()} and {y_score.shape()}.")
-=======
         raise TypeError(f"Shape of y_true and y_score must match. Got {y_true.shape()} and {y_score.shape()}.")
->>>>>>> repo1
 
     desc_score_indices = torch.argsort(y_score, descending=True)
     y_score = y_score[desc_score_indices]
     y_true = y_true[desc_score_indices]
 
-<<<<<<< HEAD
-    distinct_value_indices = torch.nonzero(y_score[1:] - y_score[:-1]).squeeze()
-=======
     distinct_value_indices = torch.nonzero(y_score[1:] - y_score[:-1], as_tuple=False).squeeze()
->>>>>>> repo1
     threshold_idxs = torch.cat([distinct_value_indices, torch.tensor([y_true.numel() - 1], device=device)])
 
     tps = torch.cumsum(y_true, dim=0)[threshold_idxs]

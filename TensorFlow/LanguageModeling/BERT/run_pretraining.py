@@ -26,14 +26,9 @@ import modeling
 import optimization
 import tensorflow as tf
 import glob
-<<<<<<< HEAD
-from utils.utils import LogEvalRunHook
-import utils.dllogger_class
-=======
 from utils.utils import LogEvalRunHook, setup_xla_flags
 import utils.dllogger_class
 from utils.gpu_affinity import set_affinity
->>>>>>> repo1
 from dllogger import Verbosity
 
 from tensorflow.core.protobuf import rewriter_config_pb2
@@ -100,11 +95,7 @@ flags.DEFINE_integer("num_warmup_steps", 10000, "Number of warmup steps.")
 
 flags.DEFINE_integer("save_checkpoints_steps", 1000,
                      "How often to save the model checkpoint.")
-<<<<<<< HEAD
-flags.DEFINE_integer("display_loss_steps", 10,
-=======
 flags.DEFINE_integer("display_loss_steps", 1,
->>>>>>> repo1
                      "How often to print loss")
 
 flags.DEFINE_integer("iterations_per_loop", 1000,
@@ -554,11 +545,7 @@ def _decode_record(record, name_to_features):
 
 
 def main(_):
-<<<<<<< HEAD
-  os.environ["TF_XLA_FLAGS"] = "--tf_xla_enable_lazy_compilation=false" #causes memory fragmentation for bert leading to OOM
-=======
   setup_xla_flags()
->>>>>>> repo1
 
   tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
   dllogging = utils.dllogger_class.dllogger_class(FLAGS.dllog_path)
@@ -587,10 +574,7 @@ def main(_):
   config = tf.compat.v1.ConfigProto()
   if FLAGS.horovod:
     config.gpu_options.visible_device_list = str(hvd.local_rank())
-<<<<<<< HEAD
-=======
     set_affinity(hvd.local_rank())
->>>>>>> repo1
     if hvd.rank() == 0:
       tf.compat.v1.logging.info("***** Configuaration *****")
       for key in FLAGS.__flags.keys():

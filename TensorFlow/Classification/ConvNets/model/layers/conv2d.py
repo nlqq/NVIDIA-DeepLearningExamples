@@ -29,11 +29,7 @@ def conv2d(
     data_format='NHWC',
     dilation_rate=(1, 1),
     use_bias=True,
-<<<<<<< HEAD
-    kernel_initializer=tf.variance_scaling_initializer(),
-=======
     kernel_initializer=tf.compat.v1.variance_scaling_initializer(),
->>>>>>> repo1
     bias_initializer=tf.zeros_initializer(),
     trainable=True,
     name=None
@@ -60,11 +56,5 @@ def conv2d(
         activation=None,
         name=name
     )
-<<<<<<< HEAD
-    
-    return net
-
-=======
 
     return net
->>>>>>> repo1

@@ -1,8 +1,2 @@
 -e git://github.com/NVIDIA/dllogger#egg=dllogger
 absl-py>=0.7.0
-<<<<<<< HEAD
-numpy
-pyarrow
-=======
-
->>>>>>> repo1

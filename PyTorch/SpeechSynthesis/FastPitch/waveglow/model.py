@@ -58,10 +58,7 @@ class Invertible1x1Conv(torch.nn.Module):
         if torch.det(W) < 0:
             W[:, 0] = -1 * W[:, 0]
         W = W.view(c, c, 1)
-<<<<<<< HEAD
-=======
         W = W.contiguous()
->>>>>>> repo1
         self.conv.weight.data = W
 
     def forward(self, z):
@@ -283,10 +280,8 @@ class WaveGlow(torch.nn.Module):
         return audio
 
 
-<<<<<<< HEAD
-=======
     def infer_onnx(self, spect, z, sigma=0.9):
-
+    
         spect = self.upsample(spect)
         # trim conv artifacts. maybe pad spec to kernel multiple
         time_cutoff = self.upsample.kernel_size[0] - self.upsample.stride[0]
@@ -328,7 +323,6 @@ class WaveGlow(torch.nn.Module):
         return audio
 
 
->>>>>>> repo1
     @staticmethod
     def remove_weightnorm(model):
         waveglow = model

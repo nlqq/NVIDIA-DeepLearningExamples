@@ -28,10 +28,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from collections import OrderedDict
-<<<<<<< HEAD
-=======
 from numbers import Number
->>>>>>> repo1
 import dllogger
 import numpy as np
 
@@ -41,14 +38,10 @@ def format_step(step):
         return step
     s = ""
     if len(step) > 0:
-<<<<<<< HEAD
-        s += "Epoch: {} ".format(step[0])
-=======
         if isinstance(step[0], Number):
             s += "Epoch: {} ".format(step[0])
         else:
             s += "{} ".format(step[0])
->>>>>>> repo1
     if len(step) > 1:
         s += "Iteration: {} ".format(step[1])
     if len(step) > 2:
@@ -222,10 +215,7 @@ class Logger(object):
         self.epoch = start_epoch
         self.iteration = -1
         self.val_iteration = -1
-<<<<<<< HEAD
-=======
         self.calib_iteration = -1
->>>>>>> repo1
         self.metrics = OrderedDict()
         self.backends = backends
         self.print_interval = print_interval
@@ -244,25 +234,6 @@ class Logger(object):
     def log_metric(self, metric_name, val, n=1):
         self.metrics[metric_name]["meter"].record(val, n=n)
 
-<<<<<<< HEAD
-    def start_iteration(self, val=False):
-        if val:
-            self.val_iteration += 1
-        else:
-            self.iteration += 1
-
-    def end_iteration(self, val=False):
-        it = self.val_iteration if val else self.iteration
-        if it % self.print_interval == 0:
-            metrics = {
-                n: m for n, m in self.metrics.items() if n.startswith("val") == val
-            }
-            step = (
-                (self.epoch, self.iteration)
-                if not val
-                else (self.epoch, self.iteration, self.val_iteration)
-            )
-=======
     def start_iteration(self, mode='train'):
         if mode == 'val':
             self.val_iteration += 1
@@ -289,7 +260,6 @@ class Logger(object):
                 step = (self.epoch, self.iteration, self.val_iteration)
             elif mode == 'calib':
                 step = ('Calibration', self.calib_iteration)
->>>>>>> repo1
 
             verbositys = {m["level"] for _, m in metrics.items()}
             for ll in verbositys:
@@ -312,13 +282,6 @@ class Logger(object):
         self.val_iteration = 0
 
         for n, m in self.metrics.items():
-<<<<<<< HEAD
-            m["meter"].reset_epoch()
-
-    def end_epoch(self):
-        for n, m in self.metrics.items():
-            m["meter"].reset_iteration()
-=======
             if not n.startswith('calib'):
                 m["meter"].reset_epoch()
 
@@ -326,7 +289,6 @@ class Logger(object):
         for n, m in self.metrics.items():
             if not n.startswith('calib'):
                 m["meter"].reset_iteration()
->>>>>>> repo1
 
         verbositys = {m["level"] for _, m in self.metrics.items()}
         for ll in verbositys:
@@ -336,8 +298,6 @@ class Logger(object):
                 data={n: m["meter"].get_epoch() for n, m in llm.items()},
             )
 
-<<<<<<< HEAD
-=======
     def start_calibration(self):
         self.calib_iteration = 0
 
@@ -350,7 +310,6 @@ class Logger(object):
             if n.startswith('calib'):
                 m["meter"].reset_iteration()
 
->>>>>>> repo1
     def end(self):
         for n, m in self.metrics.items():
             m["meter"].reset_epoch()
@@ -367,19 +326,11 @@ class Logger(object):
 
         dllogger.flush()
 
-<<<<<<< HEAD
-    def iteration_generator_wrapper(self, gen, val=False):
-        for g in gen:
-            self.start_iteration(val=val)
-            yield g
-            self.end_iteration(val=val)
-=======
     def iteration_generator_wrapper(self, gen, mode='train'):
         for g in gen:
             self.start_iteration(mode=mode)
             yield g
             self.end_iteration(mode=mode)
->>>>>>> repo1
 
     def epoch_generator_wrapper(self, gen):
         for g in gen:

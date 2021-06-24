@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION.  All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION.  All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,11 +44,7 @@ if __name__ == '__main__':
     parser.add_argument('--steps', type=int, default=1000)
     args = parser.parse_args()
 
-<<<<<<< HEAD
-    dataset = CriteoBinDataset(data_file=args.file, batch_size=args.batch_size)
-=======
     dataset = CriteoBinDataset(data_path=args.file, batch_size=args.batch_size)
->>>>>>> repo1
 
     begin = time.time()
     for i in range(args.steps):

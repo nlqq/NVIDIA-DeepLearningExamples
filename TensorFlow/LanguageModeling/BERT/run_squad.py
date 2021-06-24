@@ -36,12 +36,8 @@ import modeling
 import optimization
 import tokenization
 from utils.create_squad_data import *
-<<<<<<< HEAD
-from utils.utils import LogEvalRunHook, LogTrainRunHook
-=======
 from utils.utils import LogEvalRunHook, LogTrainRunHook, setup_xla_flags
 from utils.gpu_affinity import set_affinity
->>>>>>> repo1
 import utils.dllogger_class
 from dllogger import Verbosity
 
@@ -380,11 +376,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
             optimization.LAMBOptimizer(learning_rate=0.0), loss_scaler)
 
       predictions = {
-<<<<<<< HEAD
-          "unique_ids": unique_ids,
-=======
           "unique_ids": tf.identity(unique_ids),
->>>>>>> repo1
           "start_logits": start_logits,
           "end_logits": end_logits,
       }
@@ -573,10 +565,6 @@ def get_predictions(all_examples, all_features, all_results, n_best_size, max_an
       else:
         final_text = ""
         seen_predictions[final_text] = True
-<<<<<<< HEAD
-
-=======
->>>>>>> repo1
       nbest.append(
           _NbestPrediction(
               text=final_text,
@@ -626,16 +614,12 @@ def get_predictions(all_examples, all_features, all_results, n_best_size, max_an
       score_diff = score_null - best_non_null_entry.start_logit - (
           best_non_null_entry.end_logit)
       scores_diff_json[example.qas_id] = score_diff
-<<<<<<< HEAD
-      if score_diff > FLAGS.null_score_diff_threshold:
-=======
 
       try:
         null_score_diff_threshold = FLAGS.null_score_diff_threshold
       except:
         null_score_diff_threshold = 0.0
       if score_diff > null_score_diff_threshold:
->>>>>>> repo1
         all_predictions[example.qas_id] = ""
       else:
         all_predictions[example.qas_id] = best_non_null_entry.text
@@ -874,8 +858,6 @@ def export_model(estimator, export_dir, init_checkpoint):
     # Now build the config for Triton. Check to make sure we can overwrite it, if it exists
     config_filename = os.path.join(model_folder, "config.pbtxt")
 
-<<<<<<< HEAD
-=======
     optimization_str = ""
     if FLAGS.amp:
       optimization_str = r"""
@@ -889,7 +871,6 @@ optimization {
   }
 }"""
 
->>>>>>> repo1
     if (os.path.exists(config_filename) and not FLAGS.triton_model_overwrite):
         print("ERROR: Could not save Triton model config. Config file already exists. Use '--triton_model_overwrite=True' if you would like to overwrite an existing model config. Model config: {}".format(config_filename))
         return
@@ -898,10 +879,7 @@ optimization {
 name: "{model_name}"
 platform: "tensorflow_savedmodel"
 max_batch_size: {max_batch_size}
-<<<<<<< HEAD
-=======
 {optimization_str}
->>>>>>> repo1
 input [
     {{
         name: "unique_ids"
@@ -941,11 +919,6 @@ input [
 instance_group [
     {{
         count: {engine_count}
-<<<<<<< HEAD
-        kind: KIND_GPU
-        gpus: [{gpu_list}]
-=======
->>>>>>> repo1
     }}
 ]"""
 
@@ -968,13 +941,8 @@ dynamic_batching {{
         "max_batch_size": max_batch_size,
         "seq_length": FLAGS.max_seq_length,
         "dynamic_batching": batching_str,
-<<<<<<< HEAD
-        "gpu_list": ", ".join([x.name.split(":")[-1] for x in device_lib.list_local_devices() if x.device_type == "GPU"]),
-        "engine_count": FLAGS.triton_engine_count
-=======
         "engine_count": FLAGS.triton_engine_count,
         "optimization_str":optimization_str,
->>>>>>> repo1
     }
 
     with open(model_folder + "/config.pbtxt", "w") as file:
@@ -983,18 +951,7 @@ dynamic_batching {{
         file.write(final_config_str)
 
 def main(_):
-<<<<<<< HEAD
-  # causes memory fragmentation for bert leading to OOM
-  if os.environ.get("TF_XLA_FLAGS", None) is not None:
-    os.environ["TF_XLA_FLAGS"] += " --tf_xla_enable_lazy_compilation=false"
-  else:
-    os.environ["TF_XLA_FLAGS"] = "--tf_xla_enable_lazy_compilation=false"
-
-  # Enable async_io to speed up multi-gpu training with XLA and Horovod.
-  os.environ["TF_XLA_FLAGS"] += " --tf_xla_async_io_level=1"
-=======
   setup_xla_flags()
->>>>>>> repo1
 
   tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
   dllogging = utils.dllogger_class.dllogger_class(FLAGS.dllog_path)
@@ -1027,10 +984,7 @@ def main(_):
       master_process = (hvd.rank() == 0)
       hvd_rank = hvd.rank()
       config.gpu_options.visible_device_list = str(hvd.local_rank())
-<<<<<<< HEAD
-=======
       set_affinity(hvd.local_rank())
->>>>>>> repo1
       if hvd.size() > 1:
           training_hooks.append(hvd.BroadcastGlobalVariablesHook(0))
   if FLAGS.use_xla:
@@ -1273,8 +1227,4 @@ def main(_):
 
 if __name__ == "__main__":
   FLAGS = extract_run_squad_flags()
-<<<<<<< HEAD
   tf.app.run()
-=======
-  tf.app.run()
->>>>>>> repo1

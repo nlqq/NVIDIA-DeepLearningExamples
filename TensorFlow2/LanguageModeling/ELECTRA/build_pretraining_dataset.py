@@ -1,9 +1,6 @@
 # coding=utf-8
 # Copyright 2020 The Google Research Authors.
-<<<<<<< HEAD
-=======
 # Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,11 +21,7 @@ import multiprocessing
 import os
 import random
 import time
-<<<<<<< HEAD
-import tensorflow.compat.v1 as tf
-=======
 import tensorflow as tf
->>>>>>> repo1
 
 import utils
 from tokenization import ElectraTokenizer
@@ -222,17 +215,11 @@ def main():
                       action='store_false', help="Don't lower case input text.")
   parser.add_argument("--num-out-files", default=1000, type=int,
                       help="Number of output files.")
-<<<<<<< HEAD
-  parser.set_defaults(do_lower_case=True)
-  args = parser.parse_args()
-
-=======
   parser.add_argument("--seed", default=1314, type=int)
   args = parser.parse_args()
 
   random.seed(args.seed)
 
->>>>>>> repo1
   utils.rmkdir(args.output_dir)
   if args.num_processes == 1:
     write_examples(0, args)
@@ -247,8 +234,4 @@ def main():
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
   main()
-=======
-  main()
->>>>>>> repo1

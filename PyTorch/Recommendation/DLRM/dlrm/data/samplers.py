@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,11 +30,7 @@ class RandomDistributedSampler(RandomSampler):
         to other rank by writing to disk
         """
         if get_local_rank() == 0:
-<<<<<<< HEAD
-            np.save(self._SAMPLE_FILE, np.array(super().__iter__()))
-=======
             np.save(self._SAMPLE_FILE, np.array(list(super().__iter__())))
->>>>>>> repo1
         torch.distributed.barrier()
 
         sample = np.load(self._SAMPLE_FILE)

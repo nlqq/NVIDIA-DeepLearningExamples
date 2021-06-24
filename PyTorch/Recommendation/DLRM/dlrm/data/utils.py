@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,29 +14,11 @@
 
 import json
 import os
-<<<<<<< HEAD
-=======
 from typing import Tuple, Optional
->>>>>>> repo1
 
 import numpy as np
 import pandas as pd
 import torch
-<<<<<<< HEAD
-import tqdm
-from torch import Tensor
-from torch.cuda import Stream
-from typing import Tuple, Optional
-
-
-def collate_split_tensors(
-        tensors: Tuple[Tensor, Tensor, Tensor],
-        device: str,
-        orig_stream: Stream,
-        numerical_type: torch.dtype = torch.float32
-):
-    tensors = [tensor.to(device, non_blocking=True) if tensor is not None else None for tensor in tensors]
-=======
 from torch import Tensor
 from torch.cuda import Stream
 from torch.utils.data import Dataset, DataLoader
@@ -57,7 +35,6 @@ def collate_split_tensors(
 ):
     tensors = [tensor.to(device, non_blocking=True) if tensor is not None else None for tensor in
                tensors]
->>>>>>> repo1
     if device == 'cuda':
         for tensor in tensors:
             if tensor is not None:
@@ -72,19 +49,11 @@ def collate_split_tensors(
 
 
 def collate_array(
-<<<<<<< HEAD
-        array: np.array,
-        device: str,
-        orig_stream: Stream,
-        num_numerical_features: int,
-        selected_categorical_features: Optional[Tensor] = None
-=======
     array: np.array,
     device: str,
     orig_stream: Stream,
     num_numerical_features: int,
     selected_categorical_features: Optional[Tensor] = None
->>>>>>> repo1
 ):
     # numerical features are encoded as float32
     numerical_features = array[:, 1:1 + num_numerical_features].view(dtype=np.float32)
@@ -108,42 +77,6 @@ def collate_array(
     return numerical_features, categorical_features, click
 
 
-<<<<<<< HEAD
-def write_dataset_to_disk(destination, dataset_train, dataset_test, table_sizes):
-    for filename, dataset in zip(('train_data.bin', 'test_data.bin'),
-                                 (dataset_train, dataset_test)):
-
-        os.makedirs(destination, exist_ok=True)
-        dst_file = os.path.join(destination, filename)
-        if os.path.exists(dst_file):
-            print(f'File {dst_file} already exists, skipping')
-            continue
-
-        with open(dst_file, 'wb') as dst_fd:
-            for numeric, categorical, label in tqdm.tqdm(dataset):
-                # numeric, categorical, label = collate(batch, device='cpu',
-                #                                       orig_stream=None,
-                #                                       num_numerical_features=13)
-
-                categorical = categorical.to(torch.int32)
-                label = label.to(torch.int32)
-
-                l = pd.DataFrame(label.cpu().numpy())
-                l.columns = ['label']
-                n = pd.DataFrame(numeric.cpu().numpy())
-                n.columns = ['n' + str(i) for i in range(len(n.columns))]
-
-                c = pd.DataFrame(categorical.cpu().numpy())
-                c.columns = ['c' + str(i) for i in range(len(c.columns))]
-                df = pd.concat([l, n, c], axis=1)
-
-                records = df.to_records(index=False)
-                raw_data = records.tobytes()
-
-                dst_fd.write(raw_data)
-
-    model_size_dict = {'_c' + str(i): size for i, size in zip(range(14, 40), table_sizes)}
-=======
 def get_categorical_feature_type(size: int):
     types = (np.int8, np.int16, np.int32)
 
@@ -207,7 +140,6 @@ def write_dataset_to_disk(destination, dataset_train: Dataset, dataset_test, tab
             table_sizes
         )
     }
->>>>>>> repo1
     with open(os.path.join(destination, 'model_size.json'), 'w') as f:
         json.dump(model_size_dict, f, indent=4, sort_keys=True)
 
@@ -232,22 +164,14 @@ def prefetcher(load_iterator, prefetch_stream):
 
 
 def get_categorical_feature_sizes(FLAGS):
-<<<<<<< HEAD
-    if FLAGS.dataset_type in ['synthetic_disk', 'synthetic_gpu']:
-=======
     if FLAGS.dataset_type in ['synthetic_gpu']:
->>>>>>> repo1
         feature_sizes = [int(s) for s in FLAGS.synthetic_dataset_table_sizes]
         print('feature sizes: ', feature_sizes)
         return feature_sizes
 
     categorical_sizes_file = os.path.join(FLAGS.dataset, "model_size.json")
     with open(categorical_sizes_file) as f:
-<<<<<<< HEAD
-        categorical_sizes = json.load(f).values()
-=======
         categorical_sizes = [int(v) for v in json.load(f).values()]
->>>>>>> repo1
 
     categorical_sizes = list(categorical_sizes)
 
@@ -261,16 +185,3 @@ def get_categorical_feature_sizes(FLAGS):
 
     clipped_sizes = [min(s, FLAGS.max_table_size) for s in categorical_sizes]
     return clipped_sizes
-<<<<<<< HEAD
-
-
-def get_categorical_feature_type(size: int):
-    types = (np.int8, np.int16, np.int32)
-
-    for numpy_type in types:
-        if size < np.iinfo(numpy_type).max:
-            return numpy_type
-
-    raise RuntimeError(f"Categorical feature of size {size} is too big for defined types")
-=======
->>>>>>> repo1

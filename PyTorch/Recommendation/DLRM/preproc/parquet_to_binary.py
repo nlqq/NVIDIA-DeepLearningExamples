@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,16 +23,6 @@ import tqdm
 import subprocess
 
 def process_file(f, dst):
-<<<<<<< HEAD
-
-    all_columns_sorted = [f'_c{i}' for i in range(0, 40)]
-
-    data = pd.read_parquet(f)
-    data = data[all_columns_sorted]
-
-    dense_columns = [f'_c{i}' for i in range(1, 14)]
-    data[dense_columns] = data[dense_columns].astype(np.float32)
-=======
     label = '_c0'
     dense_columns = [f'_c{i}' for i in range(1, 14)]
     categorical_columns = [f'_c{i}' for i in range(14, 40)]
@@ -47,7 +33,6 @@ def process_file(f, dst):
     data[label] = data[label].astype(np.int32)
     data[dense_columns] = data[dense_columns].astype(np.float32)
     data[categorical_columns] = data[categorical_columns].astype(np.int32)
->>>>>>> repo1
 
     data = data.to_records(index=False)
     data = data.tobytes()
@@ -67,11 +52,7 @@ def main():
 
     print('Processing train files...')
     train_src_files = glob.glob(args.src_dir + '/train/*.parquet')
-<<<<<<< HEAD
-    train_intermediate_dir = args.intermediate_dir + '/train'
-=======
     train_intermediate_dir = os.path.join(args.intermediate_dir, 'train')
->>>>>>> repo1
     os.makedirs(train_intermediate_dir, exist_ok=True)
 
     Parallel(n_jobs=args.parallel_jobs)(delayed(process_file)(f, train_intermediate_dir) for f in tqdm.tqdm(train_src_files))
@@ -80,11 +61,7 @@ def main():
 
     print('Processing test files...')
     test_src_files = glob.glob(args.src_dir + '/test/*.parquet')
-<<<<<<< HEAD
-    test_intermediate_dir = args.intermediate_dir + '/test'
-=======
     test_intermediate_dir = os.path.join(args.intermediate_dir, 'test')
->>>>>>> repo1
     os.makedirs(test_intermediate_dir, exist_ok=True)
 
     Parallel(n_jobs=args.parallel_jobs)(delayed(process_file)(f, test_intermediate_dir) for f in tqdm.tqdm(test_src_files))
@@ -92,11 +69,7 @@ def main():
 
     print('Processing validation files...')
     valid_src_files = glob.glob(args.src_dir + '/validation/*.parquet')
-<<<<<<< HEAD
-    valid_intermediate_dir = args.intermediate_dir + '/valid'
-=======
     valid_intermediate_dir = os.path.join(args.intermediate_dir, 'validation')
->>>>>>> repo1
     os.makedirs(valid_intermediate_dir, exist_ok=True)
 
     Parallel(n_jobs=args.parallel_jobs)(delayed(process_file)(f, valid_intermediate_dir) for f in tqdm.tqdm(valid_src_files))
@@ -111,11 +84,7 @@ def main():
     os.system(f'cat {test_intermediate_dir}/*.bin > {args.dst_dir}/test_data.bin')
 
     print('Concatenating validation files')
-<<<<<<< HEAD
-    os.system(f'cat {valid_intermediate_dir}/*.bin > {args.dst_dir}/val_data.bin')
-=======
     os.system(f'cat {valid_intermediate_dir}/*.bin > {args.dst_dir}/validation_data.bin')
->>>>>>> repo1
     print('Done')
 
 

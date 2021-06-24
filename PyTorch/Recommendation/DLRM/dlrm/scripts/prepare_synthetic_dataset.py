@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,17 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-<<<<<<< HEAD
-
-from dlrm.data.factories import SyntheticDiskDatasetFactory
-from dlrm.scripts.main import FLAGS
-from absl import app
-
-
-def main(argv):
-    dataset_factory = SyntheticDiskDatasetFactory(FLAGS)
-    dataset_factory.create_datasets()
-=======
 import torch
 
 from dlrm.data.datasets import SyntheticDataset
@@ -67,7 +52,6 @@ def main(argv):
         test_dataset,
         FLAGS.synthetic_dataset_table_sizes
     )
->>>>>>> repo1
 
 
 if __name__ == '__main__':

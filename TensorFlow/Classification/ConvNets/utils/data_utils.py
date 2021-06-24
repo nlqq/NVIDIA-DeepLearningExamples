@@ -72,11 +72,7 @@ def get_synth_input_fn(batch_size, height, width, num_channels, data_format, num
 
     data = data.repeat()
 
-<<<<<<< HEAD
-    data = data.prefetch(buffer_size=tf.contrib.data.AUTOTUNE)
-=======
     data = data.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
->>>>>>> repo1
 
     return data
 
@@ -98,39 +94,6 @@ def get_tfrecords_input_fn(filenames, batch_size, height, width, training, disto
     if hvd_utils.is_using_hvd() and training:
         ds = ds.shard(hvd.size(), hvd.rank())
 
-<<<<<<< HEAD
-    ds = ds.apply(
-        tf.data.experimental.parallel_interleave(
-            tf.data.TFRecordDataset,
-            cycle_length=10,
-            block_length=8,
-            sloppy=not deterministic,
-            prefetch_input_elements=16
-        )
-    )
-
-    counter = tf.data.Dataset.range(sys.maxsize)
-    ds = tf.data.Dataset.zip((ds, counter))
-
-    def preproc_func(record, counter_):
-        return image_processing.preprocess_image_record(record, height, width, _NUM_CHANNELS, training)
-
-    if training:
-        ds = ds.apply(tf.data.experimental.shuffle_and_repeat(buffer_size=shuffle_buffer_size, seed=seed))
-    else:
-        ds = ds.repeat()
-
-    ds = ds.apply(
-        tf.data.experimental.map_and_batch(
-            map_func=preproc_func,
-            num_parallel_calls=num_threads,
-            batch_size=batch_size,
-            drop_remainder=True,
-        )
-    )
-
-    ds = ds.prefetch(buffer_size=tf.contrib.data.AUTOTUNE)
-=======
     ds = ds.interleave(tf.data.TFRecordDataset, cycle_length=10, block_length=8)
 
     def preproc_func(record):
@@ -142,7 +105,6 @@ def get_tfrecords_input_fn(filenames, batch_size, height, width, training, disto
     ds = ds.repeat().map(preproc_func, num_parallel_calls=num_threads)
     ds = ds.batch(batch_size=batch_size, drop_remainder=True)
     ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
->>>>>>> repo1
 
     return ds
 
@@ -161,11 +123,7 @@ def get_inference_input_fn(filenames, height, width, num_threads):
         tf.data.experimental.map_and_batch(map_func=preproc_func, num_parallel_calls=num_threads, batch_size=1)
     )
 
-<<<<<<< HEAD
-    ds = ds.prefetch(buffer_size=tf.contrib.data.AUTOTUNE)
-=======
     ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
->>>>>>> repo1
 
     return ds
 

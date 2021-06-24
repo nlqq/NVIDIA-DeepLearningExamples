@@ -37,17 +37,6 @@ class MelAudioLoader(torch.utils.data.Dataset):
         2) computes mel-spectrograms from audio files.
     """
 
-<<<<<<< HEAD
-    def __init__(self, dataset_path, audiopaths_and_text, args):
-        self.audiopaths_and_text = load_filepaths_and_text(dataset_path, audiopaths_and_text)
-        self.max_wav_value = args.max_wav_value
-        self.sampling_rate = args.sampling_rate
-        self.stft = layers.TacotronSTFT(
-            args.filter_length, args.hop_length, args.win_length,
-            args.n_mel_channels, args.sampling_rate, args.mel_fmin,
-            args.mel_fmax)
-        self.segment_length = args.segment_length
-=======
     def __init__(self,
                  dataset_path,
                  audiopaths_and_text,
@@ -69,7 +58,6 @@ class MelAudioLoader(torch.utils.data.Dataset):
             n_mel_channels, sampling_rate, mel_fmin,
             mel_fmax)
         self.segment_length = segment_length
->>>>>>> repo1
         random.seed(1234)
         random.shuffle(self.audiopaths_and_text)
 

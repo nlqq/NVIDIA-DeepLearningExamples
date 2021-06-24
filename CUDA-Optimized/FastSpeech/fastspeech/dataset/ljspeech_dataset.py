@@ -24,21 +24,15 @@
 
 import csv
 
-<<<<<<< HEAD
-=======
 import pprint
 
->>>>>>> repo1
 import librosa
 from torch.utils.data import Dataset
 import pandas as pd
 from fastspeech.text_norm import text_to_sequence
 from fastspeech import audio
-<<<<<<< HEAD
-=======
 from fastspeech.utils.logging import tprint
 
->>>>>>> repo1
 import os
 import pathlib
 
@@ -48,11 +42,8 @@ from tqdm import tqdm
 
 from fastspeech import hparam as hp
 
-<<<<<<< HEAD
-=======
 pp = pprint.PrettyPrinter(indent=4, width=1000)
 
->>>>>>> repo1
 class LJSpeechDataset(Dataset):
 
     def __init__(self, root_path, meta_file="metadata.csv",
@@ -145,11 +136,7 @@ class LJSpeechDataset(Dataset):
         return data
 
 
-<<<<<<< HEAD
-def preprocess_mel(hparam="base.yaml"):
-=======
 def preprocess_mel(hparam="base.yaml", **kwargs):
->>>>>>> repo1
     """The script for preprocessing mel-spectrograms from the dataset.
 
     By default, this script assumes to load parameters in the default config file, fastspeech/hparams/base.yaml.
@@ -166,14 +153,9 @@ def preprocess_mel(hparam="base.yaml", **kwargs):
         hparam (str, optional): Path to default config file. Defaults to "base.yaml".
     """
 
-<<<<<<< HEAD
-    hp.set_hparam(hparam)
-
-=======
     hp.set_hparam(hparam, kwargs)
     tprint("Hparams:\n{}".format(pp.pformat(hp)))
     
->>>>>>> repo1
     pathlib.Path(hp.mels_path).mkdir(parents=True, exist_ok=True)
 
     dataset = LJSpeechDataset(hp.dataset_path, mels_path=None)

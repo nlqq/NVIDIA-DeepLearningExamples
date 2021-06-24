@@ -1,56 +1,9 @@
-<<<<<<< HEAD
-
-
-=======
->>>>>>> repo1
 # DLRM For PyTorch
 
 This repository provides a script and recipe to train the Deep Learning Recommendation Model (DLRM) to achieve state-of-the-art accuracy and is tested and maintained by NVIDIA.
 
 ## Table Of Contents	
 
-<<<<<<< HEAD
-
-  * [Table Of Contents](#table-of-contents)
-  * [Model overview](#model-overview)
-     * [Model architecture](#model-architecture)
-     * [Default configuration](#default-configuration)
-     * [Feature support matrix](#feature-support-matrix)
-        * [Features](#features)
-     * [Mixed precision training](#mixed-precision-training)
-        * [Enabling mixed precision](#enabling-mixed-precision)
-        * [Enabling TF32](#enabling-tf32)
-  * [Setup](#setup)
-     * [Requirements](#requirements)
-  * [Quick Start Guide](#quick-start-guide)
-  * [Advanced](#advanced)
-     * [Scripts and sample code](#scripts-and-sample-code)
-     * [Parameters](#parameters)
-     * [Command-line options](#command-line-options)
-     * [Getting the data](#getting-the-data)
-        * [Dataset guidelines](#dataset-guidelines)
-        * [Multi-dataset](#multi-dataset)
-        * [Preprocess with Spark](#preprocess-with-spark)
-     * [Training process](#training-process)
-     * [Inference process](#inference-process)
-     * [Deploying DLRM Using NVIDIA Triton Inference Server](#deploying-dlrm-using-nvidia-triton-inference-server)
-  * [Performance](#performance)
-     * [Benchmarking](#benchmarking)
-        * [Training performance benchmark](#training-performance-benchmark)
-        * [Inference performance benchmark](#inference-performance-benchmark)
-     * [Results](#results)
-        * [Training accuracy results](#training-accuracy-results)
-           * [Training accuracy: NVIDIA DGX A100 (8x A100 40GB)](#training-accuracy-nvidia-dgx-a100-8x-a100-40gb)  
-           * [Training accuracy: NVIDIA DGX-1 (8x V100 32GB)](#training-accuracy-nvidia-dgx-1-8x-v100-32gb)
-           * [Training stability test](#training-stability-test)
-        * [Training performance results](#training-performance-results)
-           * [Training performance: NVIDIA DGX A100 (8x A100 40GB)](#training-performance-nvidia-dgx-a100-8x-a100-40gb)
-           * [Training performance: NVIDIA DGX-1 (8x V100 32GB)](#training-performance-nvidia-dgx-1-8x-v100-32gb)
-           * [Training performance: NVIDIA DGX-2 (16x V100 32GB)](#training-performance-nvidia-dgx-2-16x-v100-32gb)
-  * [Release notes](#release-notes)
-     * [Changelog](#changelog)
-     * [Known issues](#known-issues)
-=======
   * [Model overview](#model-overview)
     + [Model architecture](#model-architecture)
     + [Default configuration](#default-configuration)
@@ -97,7 +50,6 @@ This repository provides a script and recipe to train the Deep Learning Recommen
   * [Release notes](#release-notes)
     + [Changelog](#changelog)
     + [Known issues](#known-issues)
->>>>>>> repo1
 
 ## Model overview
 
@@ -107,20 +59,13 @@ make use of both categorical and numerical inputs. It was first described in
 This repository provides a reimplementation of the codebase provided originally [here](https://github.com/facebookresearch/dlrm).
 The scripts provided enable you to train DLRM on the [Criteo Terabyte Dataset](https://labs.criteo.com/2013/12/download-terabyte-click-logs/). 
 
-<<<<<<< HEAD
-=======
 Using the scripts provided here, you can efficiently train models that are too large to fit into a single GPU. This is because we use a hybrid-parallel approach, which combines model parallelism for the embedding tables with data parallelism for the Top MLP. This is explained in details in [next sections](#hybrid-parallel-multigpu-with-all-2-all-communication).
 
->>>>>>> repo1
 This model uses a slightly different preprocessing procedure than the one found in the original implementation. You can find a detailed description of the preprocessing steps in the [Dataset guidelines](#dataset-guidelines) section.
 
 Using DLRM you can train a high-quality general model for providing recommendations.
 
-<<<<<<< HEAD
-This model is trained with mixed precision using Tensor Cores on Volta, Turing and NVIDIA Ampere GPU architectures. Therefore, researchers can get results 3.4x faster than training without Tensor Cores while experiencing the benefits of mixed precision training. It is tested against each NGC monthly container release to ensure consistent accuracy and performance over time.
-=======
 This model is trained with mixed precision using Tensor Cores on Volta, Turing, and NVIDIA Ampere GPU architectures. Therefore, researchers can get results up to 3.3x faster than training without Tensor Cores while experiencing the benefits of mixed precision training. It is tested against each NGC monthly container release to ensure consistent accuracy and performance over time.
->>>>>>> repo1
 
 
 
@@ -130,11 +75,7 @@ DLRM accepts two types of features: categorical and numerical. For each categori
 feature, an embedding table is used to provide dense representation to each unique value. The dense features enter the model and are transformed by a 
 simple neural network referred to as "bottom MLP". This part of the network consists of a series
 of linear layers with ReLU activations. The output of the bottom MLP and the embedding vectors
-<<<<<<< HEAD
-are then fed into the "dot interaction" operation. The output of "dot interaction" is then concatenated with the features resulting from bottom MLP and fed into the "top MLP" which is also a series of dense layers with activations.
-=======
 are then fed into the "dot interaction" operation. The output of "dot interaction" is then concatenated with the features resulting from the bottom MLP and fed into the "top MLP" which is also a series of dense layers with activations.
->>>>>>> repo1
 The model outputs a single number which can be interpreted as a likelihood of a certain user clicking an ad. 
 
 
@@ -150,26 +91,15 @@ Figure 1. The architecture of DLRM.
 The following features were implemented in this model:
 - general
 	- static loss scaling for Tensor Cores (mixed precision) training
-<<<<<<< HEAD
-- preprocessing
-    - dataset preprocessing using Spark 
-=======
 	- hybrid-parallel multi-GPU training
 - preprocessing
     - dataset preprocessing using Spark 3 on GPUs 
     - dataset preprocessing using NVTabular on GPUs 
->>>>>>> repo1
     
 ### Feature support matrix
 
 The following features are supported by this model: 
 
-<<<<<<< HEAD
-| Feature               | DLRM                
-|----------------------|--------------------------
-|Automatic mixed precision (AMP)   | yes
-|PyTorch Multi-GPU (NCCL)   | yes
-=======
 | Feature                                 | DLRM                
 |-----------------------------------------|-----
 |Automatic mixed precision (AMP)          | yes
@@ -177,7 +107,6 @@ The following features are supported by this model:
 |Preprocessing on GPU with NVTabular      | yes
 |Preprocessing on GPU with Spark 3        | yes
 
->>>>>>> repo1
          
 #### Features
 
@@ -185,12 +114,6 @@ Automatic Mixed Precision (AMP) - enables mixed precision training without any c
 
 Multi-GPU training with PyTorch distributed - our model uses `torch.distributed` to implement efficient multi-GPU training with NCCL. For details, see example sources in this repository or see the [PyTorch Tutorial](https://pytorch.org/tutorials/intermediate/dist_tuto.html).
 
-<<<<<<< HEAD
-
-### Mixed precision training
-
-Mixed precision is the combined use of different numerical precisions in a computational method. [Mixed precision](https://arxiv.org/abs/1710.03740) training offers significant computational speedup by performing operations in half-precision format while storing minimal information in single-precision to retain as much information as possible in critical parts of the network. Since the introduction of [Tensor Cores](https://developer.nvidia.com/tensor-cores) in Volta, and following with both the Turing and Ampere architectures, significant training speedups are experienced by switching to mixed precision -- up to 3.4x overall speedup on the most arithmetically intense model architectures. Using mixed precision training requires two steps:
-=======
 Preprocessing on GPU with NVTabular - Criteo dataset preprocessing can be conducted using [NVTabular](https://github.com/NVIDIA/NVTabular). For more information on the framework, see the [Announcing the NVIDIA NVTabular Open Beta with Multi-GPU Support and New Data Loaders](https://developer.nvidia.com/blog/announcing-the-nvtabular-open-beta-with-multi-gpu-support-and-new-data-loaders/).
 
 Preprocessing on GPU with Spark 3 - Criteo dataset preprocessing can be conducted using [Apache Spark 3.0](https://spark.apache.org/). For more information on the framework and how to leverage GPU to preprocessing, see the [Accelerating Apache Spark 3.0 with GPUs and RAPIDS](https://developer.nvidia.com/blog/accelerating-apache-spark-3-0-with-gpus-and-rapids/).
@@ -199,7 +122,6 @@ Preprocessing on GPU with Spark 3 - Criteo dataset preprocessing can be conducte
 ### Mixed precision training
 
 Mixed precision is the combined use of different numerical precisions in a computational method. [Mixed precision](https://arxiv.org/abs/1710.03740) training offers significant computational speedup by performing operations in the half-precision floating-point format while storing minimal information in single-precision to retain as much information as possible in critical parts of the network. Since the introduction of [Tensor Cores](https://developer.nvidia.com/tensor-cores) in Volta, and following with both the Turing and Ampere architectures, significant training speedups are experienced by switching to mixed precision &ndash; up to 3.3x overall speedup on the most arithmetically intense model architectures. Using mixed precision training requires two steps:
->>>>>>> repo1
 1.  Porting the model to use the FP16 data type where appropriate.    
 2.  Adding loss scaling to preserve small gradient values.
 
@@ -219,18 +141,12 @@ Mixed precision training is turned off by default. To turn it on issue the `--am
 
 TensorFloat-32 (TF32) is the new math mode in [NVIDIA A100](https://www.nvidia.com/en-us/data-center/a100/) GPUs for handling the matrix math also called tensor operations. TF32 running on Tensor Cores in A100 GPUs can provide up to 10x speedups compared to single-precision floating-point math (FP32) on Volta GPUs. 
 
-<<<<<<< HEAD
-TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models which require high dynamic range for weights or activations.
-=======
 TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models that require a high dynamic range for weights or activations.
->>>>>>> repo1
 
 For more information, refer to the [TensorFloat-32 in the A100 GPU Accelerates AI Training, HPC up to 20x](https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/) blog post.
 
 TF32 is supported in the NVIDIA Ampere GPU architecture and is enabled by default.
 
-<<<<<<< HEAD
-=======
 ### Hybrid-parallel multi-GPU with all-2-all communication
 
 Many recommendation models contain very large embedding tables. As a result, the model is often too large to fit onto a single device. This could be easily solved by training in a model-parallel way, using either the CPU or other GPUs as "memory donors". However, this approach is suboptimal as the "memory donor" devices' compute is not utilized. In this repository, we use the model-parallel approach for the bottom part of the model (Embedding Tables + Bottom MLP) while using a usual data parallel approach for the top part of the model (Dot Interaction + Top MLP). This way we can train models much larger than what would normally fit into a single GPU while at the same time making the training faster by using multiple GPUs. We call this approach hybrid-parallel.
@@ -259,7 +175,6 @@ We use the following heuristic for dividing the work between the GPUs:
 ### Preprocessing on GPU
 
 Please refer to [the "Preprocessing" section](#preprocessing) for a detailed description of the Apache Spark 3.0 and NVTabular GPU functionality 
->>>>>>> repo1
 
 ## Setup
 
@@ -268,30 +183,17 @@ The following section lists the requirements for training DLRM.
 ### Requirements
 
 This repository contains Dockerfile which extends the PyTorch NGC container and encapsulates some dependencies. Aside from these dependencies, ensure you have the following components:
-<<<<<<< HEAD
--   [NVIDIA Docker](https://github.com/NVIDIA/nvidia-docker)
--   [PyTorch 20.06-py3] NGC container
--   Supported GPUs:
-    - [NVIDIA Volta architecture](https://www.nvidia.com/en-us/data-center/volta-gpu-architecture/)
-    - [NVIDIA Turing architecture](https://www.nvidia.com/en-us/geforce/turing/)
-=======
 - [NVIDIA Docker](https://github.com/NVIDIA/nvidia-docker)
 - [PyTorch 21.04-py3](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch/tags) NGC container
 - Supported GPUs:
     - [NVIDIA Volta architecture](https://www.nvidia.com/en-us/data-center/volta-gpu-architecture/)
     - [NVIDIA Turing architecture](https://www.nvidia.com/en-us/design-visualization/technologies/turing-architecture/)
->>>>>>> repo1
     - [NVIDIA Ampere architecture](https://www.nvidia.com/en-us/data-center/nvidia-ampere-gpu-architecture/)
 
 
 For more information about how to get started with NGC containers, see the following sections from the NVIDIA GPU Cloud Documentation and the Deep Learning Documentation:
-<<<<<<< HEAD
--   [Getting Started Using NVIDIA GPU Cloud](https://docs.nvidia.com/ngc/ngc-getting-started-guide/index.html)
--   [Accessing And Pulling From The NGC Container Registry](https://docs.nvidia.com/deeplearning/frameworks/user-guide/index.html#accessing_registry)
-=======
 - [Getting Started Using NVIDIA GPU Cloud](https://docs.nvidia.com/ngc/ngc-getting-started-guide/index.html)
 - [Accessing And Pulling From The NGC Container Registry](https://docs.nvidia.com/deeplearning/frameworks/user-guide/index.html#accessing_registry)
->>>>>>> repo1
 - [Running PyTorch](https://docs.nvidia.com/deeplearning/frameworks/pytorch-release-notes/running.html#running)
   
 For those unable to use the PyTorch NGC container, to set up the required environment or create your own container, see the versioned [NVIDIA Container Support Matrix](https://docs.nvidia.com/deeplearning/frameworks/support-matrix/index.html).
@@ -308,53 +210,6 @@ git clone https://github.com/NVIDIA/DeepLearningExamples
 cd DeepLearningExamples/PyTorch/Recommendation/DLRM
 ```
 
-<<<<<<< HEAD
-2. Build a DLRM Docker container
-```bash
-docker build . -t nvidia_dlrm_pyt
-```
-
-3. Start an interactive session in the NGC container to run preprocessing/training and inference.
-The NCF PyTorch container can be launched with:
-```bash
-mkdir -p data
-docker run --runtime=nvidia -it --rm --ipc=host  -v ${PWD}/data:/data nvidia_dlrm_pyt bash
-```
-
-4.  Download and preprocess the dataset.
-You can download the data by following the instructions at: http://labs.criteo.com/2013/12/download-terabyte-click-logs/.
-When you have successfully downloaded it, put it in the `/data/dlrm/criteo/` directory in the container (`$PWD/data/dlrm/criteo` in the host system).
-You can then run the preprocessing with the commands below. Note
-that this will require about 4TB of disk storage.
-```
-cd preproc
-./prepare_dataset.sh
-cd -
-```
-
-5. Start training.
-
-- single-GPU:
-```
-python -m dlrm.scripts.main --mode train --dataset /data/dlrm/binary_dataset/
-```
-
-- multi-GPU:
-```
-python -u -m torch.distributed.launch --use_env --nproc_per_node 8 -m dlrm.scripts.dist_main --mode train --dataset /data/dlrm/binary_dataset
-```
-
-6. Start validation/evaluation.
-
-- single-GPU:
-```
-python -m dlrm.scripts.main --mode test --dataset /data/dlrm/binary_dataset/
-```
-
-- multi-GPU:
-```
-python -u -m torch.distributed.launch --use_env --nproc_per_node 8 -m dlrm.scripts.dist_main --mode test --dataset /data/dlrm/binary_dataset
-=======
 2. Download the dataset.
 
 You can download the data by following the instructions at: http://labs.criteo.com/2013/12/download-terabyte-click-logs/.
@@ -451,7 +306,6 @@ python -m torch.distributed.launch --no_python --use_env --nproc_per_node 8 \
 python -m torch.distributed.launch --no_python --use_env --nproc_per_node 8 \
           bash  -c './bind.sh  --cpu=exclusive -- python -m dlrm.scripts.dist_main \
           --dataset /data/dlrm/binary_dataset/ --seed 0 --epochs 1 --amp --load_checkpoint_path `$CRITEO_DATASET_PARENT_DIRECTORY/checkpoints/checkpoint`'
->>>>>>> repo1
 ```
 
 ## Advanced
@@ -460,15 +314,9 @@ The following sections provide greater details of the dataset, running training 
 
 ### Scripts and sample code
 
-<<<<<<< HEAD
-The `dlrm/scripts/main.py` script provides an entry point to most of the functionality in single-GPU setting. Using different command-line flags allows you to run training, validation and benchmark both training and inference on real or synthetic data.
-
-Analogously, the `dlrm/scripts/dist_main.py` script provides an entry point for the functionality in multi-GPU setting. It uses the same flags as in single-GPU case with the defaults tuned to large model training.
-=======
 The `dlrm/scripts/main.py` script provides an entry point to most of the functionality in a single-GPU setting. Using different command-line flags allows you to run training, validation, and benchmark both training and inference on real or synthetic data.
 
 Analogously, the `dlrm/scripts/dist_main.py` script provides an entry point for the functionality in a multi-GPU setting. It uses the same flags as in the single-GPU case with the defaults tuned to large model training.
->>>>>>> repo1
 
 The `dlrm/model/single.py` file provides the definition of the DLRM neural network for single-GPU, whereas `dlrm/model/distributed.py` contains DLRM definition for multi-GPU case.
 
@@ -481,17 +329,10 @@ Utilities connected to loading the data reside in the `data` directory.
 The `dlrm/scripts/main.py` script supports a number of command-line flags. You can get the descriptions of those by running `python -m dlrm.scripts.main --help`. Running this command will output:
 
 ```        
-<<<<<<< HEAD
-       USAGE: /workspace/dlrm/scripts/main.py [flags]
-flags:
-
-/workspace/dlrm/scripts/main.py:
-=======
 USAGE: /workspace/dlrm/scripts/main.py [flags]
 flags:
 
 /workspace/dlrm/dlrm/scripts/main.py:
->>>>>>> repo1
   --[no]amp: If True the script will use Automatic Mixed Precision
     (default: 'false')
   --auc_threshold: Stop the training after achieving this AUC
@@ -507,16 +348,8 @@ flags:
   --bottom_mlp_sizes: Linear layer sizes for the bottom MLP
     (default: '512,256,128')
     (a comma separated list)
-<<<<<<< HEAD
-  --dataset: Full path to binary dataset. Must include files such as: train_data.bin, test_data.bin
-  --dataset_subset: Use only a subset of the training data. If None (default) will use all of it. Must be either None, or a float in
-    range [0,1]
-    (a number)
-  --dataset_type: <binary|memmap|split|synthetic_gpu|synthetic_disk>: The type of the dataset to use
-=======
   --dataset: Path to dataset
   --dataset_type: <binary|split|synthetic_gpu>: The type of the dataset to use
->>>>>>> repo1
     (default: 'split')
   --decay_end_lr: LR after the decay ends
     (default: '0.0')
@@ -524,12 +357,7 @@ flags:
   --decay_power: Polynomial learning rate decay power
     (default: '2')
     (an integer)
-<<<<<<< HEAD
-  --decay_start_step: Optimization step after which to start decaying the learning rate, if None will start decaying right after the
-    warmup phase is completed
-=======
   --decay_start_step: Optimization step after which to start decaying the learning rate, if None will start decaying right after the warmup phase is completed
->>>>>>> repo1
     (default: '64000')
     (an integer)
   --decay_steps: Polynomial learning rate decay steps. If equal to 0 will not do any decaying
@@ -564,16 +392,9 @@ flags:
     (a number)
   --max_steps: Stop training after doing this many optimization steps
     (an integer)
-<<<<<<< HEAD
-  --max_table_size: Maximum number of rows per embedding table, by default equal to the number of unique values for each categorical
-    variable
-    (an integer)
-  --mode: <train|test|inference_benchmark>: Select task to be performed
-=======
   --max_table_size: Maximum number of rows per embedding table, by default equal to the number of unique values for each categorical variable
     (an integer)
   --mode: <train|test|inference_benchmark|prof-train>: Select task to be performed
->>>>>>> repo1
     (default: 'train')
   --num_numerical_features: Number of numerical features in the dataset. Defaults to 13 for the Criteo Terabyte Dataset
     (default: '13')
@@ -591,22 +412,12 @@ flags:
     (an integer)
   -shuffle,--[no]shuffle_batch_order: Read batch in train dataset by random order
     (default: 'false')
-<<<<<<< HEAD
-  --synthetic_dataset_dir: Default synthetic disk dataset directory
-    (default: '/tmp/dlrm_sythetic_dataset')
-=======
->>>>>>> repo1
   --synthetic_dataset_num_entries: Number of samples per epoch for the synthetic dataset
     (default: '33554432')
     (an integer)
   --synthetic_dataset_table_sizes: Embedding table sizes to use with the synthetic dataset
-<<<<<<< HEAD
-    (default: '100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,10
-    0000,100000,100000,100000,100000,100000,100000,100000,100000')
-=======
     (default: '100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,10
     0000,100000,100000,100000')
->>>>>>> repo1
     (a comma separated list)
   --test_after: Don't test the model unless this many epochs has been completed
     (default: '0.0')
@@ -626,8 +437,6 @@ flags:
     (default: '6400')
     (an integer)
 ``` 
-<<<<<<< HEAD
-=======
 The multi-GPU training script, `dlrm/scripts/dist_main.py` has also a few, specific for itself, option, that you can get by running `python -m dlrm.scripts.dist_main --help`:
 ```
 USAGE: /workspace/dlrm/dlrm/scripts/dist_main.py [flags]
@@ -644,7 +453,6 @@ flags:
     device configurations
     (default: 'false')
 ```
->>>>>>> repo1
 
 
 The following example output is printed when running the model:
@@ -672,15 +480,9 @@ The first 23 days are used as the training set. The last day is split in half. T
 
 The preprocessing steps applied to the raw data include:
 - Replacing the missing values with `0`
-<<<<<<< HEAD
-- Replacing the categorical values that exist fewer than 15 times with a special value
-- Converting the hash values to consecutive integers
-- Adding 2 to all the numerical features so that all of them are greater or equal to 1
-=======
 - Replacing the categorical values that exist fewer than `T` times with a special value (T value is called a frequency threshold or a frequency limit)
 - Converting the hash values to consecutive integers
 - Adding 3 to all the numerical features so that all of them are greater or equal to 1
->>>>>>> repo1
 - Taking a natural logarithm of all numerical features
 
 #### Multi-dataset
@@ -691,31 +493,6 @@ Our preprocessing scripts are designed for the Criteo Terabyte Dataset and shoul
 - The next `M` tokens should contain the hashed categorical features separated by tabs.
 
 
-<<<<<<< HEAD
-#### Preprocess with Spark
-
-The script `spark_data_utils.py` is a PySpark application, which is used to preprocess the Criteo Terabyte Dataset. In the Docker image, we have installed Spark 2.4.5, which will start a standalone cluster of Spark. The script `run-spark.sh` starts the Spark, then runs several PySpark jobs with `spark_data_utils.py`. 
-Generate the dictionary
-Transform train dataset
-Transform test dataset
-Transform validation dataset
-
-    Change the variables in the `run-spark.sh` script according to your environment.
-    Configure the paths.
-```
-export SPARK_LOCAL_DIRS=/data/spark-tmp
-export INPUT_PATH=/data/criteo
-export OUTPUT_PATH=/data/output
-```
-Note that the Spark job requires about 3TB disk space used for data shuffle.
-
-`SPARK_LOCAL_DIRS` is the path where Spark uses to write shuffle data.
-
-`INPUT_PATH` is the path of the Criteo Terabyte Dataset, including uncompressed files like day_0, day_1…
-
-`OUTPUT_PATH` is where the script writes the output data. It will generate below subdirectories of `models`, `train`, `test`, and `validation`. 
-The `model` is the dictionary folder. 
-=======
 #### Preprocessing 
 
 The preprocessing scripts provided in this repository support running both on CPU and GPU using [NVtabular](https://developer.nvidia.com/blog/announcing-the-nvtabular-open-beta-with-multi-gpu-support-and-new-data-loaders/) (GPU only) and [Apache Spark 3.0](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/apache-spark-3/).
@@ -747,29 +524,10 @@ The preprocessing scripts make use of the following environment variables to con
 - `final_output_dir` – directory to store the final results of the preprocessing which can then be used to train DLRM 
 
 In the `final_output_dir` will be three subdirectories created: `train`, `test`, `validation`, and one json file &ndash; `model_size.json` &ndash; containing a maximal index of each category. 
->>>>>>> repo1
 The `train` is the train dataset transformed from day_0 to day_22. 
 The `test` is the test dataset transformed from the prior half of day_23. 
 The `validation` is the dataset transformed from the latter half of day_23.
 
-<<<<<<< HEAD
-Configure the resources which Spark will use.
-```
-export TOTAL_CORES=80
-export TOTAL_MEMORY=800
-```
-`TOTAL_CORES` is the total CPU cores you want Spark to use.
-
-`TOTAL_MEMORY` is the total memory Spark will use.
-
-Configure frequency limit.
-```
-USE_FREQUENCY_LIMIT=15
-```
-The frequency limit is used to filter out the categorical values which appear less than n times in the whole dataset, and make them be 0. Change this variable to 1 to enable it. The default frequency limit is 15 in the script. You also can change the number as you want by changing  the line of `OPTS="--frequency_limit 8"`.
-
-After the above configuration, you can run `run-spark.sh` if you already downloaded the dataset or run through `prepare_dataset.sh`, which includes verifying the downloaded dataset and running the job to preprocess the dataset.
-=======
 The model is tested on 3 datasets resulting from Criteo dataset preprocessing: small (Freqency threshold = 15), large (Freqency threshold = 3) and xlarge (Freqency threshold = 2). Each dataset occupies approx 370GB of disk space. Table below presents information on the supercomputer and GPU count that are needed to train model on particular dataset.
 
 | Dataset | GPU VRAM consumption\* | Model checkpoint size\* | FL setting | DGX A100 40GB, 1GPU | DGX A100 40GB, 8GPU | DGX A100 80GB, 1GPU | DGX A100 80GB, 8GPU | DGX-1** or DGX-2, 1 GPU | DGX-1** or DGX-2, 8GPU | DGX-2, 16GPU |
@@ -793,7 +551,6 @@ Note that the Spark job requires about 3TB disk space used for data shuffle.
 
 Spark preprocessing is calibrated to run on [DGX A100](https://www.nvidia.com/en-us/data-center/dgx-a100/) and [DGX-2](https://www.nvidia.com/en-us/data-center/dgx-2/) AI systems. However, it should be possible to change the values in `preproc/DGX-2_config.sh` or `preproc/DGX-A100_config.sh`
 so that they'll work on also on other hardware platforms such as DGX-1 or a custom one. 
->>>>>>> repo1
 
 ### Training process
 
@@ -803,29 +560,17 @@ generated by the model is measured by the [ROC AUC metric](https://scikit-learn.
 The speed of training and inference is measured by throughput i.e., the number 
 of samples processed per second. We use mixed precision training with static loss scaling for the bottom and top MLPs while embedding tables are stored in FP32 format.
 
-<<<<<<< HEAD
-
-=======
->>>>>>> repo1
 ### Inference process
 
 This section describes inference with PyTorch in Python. If you're interested in inference using the Triton Inference Server, refer to [triton/README.md](triton/README.md) file.
 
 Two modes for inference are currently supported by the `dlrm/scripts/main.py` script:
 
-<<<<<<< HEAD
-1. Inference benchmark – this mode will measure and print out throughput and latency numbers for multiple batch sizes. You can activate it by setting the batch sizes to be tested with the `inference_benchmark_batch_sizes` command-line argument. It will use the default test dataset unless the `--dataset_type synthetic_disk` flag is passed.
-2. Test-only – this mode can be used to run a full validation on a checkpoint to measure ROC AUC . You can enable it by passing the `--mode test` flag.
-
-### Deploying DLRM Using NVIDIA Triton Inference Server
-The NVIDIA Triton Inference Server provides a cloud inferencing solution optimized for NVIDIA GPUs. The server provides an inference service via an HTTP or GRPC endpoint, allowing remote clients to request inferencing for any model being managed by the server. More information on how to perform inference using NVIDIA Triton Inference Server can be found in [triton/README.md](triton/README.md).
-=======
 1. Inference benchmark – this mode will measure and print out throughput and latency numbers for multiple batch sizes. You can activate it by setting the batch sizes to be tested with the `inference_benchmark_batch_sizes` command-line argument.
 2. Test-only – this mode can be used to run a full validation on a checkpoint to measure ROC AUC. You can enable it by passing the `--mode test` flag.
 
 ### Deploying DLRM Using NVIDIA Triton Inference Server
 The NVIDIA Triton Inference Server provides a cloud inferencing solution optimized for NVIDIA GPUs. The server provides an inference service via an HTTP or gRPC endpoint, allowing remote clients to request inferencing for any model being managed by the server. More information on how to perform inference using NVIDIA Triton Inference Server can be found in [triton/README.md](triton/README.md).
->>>>>>> repo1
 
 ## Performance
 
@@ -835,21 +580,11 @@ The following section shows how to run benchmarks measuring the model performanc
 
 #### Training performance benchmark
 
-<<<<<<< HEAD
-To benchmark the training performance on a specific batch size, run:
-
-```
-python -m dlrm.scripts.main --mode train --max_steps 1000 --benchmark_warmup_steps 500 --dataset /data
-```
-
-You can also pass the `--dataset_type synthetic_disk` flag if you haven't yet downloaded the dataset.
-=======
 To benchmark the training performance on a specific batch size, please follow the instructions
 in the [Quick Start Guide](#quick-start-guide). You can also add the `--max_steps 1000 --benchmark_warmup_steps 500`
 if you want to get a reliable throughput measurement without running the entire training. 
 
 You can also create a synthetic dataset by running `python -m dlrm.scripts.prepare_synthetic_dataset --synthetic_dataset_dir /tmp/dlrm_synthetic_data` if you haven't yet downloaded the dataset.
->>>>>>> repo1
 
 #### Inference performance benchmark
 
@@ -859,42 +594,20 @@ To benchmark the inference performance on a specific batch size, run:
 python -m dlrm.scripts.main --mode inference_benchmark --dataset /data
 ```
 
-<<<<<<< HEAD
-You can also pass the `--dataset_type synthetic_disk` flag if you haven't yet downloaded the dataset.
-=======
 You can also create a synthetic dataset by running `python -m dlrm.scripts.prepare_synthetic_dataset --synthetic_dataset_dir /tmp/dlrm_synthetic_data` if you haven't yet downloaded the dataset.
->>>>>>> repo1
 
 ### Results 
 
 The following sections provide details on how we achieved our performance and accuracy in training and inference. 
 
-<<<<<<< HEAD
-We used two model size variants to show memory scalability in multi-GPU setup:
-- small - refers to model trained on Criteo dataset with frequency thresholding set to 15 resulting in smaller embedding tables - total model size: ~15 GB
-- large - refers to model trained on Criteo dataset wtih frequency thresholding set to 3 resulting in larger embedding tables - total model size: ~82 GB
-=======
 We used three model size variants to show memory scalability in a multi-GPU setup:
 - small - refers to a model trained on Criteo dataset with frequency thresholding set to 15 resulting in smaller embedding tables - total model size: ~15 GB
 - large - refers to a model trained on Criteo dataset with frequency thresholding set to 3 resulting in larger embedding tables - total model size: ~82 GB
 - xlarge -  refers to a model trained on Criteo dataset with frequency thresholding set to 2 resulting in larger embedding tables - total model size: ~142 GB
->>>>>>> repo1
 
 #### Training accuracy results
 
 
-<<<<<<< HEAD
-##### Training accuracy: NVIDIA DGX A100 (8x A100 40GB)
-
-Our results were obtained by running training scripts as described in the Quick Start Guide in the DLRM Docker container in two configurations:
-- on a single NVIDIA A100 40GB GPU (`dlrm/scripts/main.py`)
-- in multi-GPU setup on DGX A100 with 8x Ampere A100 40GB (`dlrm/scripts/dist_main.py`)
-
-| GPUs    | Model size    | Batch size / GPU    | Accuracy (AUC) - TF32  | Accuracy (AUC) - mixed precision  |   Time to train - TF32 [minutes]  |  Time to train - mixed precision [minutes] | Time to train speedup (TF32 to mixed precision)        
-|----:|----|----|----:|----:|---:|---:|---:|
-| 8 | large | 64k | 0.8027 | 0.8027 | 8.79 | 6.16 | 1.43 |
-| 1 | small | 32k | 0.8036 | 0.8036 | 28.20 | 17.45 | 1.62 |
-=======
 ##### Training accuracy: NVIDIA DGX A100 (8x A100 80GB)
 
 Our results were obtained by running training scripts as described in the Quick Start Guide in the DLRM Docker container in two configurations:
@@ -906,7 +619,6 @@ Our results were obtained by running training scripts as described in the Quick 
 | 8 | xlarge | 64k | 0.8026 | 0.8026 |  6.75 |  4.73 | 1.43 |
 | 8 |  large | 64k | 0.8027 | 0.8027 |  6.98 |  4.72 | 1.48 |
 | 1 |  small | 32k | 0.8036 | 0.8036 | 25.88 | 17.17 | 1.51 |
->>>>>>> repo1
 
 
 ##### Training accuracy: NVIDIA DGX-1 (8x V100 32GB)
@@ -917,11 +629,6 @@ Our results were obtained by running training scripts as described in the Quick 
 
 | GPUs    | Model size    | Batch size / GPU    | Accuracy (AUC) - FP32  | Accuracy (AUC) - mixed precision  |   Time to train - FP32  [minutes] |  Time to train - mixed precision  [minutes] | Time to train speedup (FP32 to mixed precision)        
 |----:|----|----|----:|----:|---:|---:|---:|
-<<<<<<< HEAD
-| 8 | large | 64k | 0.8027 | 0.8027 | 46.29 | 22.72 | 2.04 |
-| 1 | small | 32k | 0.8035 | 0.8035 | 105.98 | 31.12 | 3.40 |
-
-=======
 | 8 | large | 64k | 0.8026 | 0.8026 | 25.05 | 9.87 | 2.54 |
 | 1 | small | 32k | 0.8036 | 0.8036 | 106.6 | 32.6 | 3.27 |
 
@@ -950,36 +657,10 @@ All other parameters of training are default.
   <br>
   Figure 3. Training stability for a FL15 dataset: distribution of ROC AUC across different configurations. 'All configurations' refer to the distribution of ROC AUC for cartesian product of architecture, training precision. </a>
 </p>
->>>>>>> repo1
 
 
 ##### Training stability test
 
-<<<<<<< HEAD
-The table below shows the complete convergence data for 16 different random seeds. 
-
-|   Random seed |  Mixed precision AUC | Single precision AUC |
-|-------:|---------:|---------:|
-|      8 | 0.803696 | 0.803669 |
-|      9 | 0.803617 | 0.803574 |
-|     10 | 0.803672 | 0.80367  |
-|     11 | 0.803699 | 0.803683 |
-|     12 | 0.803659 | 0.803724 |
-|     13 | 0.803578 | 0.803565 |
-|     14 | 0.803609 | 0.803613 |
-|     15 | 0.803585 | 0.803615 |
-|     16 | 0.803553 | 0.803583 |
-|     17 | 0.803644 | 0.803688 |
-|     18 | 0.803656 | 0.803609 |
-|     19 | 0.803589 | 0.803635 |
-|     20 | 0.803567 | 0.803611 |
-|     21 | 0.803548 | 0.803487 |
-|     22 | 0.803532 | 0.803591 |
-|     23 | 0.803625 | 0.803601 |
-| **mean** | **0.803614** | **0.803620** |
-
-
-=======
 Training of the model is stable for multiple configurations achieving the standard deviation of 10e-4. 
 The model achieves similar ROC AUC scores for A100 and V100, training precisions. 
 The DLRM model was trained for one epoch (roughly 4 billion samples, 128028 batches for single-GPU and 64014 for multi-GPU training), starting from 20 different initial random seeds for each setup.
@@ -1052,7 +733,6 @@ DGX-2 / DGX-1|FL15|1|0.80362|0.00009|0.80361|0.00006|0.25000 (0.57134)|
 Sample size was set to 20 experiments for each training setup.
 
 </details>
->>>>>>> repo1
 
 #### Training performance results
 
@@ -1060,30 +740,6 @@ Sample size was set to 20 experiments for each training setup.
 We used throughput in items processed per second as the performance metric.
 
 
-<<<<<<< HEAD
-##### Training performance: NVIDIA DGX A100 (8x A100 40GB)
-
-Our results were obtained by running the following commands:
-- for single GPU setup:
-```
-python -m dlrm.scripts.main --mode train --dataset /data [--amp]
-```
-- for multi GPU setup:
-```
-python -u -m torch.distributed.launch --use_env --nproc_per_node 8 -m dlrm.scripts.dist_main --mode train --dataset /data/ [--amp]
-```
-
-in the DLRM Docker container on NVIDIA DGX A100 (8x A100 40GB) GPUs. Performance numbers (in items/images per second) were averaged over an entire training epoch.
-
-| GPUs   | Model size    | Batch size / GPU   | Throughput - TF32    | Throughput - mixed precision    | Throughput speedup (TF32 - mixed precision)      
-|----:|----|----|---:|---:|---:|
-| 8 | large | 64k | 8252438.74 | 11771969.56 | 1.43 |
-| 1 | small | 32k | 2498002.39 | 4081969.37 | 1.63 |
-
-
-To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
-
-=======
 ##### Training performance: NVIDIA DGX A100 (8x A100 80GB)
 
 Our results were obtained by running the following commands:
@@ -1129,31 +785,10 @@ in the DLRM Docker container on NVIDIA DGX A100 (8x A100 40GB) GPUs. Performance
 | 8 | large | 64k | 9,980,000 | 15,400,000 | 1.54 |
 | 1 | small | 32k | 2,530,000 |  3,970,000 | 1.57 |
 
->>>>>>> repo1
 
 ##### Training performance: NVIDIA DGX-1 (8x V100 32GB)
 
 Our results were obtained by running the following commands:
-<<<<<<< HEAD
-- for single GPU setup:
-```
-python -m dlrm.scripts.main --mode train --dataset /data [--amp]
-```
-- for multi GPU setup:
-```
-python -u -m torch.distributed.launch --use_env --nproc_per_node 8 -m dlrm.scripts.dist_main --mode train --dataset /data/ [--amp]
-```
-
- in the DLRM Docker container on NVIDIA DGX-1 with (8x V100 32GB) GPUs. Performance numbers (in items/images per second) were averaged over an entire training epoch.
-
-| GPUs   | Model size    | Batch size / GPU   | Throughput - FP32    | Throughput - mixed precision    | Throughput speedup (FP32 - mixed precision)   |     
-|----:|----|----|---:|---:|---:|
-| 8 | large | 64k | 1538759.56 | 3257414.75 | 2.12 |
-| 1 | small | 32k | 670238.82 | 2281278.45 | 3.40 |
-
-
-We used throughput in items processed per second as the performance metric.
-=======
 - for single-GPU setup:
 ```
 python -m dlrm.scripts.main --mode train --dataset /data [--amp]
@@ -1173,29 +808,11 @@ python -m torch.distributed.launch --no_python --use_env --nproc_per_node 8 \
 | 1 | small | 32k |   667,000 | 2,200,000 | 3.30 |
 
 To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
->>>>>>> repo1
 
 
 ##### Training performance: NVIDIA DGX-2 (16x V100 32GB)
 
 Our results were obtained by running the following commands:
-<<<<<<< HEAD
-- for single GPU setup:
-```
-python -m dlrm.scripts.main --mode train --dataset /data [--amp] 
-```
-- for multi GPU setup:
-```
-python -u -m torch.distributed.launch --use_env --nproc_per_node 16 -m dlrm.scripts.dist_main --mode train --dataset /data/ [--amp]
-```
- in the DLRM Docker container on NVIDIA DGX-2 with (16x V100 32GB) GPUs. Performance numbers (in items/images per second) were averaged over an entire training epoch.
-
-| GPUs   | Model size   | Batch size / GPU   | Throughput - FP32    | Throughput - mixed precision    | Throughput speedup (FP32 - mixed precision)     
-|----:|----|---|---:|---:|---:|
-| 16 | large | 64k | 4343127.59 | 9454627.44 | 2.18 |
-| 8 | large | 64k | 2948808.82 | 7057842.56 | 2.39 |
-| 1 | small | 32k | 706933.08 | 2417584.57 | 3.42 |
-=======
 - for single-GPU setup:
 ```
 python -m dlrm.scripts.main --dataset /data [--amp] 
@@ -1213,7 +830,6 @@ python -m torch.distributed.launch --no_python --use_env --nproc_per_node [8/16]
 | 16 | large | 64k | 4,690,000 | 11,100,000 | 2.37 |
 | 8  | large | 64k | 3,280,000 |  8,480,000 | 2.59 |
 | 1  | small | 32k |   713,000 |  2,330,000 | 3.27 |
->>>>>>> repo1
 
 
 To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
@@ -1231,13 +847,6 @@ May 2020
 
 June 2020
 - Updated performance tables to include A100 results and multi-GPU setup
-<<<<<<< HEAD
-
-### Known issues
-
-There are no known issues with this model
-
-=======
 - Multi-GPU optimizations
 
 August 2020
@@ -1262,4 +871,3 @@ June 2021
 
 - Adam performance is not optimized.  
 - For some seeds, the model's loss can become NaN due to aggressive scheduling rate policy.
->>>>>>> repo1

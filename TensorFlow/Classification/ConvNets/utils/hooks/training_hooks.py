@@ -21,12 +21,9 @@ import tensorflow as tf
 import dllogger
 import signal
 
-<<<<<<< HEAD
-=======
 import horovod.tensorflow as hvd
 from utils.hvd_utils import is_using_hvd
 
->>>>>>> repo1
 __all__ = ['TrainingLoggingHook', 'TrainingPartitionHook']
 
 
@@ -47,27 +44,18 @@ class MeanAccumulator:
             return 0
 
 
-<<<<<<< HEAD
-class TrainingLoggingHook(tf.train.SessionRunHook):
-
-    def __init__(self, global_batch_size, num_steps, num_samples, num_epochs, steps_per_epoch, warmup_steps=20):
-=======
 class TrainingLoggingHook(tf.estimator.SessionRunHook):
-
+    
     def __init__(
         self, global_batch_size, num_steps, num_samples, num_epochs, steps_per_epoch, warmup_steps=20, logging_steps=1
     ):
->>>>>>> repo1
         self.global_batch_size = global_batch_size
         self.num_steps = num_steps
         self.num_samples = num_samples
         self.num_epochs = num_epochs
         self.steps_per_epoch = steps_per_epoch
         self.warmup_steps = warmup_steps
-<<<<<<< HEAD
-=======
         self.logging_steps = logging_steps
->>>>>>> repo1
 
         self.current_step = 0
         self.current_epoch = 0
@@ -107,14 +95,9 @@ class TrainingLoggingHook(tf.estimator.SessionRunHook):
         if self.current_step >= self.warmup_steps:
             self.mean_throughput.consume(metrics['imgs_per_sec'])
 
-<<<<<<< HEAD
-            metrics = {k: float(v) for k, v in metrics.items()}
-            dllogger.log(data=metrics, step=(int(global_step // self.steps_per_epoch), int(global_step)))
-=======
             if (self.current_step % self.logging_steps) == 0:
                 metrics = {k: float(v) for k, v in metrics.items()}
                 dllogger.log(data=metrics, step=(int(global_step // self.steps_per_epoch), int(global_step)))
->>>>>>> repo1
 
         self.current_step += 1
 
@@ -130,14 +113,8 @@ class TrainingLoggingHook(tf.estimator.SessionRunHook):
             self.current_epoch += 1
 
 
-<<<<<<< HEAD
-class TrainingPartitionHook(tf.train.SessionRunHook):
-
-    def __init__(self):
-        super().__init__()
-=======
 class TrainingPartitionHook(tf.estimator.SessionRunHook):
-
+    
     def __init__(self, sync_freq=10):
         super().__init__()
         self.signal_recieved = False
@@ -145,21 +122,11 @@ class TrainingPartitionHook(tf.estimator.SessionRunHook):
         self.sync_freq = sync_freq
         self.global_step = 0
 
->>>>>>> repo1
         self.should_exit = False
 
         signal.signal(signal.SIGUSR1, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
-<<<<<<< HEAD
-    def after_run(self, run_context, run_values):
-        if self.should_exit:
-            run_context.request_stop()
-
-    def _signal_handler(self, signum, frame):
-        print("Stop signal received")
-        self.should_exit = True
-=======
     def before_run(self, run_context):
         fetches = [tf.train.get_global_step()]
 
@@ -196,4 +163,3 @@ class TrainingPartitionHook(tf.estimator.SessionRunHook):
     def _signal_handler(self, signum, frame):
         print("Stop signal received")
         self.signal_recieved = True
->>>>>>> repo1

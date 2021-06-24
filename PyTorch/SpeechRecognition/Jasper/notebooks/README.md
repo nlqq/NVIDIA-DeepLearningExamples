@@ -150,9 +150,6 @@ Use the token listed in the output from running the jupyter command to log in, f
 
 
 ## Jasper Jupyter Notebook for TensorRT Inference Server
-<<<<<<< HEAD
-This notebook can be executed from Google [Colab](https://colab.research.google.com) by supplying the notebook Github [URL](https://github.com/NVIDIA/DeepLearningExamples/blob/master/PyTorch/SpeechRecognition/Jasper/notebooks/Colab_Jasper_TRT_inference_demo.ipynb) or by open this [link](https://colab.research.google.com/github/NVIDIA/DeepLearningExamples/blob/master/PyTorch/SpeechRecognition/Jasper/notebooks/Colab_Jasper_TRT_inference_demo.ipynb) directly.
-=======
 ### Requirements
 
 `./trtis/` contains a Dockerfile which extends the PyTorch 19.09-py3 NGC container and encapsulates some dependencies. Aside from these dependencies, ensure you have the following components:
@@ -204,4 +201,3 @@ jupyter notebook --ip=0.0.0.0 --allow-root
 And navigate a web browser to the IP address or hostname of the host machine at port 8888: `http://[host machine]:8888`
 
 Use the token listed in the output from running the jupyter command to log in, for example: `http://[host machine]:8888/?token=aae96ae9387cd28151868fee318c3b3581a2d794f3b25c6b`
->>>>>>> repo1

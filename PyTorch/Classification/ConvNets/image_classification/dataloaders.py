@@ -35,24 +35,6 @@ import torchvision.transforms as transforms
 from PIL import Image
 from functools import partial
 
-<<<<<<< HEAD
-DATA_BACKEND_CHOICES = ["pytorch", "syntetic"]
-# try:
-#     from nvidia.dali.plugin.pytorch import DALIClassificationIterator
-#     from nvidia.dali.pipeline import Pipeline
-#     import nvidia.dali.ops as ops
-#     import nvidia.dali.types as types
-
-#     DATA_BACKEND_CHOICES.append("dali-gpu")
-#     DATA_BACKEND_CHOICES.append("dali-cpu")
-# except ImportError:
-#     print(
-#         "Please install DALI from https://www.github.com/NVIDIA/DALI to run this example."
-#     )
-
-
-def load_jpeg_from_file(path, cuda=True, fp16=False):
-=======
 from image_classification.autoaugment import AutoaugmentImageNetPolicy
 
 DATA_BACKEND_CHOICES = ["pytorch", "syntetic"]
@@ -71,7 +53,6 @@ except ImportError:
 
 
 def load_jpeg_from_file(path, cuda=True):
->>>>>>> repo1
     img_transforms = transforms.Compose(
         [transforms.Resize(256), transforms.CenterCrop(224), transforms.ToTensor()]
     )
@@ -88,128 +69,13 @@ def load_jpeg_from_file(path, cuda=True):
             mean = mean.cuda()
             std = std.cuda()
             img = img.cuda()
-<<<<<<< HEAD
-        if fp16:
-            mean = mean.half()
-            std = std.half()
-            img = img.half()
-        else:
-            img = img.float()
-=======
         img = img.float()
->>>>>>> repo1
 
         input = img.unsqueeze(0).sub_(mean).div_(std)
 
     return input
 
 
-<<<<<<< HEAD
-# class HybridTrainPipe(Pipeline):
-#     def __init__(
-#         self, batch_size, num_threads, device_id, data_dir, crop, dali_cpu=False
-#     ):
-#         super(HybridTrainPipe, self).__init__(
-#             batch_size, num_threads, device_id, seed=12 + device_id
-#         )
-#         if torch.distributed.is_initialized():
-#             rank = torch.distributed.get_rank()
-#             world_size = torch.distributed.get_world_size()
-#         else:
-#             rank = 0
-#             world_size = 1
-
-#         self.input = ops.FileReader(
-#             file_root=data_dir,
-#             shard_id=rank,
-#             num_shards=world_size,
-#             random_shuffle=True,
-#         )
-
-#         if dali_cpu:
-#             dali_device = "cpu"
-#             self.decode = ops.ImageDecoder(device=dali_device, output_type=types.RGB)
-#         else:
-#             dali_device = "gpu"
-#             # This padding sets the size of the internal nvJPEG buffers to be able to handle all images from full-sized ImageNet
-#             # without additional reallocations
-#             self.decode = ops.ImageDecoder(
-#                 device="mixed",
-#                 output_type=types.RGB,
-#                 device_memory_padding=211025920,
-#                 host_memory_padding=140544512,
-#             )
-
-#         self.res = ops.RandomResizedCrop(
-#             device=dali_device,
-#             size=[crop, crop],
-#             interp_type=types.INTERP_LINEAR,
-#             random_aspect_ratio=[0.75, 4.0 / 3.0],
-#             random_area=[0.08, 1.0],
-#             num_attempts=100,
-#         )
-
-#         self.cmnp = ops.CropMirrorNormalize(
-#             device="gpu",
-#             output_dtype=types.FLOAT,
-#             output_layout=types.NCHW,
-#             crop=(crop, crop),
-#             image_type=types.RGB,
-#             mean=[0.485 * 255, 0.456 * 255, 0.406 * 255],
-#             std=[0.229 * 255, 0.224 * 255, 0.225 * 255],
-#         )
-#         self.coin = ops.CoinFlip(probability=0.5)
-
-#     def define_graph(self):
-#         rng = self.coin()
-#         self.jpegs, self.labels = self.input(name="Reader")
-#         images = self.decode(self.jpegs)
-#         images = self.res(images)
-#         output = self.cmnp(images.gpu(), mirror=rng)
-#         return [output, self.labels]
-
-
-# class HybridValPipe(Pipeline):
-#     def __init__(self, batch_size, num_threads, device_id, data_dir, crop, size):
-#         super(HybridValPipe, self).__init__(
-#             batch_size, num_threads, device_id, seed=12 + device_id
-#         )
-#         if torch.distributed.is_initialized():
-#             rank = torch.distributed.get_rank()
-#             world_size = torch.distributed.get_world_size()
-#         else:
-#             rank = 0
-#             world_size = 1
-
-#         self.input = ops.FileReader(
-#             file_root=data_dir,
-#             shard_id=rank,
-#             num_shards=world_size,
-#             random_shuffle=False,
-#         )
-
-#         self.decode = ops.ImageDecoder(device="mixed", output_type=types.RGB)
-#         self.res = ops.Resize(device="gpu", resize_shorter=size)
-#         self.cmnp = ops.CropMirrorNormalize(
-#             device="gpu",
-#             output_dtype=types.FLOAT,
-#             output_layout=types.NCHW,
-#             crop=(crop, crop),
-#             image_type=types.RGB,
-#             mean=[0.485 * 255, 0.456 * 255, 0.406 * 255],
-#             std=[0.229 * 255, 0.224 * 255, 0.225 * 255],
-#         )
-
-#     def define_graph(self):
-#         self.jpegs, self.labels = self.input(name="Reader")
-#         images = self.decode(self.jpegs)
-#         images = self.res(images)
-#         output = self.cmnp(images)
-#         return [output, self.labels]
-
-
-# class DALIWrapper(object):
-=======
 class HybridTrainPipe(Pipeline):
     def __init__(
         self,
@@ -335,7 +201,6 @@ class HybridValPipe(Pipeline):
 
 
 class DALIWrapper(object):
->>>>>>> repo1
     def gen_wrapper(dalipipeline, num_classes, one_hot, memory_format):
         for data in dalipipeline:
             input = data[0]["data"].contiguous(memory_format=memory_format)
@@ -353,26 +218,13 @@ class DALIWrapper(object):
 
     def __iter__(self):
         return DALIWrapper.gen_wrapper(
-<<<<<<< HEAD
-                self.dalipipeline, self.num_classes, self.one_hot, self.memory_format
-=======
             self.dalipipeline, self.num_classes, self.one_hot, self.memory_format
->>>>>>> repo1
         )
 
 
 def get_dali_train_loader(dali_cpu=False):
     def gdtl(
         data_path,
-<<<<<<< HEAD
-        batch_size,
-        num_classes,
-        one_hot,
-        start_epoch=0,
-        workers=5,
-        _worker_init_fn=None,
-        fp16=False,
-=======
         image_size,
         batch_size,
         num_classes,
@@ -382,7 +234,6 @@ def get_dali_train_loader(dali_cpu=False):
         start_epoch=0,
         workers=5,
         _worker_init_fn=None,
->>>>>>> repo1
         memory_format=torch.contiguous_format,
     ):
         if torch.distributed.is_initialized():
@@ -393,35 +244,24 @@ def get_dali_train_loader(dali_cpu=False):
             world_size = 1
 
         traindir = os.path.join(data_path, "train")
-<<<<<<< HEAD
-=======
         if augmentation is not None:
             raise NotImplementedError(
                 f"Augmentation {augmentation} for dali loader is not supported"
             )
->>>>>>> repo1
 
         pipe = HybridTrainPipe(
             batch_size=batch_size,
             num_threads=workers,
             device_id=rank % torch.cuda.device_count(),
             data_dir=traindir,
-<<<<<<< HEAD
-            crop=224,
-=======
             interpolation=interpolation,
             crop=image_size,
->>>>>>> repo1
             dali_cpu=dali_cpu,
         )
 
         pipe.build()
         train_loader = DALIClassificationIterator(
-<<<<<<< HEAD
-            pipe, size=int(pipe.epoch_size("Reader") / world_size)
-=======
             pipe, reader_name="Reader", fill_last_batch=False
->>>>>>> repo1
         )
 
         return (
@@ -435,14 +275,6 @@ def get_dali_train_loader(dali_cpu=False):
 def get_dali_val_loader():
     def gdvl(
         data_path,
-<<<<<<< HEAD
-        batch_size,
-        num_classes,
-        one_hot,
-        workers=5,
-        _worker_init_fn=None,
-        fp16=False,
-=======
         image_size,
         batch_size,
         num_classes,
@@ -451,7 +283,6 @@ def get_dali_val_loader():
         crop_padding=32,
         workers=5,
         _worker_init_fn=None,
->>>>>>> repo1
         memory_format=torch.contiguous_format,
     ):
         if torch.distributed.is_initialized():
@@ -468,23 +299,14 @@ def get_dali_val_loader():
             num_threads=workers,
             device_id=rank % torch.cuda.device_count(),
             data_dir=valdir,
-<<<<<<< HEAD
-            crop=224,
-            size=256,
-=======
             interpolation=interpolation,
             crop=image_size,
             size=image_size + crop_padding,
->>>>>>> repo1
         )
 
         pipe.build()
         val_loader = DALIClassificationIterator(
-<<<<<<< HEAD
-            pipe, size=int(pipe.epoch_size("Reader") / world_size)
-=======
             pipe, reader_name="Reader", fill_last_batch=False
->>>>>>> repo1
         )
 
         return (
@@ -509,11 +331,7 @@ def fast_collate(memory_format, batch):
             nump_array = np.expand_dims(nump_array, axis=-1)
         nump_array = np.rollaxis(nump_array, 2)
 
-<<<<<<< HEAD
-        tensor[i] += torch.from_numpy(nump_array)
-=======
         tensor[i] += torch.from_numpy(nump_array.copy())
->>>>>>> repo1
 
     return tensor, targets
 
@@ -527,11 +345,7 @@ def expand(num_classes, dtype, tensor):
 
 
 class PrefetchedWrapper(object):
-<<<<<<< HEAD
-    def prefetched_loader(loader, num_classes, fp16, one_hot):
-=======
     def prefetched_loader(loader, num_classes, one_hot):
->>>>>>> repo1
         mean = (
             torch.tensor([0.485 * 255, 0.456 * 255, 0.406 * 255])
             .cuda()
@@ -542,12 +356,6 @@ class PrefetchedWrapper(object):
             .cuda()
             .view(1, 3, 1, 1)
         )
-<<<<<<< HEAD
-        if fp16:
-            mean = mean.half()
-            std = std.half()
-=======
->>>>>>> repo1
 
         stream = torch.cuda.Stream()
         first = True
@@ -556,20 +364,9 @@ class PrefetchedWrapper(object):
             with torch.cuda.stream(stream):
                 next_input = next_input.cuda(non_blocking=True)
                 next_target = next_target.cuda(non_blocking=True)
-<<<<<<< HEAD
-                if fp16:
-                    next_input = next_input.half()
-                    if one_hot:
-                        next_target = expand(num_classes, torch.half, next_target)
-                else:
-                    next_input = next_input.float()
-                    if one_hot:
-                        next_target = expand(num_classes, torch.float, next_target)
-=======
                 next_input = next_input.float()
                 if one_hot:
                     next_target = expand(num_classes, torch.float, next_target)
->>>>>>> repo1
 
                 next_input = next_input.sub_(mean).div_(std)
 
@@ -584,14 +381,8 @@ class PrefetchedWrapper(object):
 
         yield input, target
 
-<<<<<<< HEAD
-    def __init__(self, dataloader, start_epoch, num_classes, fp16, one_hot):
-        self.dataloader = dataloader
-        self.fp16 = fp16
-=======
     def __init__(self, dataloader, start_epoch, num_classes, one_hot):
         self.dataloader = dataloader
->>>>>>> repo1
         self.epoch = start_epoch
         self.one_hot = one_hot
         self.num_classes = num_classes
@@ -604,11 +395,7 @@ class PrefetchedWrapper(object):
             self.dataloader.sampler.set_epoch(self.epoch)
         self.epoch += 1
         return PrefetchedWrapper.prefetched_loader(
-<<<<<<< HEAD
-            self.dataloader, self.num_classes, self.fp16, self.one_hot
-=======
             self.dataloader, self.num_classes, self.one_hot
->>>>>>> repo1
         )
 
     def __len__(self):
@@ -617,27 +404,6 @@ class PrefetchedWrapper(object):
 
 def get_pytorch_train_loader(
     data_path,
-<<<<<<< HEAD
-    batch_size,
-    num_classes,
-    one_hot,
-    start_epoch=0,
-    workers=5,
-    _worker_init_fn=None,
-    fp16=False,
-    memory_format=torch.contiguous_format,
-):
-    traindir = os.path.join(data_path, "train")
-    train_dataset = datasets.ImageFolder(
-        traindir,
-        transforms.Compose(
-            [transforms.RandomResizedCrop(224), transforms.RandomHorizontalFlip()]
-        ),
-    )
-
-    if torch.distributed.is_initialized():
-        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-=======
     image_size,
     batch_size,
     num_classes,
@@ -665,30 +431,17 @@ def get_pytorch_train_loader(
         train_sampler = torch.utils.data.distributed.DistributedSampler(
             train_dataset, shuffle=True
         )
->>>>>>> repo1
     else:
         train_sampler = None
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset,
-<<<<<<< HEAD
-=======
         sampler=train_sampler,
->>>>>>> repo1
         batch_size=batch_size,
         shuffle=(train_sampler is None),
         num_workers=workers,
         worker_init_fn=_worker_init_fn,
         pin_memory=True,
-<<<<<<< HEAD
-        sampler=train_sampler,
-        collate_fn=partial(fast_collate, memory_format),
-        drop_last=True,
-    )
-
-    return (
-        PrefetchedWrapper(train_loader, start_epoch, num_classes, fp16, one_hot),
-=======
         collate_fn=partial(fast_collate, memory_format),
         drop_last=True,
         persistent_workers=True,
@@ -696,30 +449,12 @@ def get_pytorch_train_loader(
 
     return (
         PrefetchedWrapper(train_loader, start_epoch, num_classes, one_hot),
->>>>>>> repo1
         len(train_loader),
     )
 
 
 def get_pytorch_val_loader(
     data_path,
-<<<<<<< HEAD
-    batch_size,
-    num_classes,
-    one_hot,
-    workers=5,
-    _worker_init_fn=None,
-    fp16=False,
-    memory_format=torch.contiguous_format,
-):
-    valdir = os.path.join(data_path, "val")
-    val_dataset = datasets.ImageFolder(
-        valdir, transforms.Compose([transforms.Resize(256), transforms.CenterCrop(224)])
-    )
-
-    if torch.distributed.is_initialized():
-        val_sampler = torch.utils.data.distributed.DistributedSampler(val_dataset)
-=======
     image_size,
     batch_size,
     num_classes,
@@ -750,7 +485,6 @@ def get_pytorch_val_loader(
         val_sampler = torch.utils.data.distributed.DistributedSampler(
             val_dataset, shuffle=False
         )
->>>>>>> repo1
     else:
         val_sampler = None
 
@@ -758,35 +492,21 @@ def get_pytorch_val_loader(
         val_dataset,
         sampler=val_sampler,
         batch_size=batch_size,
-<<<<<<< HEAD
-        shuffle=False,
-=======
         shuffle=(val_sampler is None),
->>>>>>> repo1
         num_workers=workers,
         worker_init_fn=_worker_init_fn,
         pin_memory=True,
         collate_fn=partial(fast_collate, memory_format),
-<<<<<<< HEAD
-    )
-
-    return PrefetchedWrapper(val_loader, 0, num_classes, fp16, one_hot), len(val_loader)
-=======
         drop_last=False,
         persistent_workers=True,
     )
 
     return PrefetchedWrapper(val_loader, 0, num_classes, one_hot), len(val_loader)
->>>>>>> repo1
 
 
 class SynteticDataLoader(object):
     def __init__(
         self,
-<<<<<<< HEAD
-        fp16,
-=======
->>>>>>> repo1
         batch_size,
         num_classes,
         num_channels,
@@ -796,14 +516,10 @@ class SynteticDataLoader(object):
         memory_format=torch.contiguous_format,
     ):
         input_data = (
-<<<<<<< HEAD
-            torch.empty(batch_size, num_channels, height, width).contiguous(memory_format=memory_format).cuda().normal_(0, 1.0)
-=======
             torch.randn(batch_size, num_channels, height, width)
             .contiguous(memory_format=memory_format)
             .cuda()
             .normal_(0, 1.0)
->>>>>>> repo1
         )
         if one_hot:
             input_target = torch.empty(batch_size, num_classes).cuda()
@@ -811,11 +527,6 @@ class SynteticDataLoader(object):
         else:
             input_target = torch.randint(0, num_classes, (batch_size,))
         input_target = input_target.cuda()
-<<<<<<< HEAD
-        if fp16:
-            input_data = input_data.half()
-=======
->>>>>>> repo1
 
         self.input_data = input_data
         self.input_target = input_target
@@ -827,18 +538,6 @@ class SynteticDataLoader(object):
 
 def get_syntetic_loader(
     data_path,
-<<<<<<< HEAD
-    batch_size,
-    num_classes,
-    one_hot,
-    start_epoch=0,
-    workers=None,
-    _worker_init_fn=None,
-    fp16=False,
-    memory_format=torch.contiguous_format,
-):
-    return SynteticDataLoader(fp16, batch_size, num_classes, 3, 224, 224, one_hot, memory_format=memory_format), -1
-=======
     image_size,
     batch_size,
     num_classes,
@@ -862,4 +561,3 @@ def get_syntetic_loader(
         ),
         -1,
     )
->>>>>>> repo1

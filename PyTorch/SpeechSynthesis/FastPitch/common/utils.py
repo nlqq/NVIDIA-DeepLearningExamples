@@ -25,10 +25,6 @@
 #
 # *****************************************************************************
 
-<<<<<<< HEAD
-import os
-=======
->>>>>>> repo1
 from pathlib import Path
 from typing import Optional
 
@@ -40,11 +36,7 @@ from scipy.io.wavfile import read
 
 def mask_from_lens(lens, max_len: Optional[int] = None):
     if max_len is None:
-<<<<<<< HEAD
-        max_len = int(lens.max().item())
-=======
         max_len = lens.max()
->>>>>>> repo1
     ids = torch.arange(0, max_len, device=lens.device, dtype=lens.dtype)
     mask = torch.lt(ids, lens.unsqueeze(1))
     return mask
@@ -55,16 +47,6 @@ def load_wav_to_torch(full_path):
     return torch.FloatTensor(data.astype(np.float32)), sampling_rate
 
 
-<<<<<<< HEAD
-def load_filepaths_and_text(dataset_path, filename, split="|"):
-    def split_line(root, line):
-        parts = line.strip().split(split)
-        paths, text = parts[:-1], parts[-1]
-        return tuple(os.path.join(root, p) for p in paths) + (text,)
-    with open(filename, encoding='utf-8') as f:
-        filepaths_and_text = [split_line(dataset_path, line) for line in f]
-    return filepaths_and_text
-=======
 def load_filepaths_and_text(dataset_path, fnames, has_speakers=False, split="|"):
     def split_line(root, line):
         parts = line.strip().split(split)
@@ -79,7 +61,6 @@ def load_filepaths_and_text(dataset_path, fnames, has_speakers=False, split="|")
         with open(fname, encoding='utf-8') as f:
             fpaths_and_text += [split_line(dataset_path, line) for line in f]
     return fpaths_and_text
->>>>>>> repo1
 
 
 def stats_filename(dataset_path, filelist_path, feature_name):

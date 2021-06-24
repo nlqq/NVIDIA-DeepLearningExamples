@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-*.swp
-*.swo
-*.pyc
-__pycache__
-scripts_joc/
-runs*/
-notebooks/
-LJSpeech-1.1/
-output*
-=======
 runs*/
 LJSpeech-1.1/
 output*
@@ -25,4 +14,3 @@ __pycache__
 *.swp
 *.swo
 *.swn
->>>>>>> repo1

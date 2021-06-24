@@ -1,27 +1,5 @@
 #!/bin/bash
 
-<<<<<<< HEAD
-# Adjust env variables to maintain the global batch size
-#
-#    NGPU x BS x GRAD_ACC = 256.
-
-[ ! -n "$OUTPUT_DIR" ] && OUTPUT_DIR="./output"
-[ ! -n "$NGPU" ] && NGPU=8
-[ ! -n "$BS" ] && BS=32
-[ ! -n "$GRAD_ACC" ] && GRAD_ACC=1
-[ ! -n "$EPOCHS" ] && EPOCHS=1500
-[ "$AMP" == "true" ] && AMP_FLAG="--amp"
-
-GBS=$(($NGPU * $BS * $GRAD_ACC))
-[ $GBS -ne 256 ] && echo -e "\nWARNING: Global batch size changed from 256 to ${GBS}.\n"
-
-echo -e "\nSetup: ${NGPU}x${BS}x${GRAD_ACC} - global batch size ${GBS}\n"
-
-mkdir -p "$OUTPUT_DIR"
-python -m torch.distributed.launch --nproc_per_node ${NGPU} train.py \
-    --cuda \
-    --cudnn-enabled \
-=======
 export OMP_NUM_THREADS=1
 
 : ${NUM_GPUS:=8}
@@ -45,7 +23,6 @@ echo -e "\nSetup: ${NUM_GPUS}x${BS}x${GRAD_ACCUMULATION} - global batch size ${G
 mkdir -p "$OUTPUT_DIR"
 python -m torch.distributed.launch --nproc_per_node ${NUM_GPUS} train.py \
     --cuda \
->>>>>>> repo1
     -o "$OUTPUT_DIR/" \
     --log-file "$OUTPUT_DIR/nvlog.json" \
     --dataset-path LJSpeech-1.1 \
@@ -62,9 +39,5 @@ python -m torch.distributed.launch --nproc_per_node ${NUM_GPUS} train.py \
     --dur-predictor-loss-scale 0.1 \
     --pitch-predictor-loss-scale 0.1 \
     --weight-decay 1e-6 \
-<<<<<<< HEAD
-    --gradient-accumulation-steps ${GRAD_ACC} \
-=======
     --gradient-accumulation-steps ${GRAD_ACCUMULATION} \
->>>>>>> repo1
     ${AMP_FLAG}

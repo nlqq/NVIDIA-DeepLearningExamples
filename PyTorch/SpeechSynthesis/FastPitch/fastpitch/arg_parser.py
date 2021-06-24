@@ -27,11 +27,6 @@
 
 import argparse
 
-<<<<<<< HEAD
-from common.text import symbols
-
-=======
->>>>>>> repo1
 
 def parse_fastpitch_args(parent, add_help=False):
     """
@@ -39,29 +34,17 @@ def parse_fastpitch_args(parent, add_help=False):
     """
     parser = argparse.ArgumentParser(parents=[parent], add_help=add_help,
                                      allow_abbrev=False)
-<<<<<<< HEAD
-
-=======
->>>>>>> repo1
     io = parser.add_argument_group('io parameters')
     io.add_argument('--n-mel-channels', default=80, type=int,
                     help='Number of bins in mel-spectrograms')
     io.add_argument('--max-seq-len', default=2048, type=int,
                     help='')
-<<<<<<< HEAD
-    global symbols
-    len_symbols = len(symbols)
-    symbols = parser.add_argument_group('symbols parameters')
-    symbols.add_argument('--n-symbols', default=len_symbols, type=int,
-                         help='Number of symbols in dictionary')
-=======
 
     symbols = parser.add_argument_group('symbols parameters')
     symbols.add_argument('--n-symbols', default=148, type=int,
                          help='Number of symbols in dictionary')
     symbols.add_argument('--padding-idx', default=0, type=int,
                          help='Index of padding symbol in dictionary')
->>>>>>> repo1
     symbols.add_argument('--symbols-embedding-dim', default=384, type=int,
                          help='Input embedding dimension')
 
@@ -117,15 +100,6 @@ def parse_fastpitch_args(parent, add_help=False):
 
     pitch_pred = parser.add_argument_group('pitch predictor parameters')
     pitch_pred.add_argument('--pitch-predictor-kernel-size', default=3, type=int,
-<<<<<<< HEAD
-                          help='Pitch predictor conv-1D kernel size')
-    pitch_pred.add_argument('--pitch-predictor-filter-size', default=256, type=int,
-                          help='Pitch predictor conv-1D filter size')
-    pitch_pred.add_argument('--p-pitch-predictor-dropout', default=0.1, type=float,
-                          help='Pitch probability for pitch predictor')
-    pitch_pred.add_argument('--pitch-predictor-n-layers', default=2, type=int,
-                          help='Number of conv-1D layers')
-=======
                             help='Pitch predictor conv-1D kernel size')
     pitch_pred.add_argument('--pitch-predictor-filter-size', default=256, type=int,
                             help='Pitch predictor conv-1D filter size')
@@ -140,5 +114,4 @@ def parse_fastpitch_args(parent, add_help=False):
     cond.add_argument('--speaker-emb-weight', type=float, default=1.0,
                       help='Scale speaker embedding')
 
->>>>>>> repo1
     return parser

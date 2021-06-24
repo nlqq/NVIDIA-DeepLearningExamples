@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021 NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,14 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-<<<<<<< HEAD
-
-import os
-=======
 import math
 import os
 from collections import deque
->>>>>>> repo1
 from functools import reduce
 from itertools import combinations_with_replacement
 from typing import MutableSequence, Any, Sequence, List
@@ -119,27 +110,6 @@ def get_gpu_batch_sizes(global_batch_size: int, num_gpus: int = 4, batch_std: in
     return max(solutions, key=lambda sizes: reduce(lambda x, y: x * y, sizes))
 
 
-<<<<<<< HEAD
-def distribute_to_buckets(elements: MutableSequence[Any], buckets: Sequence[List[Any]], start_bucket: int = 0):
-    current_bucket = start_bucket % len(buckets)
-    while elements:
-        element = elements.pop()
-        buckets[current_bucket].append(element)
-        current_bucket = (current_bucket + 1) % len(buckets)
-    return current_bucket
-
-
-def get_criteo_device_mapping(num_gpus: int = 4, num_embeddings: int = 26, heavy_components=(0, 9, 19, 21, 20)):
-    """Get device mappings for hybrid parallelism
-
-    Bottom MLP running on device 0. 26 embeddings will be distributed across among all the devices. 0, 9, 19, 20, 21
-    are the large ones, 20GB each.
-
-    Args:
-        num_gpus (int): Default 4.
-        num_embeddings (int):
-        heavy_components (tuple):
-=======
 def argsort(sequence, reverse: bool = False):
     idx_pairs = [(x, i) for i, x in enumerate(sequence)]
     sorted_pairs = sorted(idx_pairs, key=lambda pair: pair[0], reverse=reverse)
@@ -181,26 +151,10 @@ def get_device_mapping(embedding_sizes: Sequence[int], num_gpus: int = 8):
     Args:
         embedding_sizes (Sequence[int]): embedding tables sizes
         num_gpus (int): Default 8.
->>>>>>> repo1
 
     Returns:
         device_mapping (dict):
     """
-<<<<<<< HEAD
-    bottom_mlp_index = -1
-    heavy_components = list(heavy_components)
-    regular_components = [x for x in range(num_embeddings) if x not in heavy_components]
-
-    gpu_buckets = [[] for _ in range(num_gpus)]
-    gpu_buckets[0].append(bottom_mlp_index)
-
-    next_bucket = distribute_to_buckets(heavy_components, gpu_buckets, start_bucket=1)
-    distribute_to_buckets(regular_components, gpu_buckets, start_bucket=next_bucket)
-
-    vectors_per_gpu = [len(bucket) for bucket in gpu_buckets]
-
-    gpu_buckets[0].pop(0)  # pop bottom mlp
-=======
     if num_gpus > 4:
         # for higher no. of GPUs, make sure the one with bottom mlp has no embeddings
         gpu_buckets = distribute_to_buckets(embedding_sizes, num_gpus - 1)  # leave one device out for the bottom MLP
@@ -210,7 +164,6 @@ def get_device_mapping(embedding_sizes: Sequence[int], num_gpus: int = 8):
 
     vectors_per_gpu = [len(bucket) for bucket in gpu_buckets]
     vectors_per_gpu[0] += 1  # count bottom mlp
->>>>>>> repo1
 
     return {
         'bottom_mlp': 0,

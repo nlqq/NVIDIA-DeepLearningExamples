@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-# Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright 2020 The Google AI Team, Stanford University and The HuggingFace Inc. team.
 # Copyright (c) 2020 NVIDIA CORPORATION. All rights reserved.
 #
->>>>>>> repo1
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -19,11 +15,8 @@
 
 from tokenization_utils import BertTokenizer
 
-<<<<<<< HEAD
-=======
 from tokenization_utils import BertTokenizer
 
->>>>>>> repo1
 VOCAB_FILES_NAMES = {"vocab_file": "vocab.txt"}
 
 PRETRAINED_VOCAB_FILES_MAP = {

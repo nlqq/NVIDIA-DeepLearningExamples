@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2019, NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2021, NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +13,6 @@
 # limitations under the License.
 
 # This script launches U-Net run in FP16 on 1 GPU for inference batch_size 1. Usage:
-<<<<<<< HEAD
-# bash unet_INFER_TF-AMP.sh <path to dataset> <path to results directory>
-
-horovodrun -np 1 python main.py --data_dir $1 --model_dir $2 --batch_size 1 --exec_mode predict --xla --amp
-=======
 # bash unet_INFER_TF-AMP.sh <path to dataset> <path to results directory> <fold>
 
 horovodrun -np 1 python main.py --data_dir $1 --model_dir $2 --batch_size 1 --exec_mode predict --xla --amp --fold $3
->>>>>>> repo1

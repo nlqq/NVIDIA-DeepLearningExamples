@@ -13,8 +13,6 @@
 
 import tensorflow as tf
 import time
-<<<<<<< HEAD
-=======
 import os
 
 def setup_xla_flags():
@@ -29,7 +27,6 @@ def setup_xla_flags():
       os.environ["TF_XLA_FLAGS"] = " --tf_xla_enable_lazy_compilation=false"
     except:
       os.environ["TF_XLA_FLAGS"] = " --tf_xla_enable_lazy_compilation false"
->>>>>>> repo1
 
 # report latency and throughput during eval
 class LogEvalRunHook(tf.estimator.SessionRunHook):

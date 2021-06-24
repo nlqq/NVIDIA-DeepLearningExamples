@@ -1,22 +1,10 @@
 # Deploying the DLRM model using Triton Inference Server
 
-<<<<<<< HEAD
-The [NVIDIA Triton Inference Server](https://github.com/NVIDIA/trtis-inference-server) provides a datacenter and cloud inferencing solution optimized for NVIDIA GPUs. The server provides an inference service via an HTTP or gRPC endpoint, allowing remote clients to request inferencing for any number of GPU or CPU models being managed by the server.
-
-=======
->>>>>>> repo1
 This folder contains instructions for deploment and exemplary client application to run inference on
 Triton Inference Server as well as detailed performance analysis.
 
 ## Table Of Contents
 
-<<<<<<< HEAD
-- [Running Triton Inference Server and client](#running-triton-inference-server-and-client)
-- [Latency vs Throughput](#throughputlatency-results)
-- [Dynamic batching support](#dynamic-batching-support)
-
-## Running Triton Inference Server and client
-=======
   * [Solution Overview](#solution-overview)
   * [Quick Start Guide](#quick-start-guide)
      * [Running Triton Inference Server and client](#running-triton-inference-server-and-client)
@@ -32,19 +20,14 @@ The [NVIDIA Triton Inference Server](https://github.com/NVIDIA/triton-inference-
 ## Quick Start Guide
 
 ### Running Triton Inference Server and client
->>>>>>> repo1
 
 The very first step of deployment is to acquire trained checkpoint and model configuration for this
 checkpoint. Default model configuration are stored inside `dlrm/config` directory.
 
-<<<<<<< HEAD
-### Inference container
-=======
 **Currently, our implementation only supports TorchScript deployment for models that fit into the memory of a single GPU.**
 You can read more about training DLRM models on different dataset configurations based on frequency threshold in the preprocessing step in [README](https://github.com/NVIDIA/DeepLearningExamples/blob/master/PyTorch/Recommendation/DLRM/README.md#preprocessing-on-gpu).
 
 #### Inference container
->>>>>>> repo1
 
 Every command below is called from special inference container. To build that container go to main
 repository folder and call
@@ -54,20 +37,12 @@ repository folder and call
 This command will download dependencies and build inference container. Then run shell inside the
 container:
 
-<<<<<<< HEAD
-`docker run -it --rm --gpus device=0 --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --net=host -v <PATH_TO_MODEL_REPOSITORY>:/repository dlrm-inference bash`
-=======
 `docker run -it --rm --gpus device=0 --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 --net=host -v <PATH_TO_MODEL_REPOSITORY>:/repository -v <PATH_TO_MODEL_CHECKPOINT>:/results/checkpoint -v <PATH_TO_DATASET>:/data dlrm-inference bash`
->>>>>>> repo1
 
 Here `--gpus '"device=0,1,2,3"'` selects GPUs indexed by ordinals `0,1,2` and `3`, respectively. The server will see only these GPUs. If you write `device=all`, then the server will see all the available GPUs. `PATH_TO_MODEL_REPOSITORY` indicates location where
 deployed models were stored.
 
-<<<<<<< HEAD
-### Deploying the model
-=======
 #### Deploying the model
->>>>>>> repo1
 
 To deploy model into Triton compatible format, `deployer.py` script can by used. This script is
 meant to be run from inside deployment docker container.
@@ -140,29 +115,14 @@ Following model specific arguments have to be specified for model deployment:
   --cpu                 Export cpu model instead of gpu.
 ```
 
-<<<<<<< HEAD
-For example, to deploy model into onnx format, using half precision and max batch size 4096 called
-`dlrm-onnx-16` execute:
-=======
 For example, to deploy model into TorchScript format, using half precision and max batch size 4096 called
 `dlrm-ts-trace-16` execute:
->>>>>>> repo1
 
 `python -m triton.deployer --ts-trace --triton-model-name dlrm-ts-trace-16 --triton-max-batch-size 4096 --save-dir /repository -- --model_checkpoint /results/checkpoint --fp16 --batch_size 4096 --num_numerical_features 13 --embedding_dim 128 --top_mlp_sizes 1024 1024 512 256 1 --bottom_mlp_sizes 512 256 128 --interaction_op dot --dataset /data`
 
 Where `model_checkpoint` is a checkpoint for a trained model with the same configuration as used during export and dataset (or at least dataset configuration)
 is mounted under `/data`
 
-<<<<<<< HEAD
-### Running the Triton server
-**NOTE: This step is executed outside inference container**
-
-1. `docker pull nvcr.io/nvidia/tritonserver:20.06-py3`
-2. `docker run -d --rm --gpus device=0 --ipc=host --network=host [--cpuset-cpus=0-15] -p 8000:8000 -p 8001:8001 -p 8002:8002 -v <PATH_TO_MODEL_REPOSITORY>:/models nvcr.io/nvidia/tritonserver:20.06-py3 tritonserver --model-repository=/models --log-verbose=1 --model-control-mode=explicit`
-
-Here `--gpus '"device=0,1,2,3"'` selects GPUs indexed by ordinals `0,1,2` and `3`, respectively. The server will see only these GPUs. If you write `device=all`, then the server will see all the available GPUs. `PATH_TO_MODEL_REPOSITORY` indicates location where
-deployed models were stored. Additional `--model-controle-mode` option allows to manually load and
-=======
 #### Running the Triton server
 **NOTE: This step is executed outside inference container**
 
@@ -171,16 +131,11 @@ deployed models were stored. Additional `--model-controle-mode` option allows to
 
 Here `--gpus '"device=0,1,2,3"'` selects GPUs indexed by ordinals `0,1,2` and `3`, respectively. The server will see only these GPUs. If you write `device=all`, then the server will see all the available GPUs. `PATH_TO_MODEL_REPOSITORY` indicates location where
 deployed models were stored. Additional `--model-control-mode` option allows to manually load and
->>>>>>> repo1
 unload models. This is especially useful when dealing with numerous large models like DLRM.
 
 For models exported to onnx format and hosted inside onnx runtime it might be required to limit visible cpu to fully utlize gpu acceleration. Use `--cpuset-cpus` docker option for that.
 
-<<<<<<< HEAD
-### Running client
-=======
 #### Running client
->>>>>>> repo1
 
 Exemplary client `client.py` allows to check model performance against synthetic or real validation
 data. Client connects to Triton server and perform inference.
@@ -188,57 +143,33 @@ data. Client connects to Triton server and perform inference.
 ```
 usage: client.py [-h] --triton-server-url TRITON_SERVER_URL
                  --triton-model-name TRITON_MODEL_NAME
-<<<<<<< HEAD
-                 [--triton-model-version TRITON_MODEL_VERSION]
-                 [-v] [-H HTTP_HEADER]
-                 --dataset_config DATASET_CONFIG
-                 [--inference_data INFERENCE_DATA] [--batch_size BATCH_SIZE]
-                 [--fp16]
-=======
                  [--triton-model-version TRITON_MODEL_VERSION] [-v]
                  [-H HTTP_HEADER] --dataset_config DATASET_CONFIG
                  [--inference_data INFERENCE_DATA] [--batch_size BATCH_SIZE]
                  [--drop_last_batch DROP_LAST_BATCH] [--fp16]
                  [--test_batches TEST_BATCHES]
->>>>>>> repo1
 
 optional arguments:
   -h, --help            show this help message and exit
   --triton-server-url TRITON_SERVER_URL
-<<<<<<< HEAD
-                        URL adress of trtion server (with port)
-=======
                         URL adress of triton server (with port)
->>>>>>> repo1
   --triton-model-name TRITON_MODEL_NAME
                         Triton deployed model name
   --triton-model-version TRITON_MODEL_VERSION
                         Triton model version
-<<<<<<< HEAD
-  -v, --verbose         Verbose mode.
-  -H HTTP_HEADER        HTTP headers to add to inference server requests.
-                        Format is -H"Header:Value".
-  --dataset_config DATASET_CONFIG
-                        Configuration file describing categorical features
-=======
   -v, --verbose         Enable verbose output
   -H HTTP_HEADER        HTTP headers to add to inference server requests.
                         Format is -H"Header:Value".
   --dataset_config DATASET_CONFIG
->>>>>>> repo1
   --inference_data INFERENCE_DATA
                         Path to file with inference data.
   --batch_size BATCH_SIZE
                         Inference request batch size
-<<<<<<< HEAD
-  --fp16                Use 16bit for numerical input
-=======
   --drop_last_batch DROP_LAST_BATCH
                         Drops the last batch size if it's not full
   --fp16                Use 16bit for numerical input
   --test_batches TEST_BATCHES
                         Specifies number of batches used in the inference
->>>>>>> repo1
 ```
 
 To run inference on model exported in previous steps, using data located under
@@ -247,11 +178,7 @@ To run inference on model exported in previous steps, using data located under
 `python -m triton.client --triton-server-url localhost:8000 --triton-model-name dlrm-ts-trace-16 --dataset_config /data/model_size.json --inference_data /data/test --batch_size 4096 --fp16`
 
 
-<<<<<<< HEAD
-### Gathering performance data
-=======
 #### Gathering performance data
->>>>>>> repo1
 Performance data can be gathered using `perf_client` tool. To use this tool, performance data needs
 to be dumped during deployment. To do that, use `--dump_perf_data` option for the deployer:
 
@@ -259,13 +186,6 @@ to be dumped during deployment. To do that, use `--dump_perf_data` option for th
 
 When perf data are dumped, `perf_client` can be used with following command:
 
-<<<<<<< HEAD
-`/workspace/bin/perf_client --max-threads 10 -m dlrm-onnx-16 -x 1 -p 5000 -v -i gRPC -u localhost:8001 -b 4096 -l 5000 --concurrency-range 1 --input-data /location/for/perfdata -f result.csv`
-
-For more information about `perf_client` please refer to [official documentation](https://docs.nvidia.com/deeplearning/sdk/triton-inference-server-master-branch-guide/docs/optimization.html#perf-client).
-
-## Throughput/Latency results
-=======
 `/workspace/bin/perf_client --max-threads 10 -m dlrm-ts-trace-16 -x 1 -p 5000 -v -i gRPC -u localhost:8001 -b 4096 -l 5000 --concurrency-range 1 --input-data /location/for/perfdata -f result.csv`
 
 For more information about `perf_client` please refer to [official documentation](https://docs.nvidia.com/deeplearning/sdk/triton-inference-server-master-branch-guide/docs/optimization.html#perf-client).
@@ -273,7 +193,6 @@ For more information about `perf_client` please refer to [official documentation
 ## Performance
 
 ### Throughput/Latency results
->>>>>>> repo1
 
 Throughput is measured in recommendations/second, and latency in milliseconds.
 
@@ -355,14 +274,9 @@ Throughput is measured in recommendations/second, and latency in milliseconds.
 The plot above shows, that the GPU is saturated with batch size 4096. However, running inference with larger batches
 might be faster, than running several inference requests. Therefore, we choose 65536 as the optimal batch size.
 
-<<<<<<< HEAD
-
-## Dynamic batching support
-=======
 ## Advanced
 
 ### Dynamic batching support
->>>>>>> repo1
 The Triton server has a dynamic batching mechanism built in, that can be enabled. When it is enabled, then the server creates
 inference batches from the received requests. Since the output of the model is a single probability, the batch size of a
 single request may be large. Here it is assumed to be 4096. With dynamic batching enabled, the server will concatenate requests of this size into

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2019 NVIDIA CORPORATION. All rights reserved.
-=======
 # Copyright (c) 2019-2020, NVIDIA CORPORATION. All rights reserved.
->>>>>>> repo1
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -181,11 +177,7 @@ class ProjectedAdaptiveLogSoftmax(nn.Module):
                 l_idx, r_idx = cutoff_values[i], cutoff_values[i + 1]
 
                 mask_i = (target >= l_idx) & (target < r_idx)
-<<<<<<< HEAD
-                indices_i = mask_i.nonzero().squeeze()
-=======
                 indices_i = mask_i.nonzero(as_tuple=False).squeeze()
->>>>>>> repo1
 
                 if indices_i.numel() == 0:
                     continue

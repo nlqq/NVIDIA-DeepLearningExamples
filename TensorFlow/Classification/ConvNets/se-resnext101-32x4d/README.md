@@ -198,19 +198,12 @@ To train your model using mixed precision or TF32 with Tensor Cores or FP32, per
 1. Clone the repository.
 ```
 git clone https://github.com/NVIDIA/DeepLearningExamples
-<<<<<<< HEAD
-cd DeepLearningExamples/TensorFlow/Classification/RN50v1.5
-=======
 cd DeepLearningExamples/TensorFlow/Classification/ConvNets
->>>>>>> repo1
 ```
 
 2. Download and preprocess the dataset.
 The SE-ResNext101-32x4d script operates on ImageNet 1k, a widely popular image classification dataset from the ILSVRC challenge.
 
-<<<<<<< HEAD
-To download and preprocess the dataset, use the [Generate ImageNet for TensorFlow](https://github.com/tensorflow/models/blob/master/research/inception/inception/data/download_and_preprocess_imagenet.sh) script. The dataset will be downloaded to a directory specified as the first parameter of the script.
-=======
 * [Download the images](http://image-net.org/download-images)
 * Extract the training and validation data:
 ```bash
@@ -221,7 +214,6 @@ cd ..
 mkdir val && mv ILSVRC2012_img_val.tar val/ && cd val && tar -xvf ILSVRC2012_img_val.tar
 ```
 * Preprocess dataset to TFRecord form using [script](https://github.com/tensorflow/models/blob/archive/research/inception/inception/data/build_imagenet_data.py). Additional metadata from [autors repository](https://github.com/tensorflow/models/tree/archive/research/inception/inception/data) might be required.
->>>>>>> repo1
 
 3. Build the SE-ResNext101-32x4d TensorFlow NGC container.
 ```bash
@@ -254,26 +246,16 @@ For example, to train on DGX-1 for 90 epochs using AMP, run:
 Additionally, features like DALI data preprocessing or TensorFlow XLA can be enabled with
 following arguments when running those scripts:
 
-<<<<<<< HEAD
-`bash ./se-resnext101-32x4d/training/DGX1_SE-RNxt101-32x4d_AMP_90E.sh /path/to/result /data/ --use_xla --use_dali`
-=======
 `bash ./se-resnext101-32x4d/training/DGX1_SE-RNxt101-32x4d_AMP_90E.sh /path/to/result /data/ --xla --dali`
->>>>>>> repo1
 
 7. Start validation/evaluation.
 To evaluate the validation dataset located in `/data/tfrecords`, run `main.py` with
 `--mode=evaluate`. For example:
 
 `python main.py --arch=se-resnext101-32x4d --mode=evaluate --data_dir=/data/tfrecords --batch_size <batch size> --model_dir
-<<<<<<< HEAD
-<model location> --results_dir <output location> [--use_xla] [--use_tf_amp]`
-
-The optional `--use_xla` and `--use_tf_amp` flags control XLA and AMP during evaluation. 
-=======
 <model location> --results_dir <output location> [--xla] [--amp]`
 
 The optional `--xla` and `--amp` flags control XLA and AMP during evaluation. 
->>>>>>> repo1
 
 ## Advanced
 
@@ -312,57 +294,6 @@ The `runtime/` directory contains the following module that define the mechanics
 The script for training and evaluating the ResNext101-32x4d model has a variety of parameters that control these processes.
 
 ```
-<<<<<<< HEAD
-usage: main.py [-h]
-               [--arch {resnet50,resnext101-32x4d,se-resnext101-32x4d}]
-               [--mode {train,train_and_evaluate,evaluate,predict,training_benchmark,inference_benchmark}]
-               [--data_dir DATA_DIR] [--data_idx_dir DATA_IDX_DIR]
-               [--export_dir EXPORT_DIR] [--to_predict TO_PREDICT]
-               [--batch_size BATCH_SIZE] [--num_iter NUM_ITER]
-               [--iter_unit {epoch,batch}] [--warmup_steps WARMUP_STEPS]
-               [--model_dir MODEL_DIR] [--results_dir RESULTS_DIR]
-               [--log_filename LOG_FILENAME] [--display_every DISPLAY_EVERY]
-               [--lr_init LR_INIT] [--lr_warmup_epochs LR_WARMUP_EPOCHS]
-               [--weight_decay WEIGHT_DECAY] [--weight_init {fan_in,fan_out}]
-               [--momentum MOMENTUM] [--loss_scale LOSS_SCALE]
-               [--label_smoothing LABEL_SMOOTHING] [--mixup MIXUP]
-               [--use_static_loss_scaling | --nouse_static_loss_scaling]
-               [--use_xla | --nouse_xla] [--use_dali | --nouse_dali]
-               [--use_tf_amp | --nouse_tf_amp]
-               [--use_cosine_lr | --nouse_cosine_lr] [--seed SEED]
-               [--gpu_memory_fraction GPU_MEMORY_FRACTION] [--gpu_id GPU_ID]
-
-JoC-RN50v1.5-TF
-
-optional arguments:
-  -h, --help            Show this help message and exit
-  --arch {resnet50,resnext101-32x4d,se-resnext101-32x4d}
-                        Architecture of model to run (to run se-resnext-32x4d set
-                        --arch=se-rensext101-32x4d)
-  --mode {train,train_and_evaluate,evaluate,predict,training_benchmark,inference_benchmark}
-                        The execution mode of the script.
-  --data_dir DATA_DIR   Path to dataset in TFRecord format. Files should be
-                        named 'train-*' and 'validation-*'.
-  --data_idx_dir DATA_IDX_DIR
-                        Path to index files for DALI. Files should be named
-                        'train-*' and 'validation-*'.
-  --export_dir EXPORT_DIR
-                        Directory in which to write exported SavedModel.
-  --to_predict TO_PREDICT
-                        Path to file or directory of files to run prediction
-                        on.
-  --batch_size BATCH_SIZE
-                        Size of each minibatch per GPU.
-  --num_iter NUM_ITER   Number of iterations to run.
-  --iter_unit {epoch,batch}
-                        Unit of iterations.
-  --warmup_steps WARMUP_STEPS
-                        Number of steps considered as warmup and not taken
-                        into account for performance measurements.
-  --model_dir MODEL_DIR
-                        Directory in which to write the model. If undefined,
-                        results directory will be used.
-=======
 usage: main.py [-h] [--arch {resnet50,resnext101-32x4d,se-resnext101-32x4d}]
                [--mode {train,train_and_evaluate,evaluate,predict,training_benchmark,inference_benchmark}]
                [--export_dir EXPORT_DIR] [--to_predict TO_PREDICT]       
@@ -409,20 +340,10 @@ optional arguments:
   --model_dir MODEL_DIR                
                         Directory in which to write model. If undefined,         
                         results dir will be used.                                                  
->>>>>>> repo1
   --results_dir RESULTS_DIR
                         Directory in which to write training logs, summaries
                         and checkpoints.
   --log_filename LOG_FILENAME
-<<<<<<< HEAD
-                        Name of the JSON file to which write the training log
-  --display_every DISPLAY_EVERY
-                        How often (in batches) to print out running
-                        information.
-  --lr_init LR_INIT     Initial value for the learning rate.
-  --lr_warmup_epochs LR_WARMUP_EPOCHS
-                        Number of warmup epochs for the learning rate schedule.
-=======
                         Name of the JSON file to which write the training log.
   --display_every DISPLAY_EVERY
                         How often (in batches) to print out running
@@ -460,42 +381,15 @@ Training arguments:
   --lr_init LR_INIT     Initial value for the learning rate.
   --lr_warmup_epochs LR_WARMUP_EPOCHS
                         Number of warmup epochs for learning rate schedule.
->>>>>>> repo1
   --weight_decay WEIGHT_DECAY
                         Weight Decay scale factor.
   --weight_init {fan_in,fan_out}
                         Model weight initialization method.
-<<<<<<< HEAD
-  --momentum MOMENTUM   SGD momentum value for the momentum optimizer.
-  --loss_scale LOSS_SCALE
-                        Loss scale for FP16 training and fast math FP32.
-=======
   --momentum MOMENTUM   SGD momentum value for the Momentum optimizer.
->>>>>>> repo1
   --label_smoothing LABEL_SMOOTHING
                         The value of label smoothing.
   --mixup MIXUP         The alpha parameter for mixup (if 0 then mixup is not
                         applied).
-<<<<<<< HEAD
-  --use_static_loss_scaling
-                        Use static loss scaling in FP16 or FP32 AMP.
-  --nouse_static_loss_scaling
-  --use_xla             Enable XLA (Accelerated Linear Algebra) computation
-                        for improved performance.
-  --nouse_xla
-  --use_dali            Enable DALI data input.
-  --nouse_dali
-  --use_tf_amp          Enable AMP to speedup FP32
-                        computation using Tensor Cores.
-  --nouse_tf_amp
-  --use_cosine_lr       Use cosine learning rate schedule.
-  --nouse_cosine_lr
-  --seed SEED           Random seed.
-  --gpu_memory_fraction GPU_MEMORY_FRACTION
-                        Limit memory fraction used by the training script for DALI
-  --gpu_id GPU_ID       Specify the ID of the target GPU on a multi-device platform.
-                        Effective only for single-GPU mode.
-=======
   --cosine_lr           Use cosine learning rate schedule.
 
 Generic optimization arguments:
@@ -510,7 +404,6 @@ Automatic Mixed Precision arguments:
   --static_loss_scale STATIC_LOSS_SCALE
                         Use static loss scaling in FP32 AMP.
 
->>>>>>> repo1
 ```
 
 ### Inference process
@@ -518,11 +411,7 @@ To run inference on a single example with a checkpoint and a model script, use:
 
 `python main.py --arch=se-resnext101-32x4d --mode predict --model_dir <path to model> --to_predict <path to image> --results_dir <path to results>`
 
-<<<<<<< HEAD
-The optional `--use_xla` and `--use_tf_amp` flags control XLA and AMP during inference.
-=======
 The optional `--xla` and `--amp` flags control XLA and AMP during inference.
->>>>>>> repo1
 
 ## Performance
 
@@ -541,11 +430,7 @@ To benchmark the training performance on a specific batch size, run:
         
     * AMP
 
-<<<<<<< HEAD
-        `python ./main.py --arch=se-resnext101-32x4d --mode=training_benchmark  --use_tf_amp --warmup_steps 200 --batch_size <batch size> --data_dir=<path to imagenet> --results_dir=<path to results directory>`
-=======
         `python ./main.py --arch=se-resnext101-32x4d --mode=training_benchmark  --amp --warmup_steps 200 --batch_size <batch size> --data_dir=<path to imagenet> --results_dir=<path to results directory>`
->>>>>>> repo1
         
 * For multiple GPUs
     * FP32 / TF32
@@ -554,27 +439,17 @@ To benchmark the training performance on a specific batch size, run:
         
     * AMP
 
-<<<<<<< HEAD
-        `mpiexec --allow-run-as-root --bind-to socket -np <num_gpus> python ./main.py --arch=se-resnext101-32x4d --mode=training_benchmark --use_tf_amp --batch_size <batch size> --data_dir=<path to imagenet> --results_dir=<path to results directory>`
-=======
         `mpiexec --allow-run-as-root --bind-to socket -np <num_gpus> python ./main.py --arch=se-resnext101-32x4d --mode=training_benchmark --amp --batch_size <batch size> --data_dir=<path to imagenet> --results_dir=<path to results directory>`
->>>>>>> repo1
         
         
 Each of these scripts runs 200 warm-up iterations and measures the first epoch.
 
 To control warmup and benchmark length, use the `--warmup_steps`, `--num_iter` and `--iter_unit` flags. Features like XLA or DALI can be controlled
-<<<<<<< HEAD
-with `--use_xla` and `--use_dali` flags. 
-Suggested batch sizes for training are 96 for mixed precision training and 64 for single precision training per single V100 16 GB.
-
-=======
 with `--xla` and `--dali` flags. For proper throughput reporting the value of `--num_iter` must be greater than `--warmup_steps` value.
 Suggested batch sizes for training are 96 for mixed precision training and 64 for single precision training per single V100 16 GB.
 
 If no `--data_dir=<path to imagenet>` flag is specified then the benchmarks will use a synthetic dataset. The resolution of synthetic images used can be controlled with `--synthetic_data_size` flag.
 
->>>>>>> repo1
 
 #### Inference performance benchmark
 
@@ -586,18 +461,11 @@ To benchmark the inference performance on a specific batch size, run:
 
 * AMP
 
-<<<<<<< HEAD
-`python ./main.py --arch=se-resnext101-32x4d --mode=inference_benchmark --use_tf_amp --warmup_steps 20 --num_iter 100 --iter_unit batch --batch_size <batch size> --data_dir=<path to imagenet> --results_dir=<path to results directory>`
-
-By default, each of these scripts runs 20 warm-up iterations and measures the next 80 iterations.
-To control warm-up and benchmark length, use the `--warmup_steps`, `--num_iter` and `--iter_unit` flags.
-=======
 `python ./main.py --arch=se-resnext101-32x4d --mode=inference_benchmark --amp --warmup_steps 20 --num_iter 100 --iter_unit batch --batch_size <batch size> --data_dir=<path to imagenet> --results_dir=<path to results directory>`
 
 By default, each of these scripts runs 20 warm-up iterations and measures the next 80 iterations.
 To control warm-up and benchmark length, use the `--warmup_steps`, `--num_iter` and `--iter_unit` flags.
 If no `--data_dir=<path to imagenet>` flag is specified then the benchmarks will use a synthetic dataset.
->>>>>>> repo1
 
 The benchmark can be automated with the `inference_benchmark.sh` script provided in `se-resnext101-32x4d`, by simply running:
 `bash ./se-resnext101-32x4d/inference_benchmark.sh <data dir> <data idx dir>`
@@ -605,12 +473,9 @@ The benchmark can be automated with the `inference_benchmark.sh` script provided
 The `<data dir>` parameter refers to the input data directory (by default `/data/tfrecords` inside the container). 
 By default, the benchmark tests the following configurations: **FP32**, **AMP**, **AMP + XLA** with different batch sizes.
 When the optional directory with the DALI index files `<data idx dir>` is specified, the benchmark executes an additional **DALI + AMP + XLA** configuration.
-<<<<<<< HEAD
-=======
 For proper throughput reporting the value of `--num_iter` must be greater than `--warmup_steps` value.
 
 For performance benchamrk of raw model, synthetic dataset can be used. To use synthetic dataset, use `--synthetic_data_size` flag instead of `--data_dir` to specify input image size.
->>>>>>> repo1
 
 ### Results
 
@@ -652,13 +517,8 @@ on NVIDIA DGX A100 (8x A100 40GB) GPUs. Performance numbers (in images per secon
 
 | GPUs | Batch Size / GPU | Throughput - TF32 + XLA | Throughput - mixed precision + XLA | Throughput speedup (TF32 - mixed precision) | Weak scaling - TF32 + XLA | Weak scaling - mixed precision + XLA |
 |----|---------------|---------------|------------------------|-----------------|-----------|-------------------|
-<<<<<<< HEAD
-| 1  | 128 (TF) / 256 (AMP) | 313 img/s  | 895 img/s    | 2.86x           | 1.00x     | 1.00x             |
-| 8  | 128 (TF) / 256 (AMP) | 2400 img/s | 6930 img/s   | 2.88x           | 7.66x     | 7.74x             |
-=======
 | 1  | 128 (TF) / 256 (AMP) | 342 img/s  | 975 img/s    | 2.86x           | 1.00x     | 1.00x             |
 | 8  | 128 (TF) / 256 (AMP) | 2610 img/s | 7230 img/s   | 2.77x           | 7.63x     | 7.41x             |
->>>>>>> repo1
 
 ##### Training performance: NVIDIA DGX-1 (8x V100 16G)
 Our results were obtained by running the `se-resnext101-32x4d/training/training_perf.sh` benchmark script in the 
@@ -925,15 +785,9 @@ on NVIDIA T4 with (1x T4 16G) GPU.
 
 April 2020
    - Initial release
-<<<<<<< HEAD
-
-### Known issues
-Performance without XLA enabled is low. We recommend using XLA.
-=======
 August 2020
    - Updated command line argument names
    - Added support for syntetic dataset with different image size
 
 ### Known issues
 Performance without XLA enabled is low due to BN + ReLU fusion bug.
->>>>>>> repo1

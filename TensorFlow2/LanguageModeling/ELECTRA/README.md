@@ -2,10 +2,7 @@
  
 This repository provides a script and recipe to train the ELECTRA model for TensorFlow2 to achieve state-of-the-art accuracy, and is tested and maintained by NVIDIA.
  
-<<<<<<< HEAD
-=======
  
->>>>>>> repo1
 ## Table Of Contents
 - [Model overview](#model-overview)
   * [Model architecture](#model-architecture)
@@ -22,12 +19,6 @@ This repository provides a script and recipe to train the ELECTRA model for Tens
 - [Advanced](#advanced)
   * [Scripts and sample code](#scripts-and-sample-code)
   * [Parameters](#parameters)
-<<<<<<< HEAD
-    + [Fine tuning parameters](#fine-tuning-parameters)
-  * [Command-line options](#command-line-options)
-  * [Getting the data](#getting-the-data)
-  * [Training process](#training-process)
-=======
     + [Pre-training parameters](#pre-training-parameters)
     + [Fine-tuning parameters](#fine-tuning-parameters)
   * [Command-line options](#command-line-options)
@@ -36,7 +27,6 @@ This repository provides a script and recipe to train the ELECTRA model for Tens
   * [Training process](#training-process)
     + [Pre-training](#pre-training)
     + [Multi-node](#multi-node)
->>>>>>> repo1
     + [Fine-tuning](#fine-tuning)
   * [Inference process](#inference-process)
     + [Fine-tuning inference](#fine-tuning-inference)
@@ -46,32 +36,12 @@ This repository provides a script and recipe to train the ELECTRA model for Tens
     + [Inference performance benchmark](#inference-performance-benchmark)
   * [Results](#results)
     + [Training accuracy results](#training-accuracy-results)
-<<<<<<< HEAD
-=======
       - [Pre-training loss curves](#pre-training-loss-curves)
       - [Pre-training loss results](#pre-training-loss-results)  
->>>>>>> repo1
       - [Fine-tuning accuracy: NVIDIA DGX A100 (8x A100 40GB)](#fine-tuning-accuracy-nvidia-dgx-a100-8x-a100-40gb)
       - [Fine-tuning accuracy: NVIDIA DGX-1 (8x V100 16GB)](#fine-tuning-accuracy-nvidia-dgx-1-8x-v100-16gb)
       - [Fine-tuning accuracy: NVIDIA DGX-2 (16x V100 32GB)](#fine-tuning-accuracy-nvidia-dgx-2-16x-v100-32gb)
       - [Training stability test](#training-stability-test)
-<<<<<<< HEAD
-        * [Fine-tuning stability test: NVIDIA DGX-1 (8x V100 16GB)](#fine-tuning-stability-test-nvidia-dgx-1-8x-v100-16gb)
-    + [Training performance results](#training-performance-results)
-      - [Training performance: NVIDIA DGX A100 (8x A100 40GB)](#training-performance-nvidia-dgx-a100-8x-a100-40gb)
-        * [Fine-tuning NVIDIA DGX A100 (8x A100 40GB)](#fine-tuning-nvidia-dgx-a100-8x-a100-40gb)
-      - [Training performance: NVIDIA DGX-1 (8x V100 16GB)](#training-performance-nvidia-dgx-1-8x-v100-16gb)
-        * [Fine-tuning NVIDIA DGX-1 (8x V100 16GB)](#fine-tuning-nvidia-dgx-1-8x-v100-16gb)
-      - [Training performance: NVIDIA DGX-2 (16x V100 32GB)](#training-performance-nvidia-dgx-2-16x-v100-32gb)
-        * [Fine-tuning NVIDIA DGX-2 With 32GB](#fine-tuning-nvidia-dgx-2-with-32gb)
-    + [Inference performance results](#inference-performance-results)
-      - [Inference performance: NVIDIA DGX A100 (1x A100 40GB)](#inference-performance-nvidia-dgx-a100-1x-a100-40gb)
-        * [Fine-tuning inference on NVIDIA DGX A100 (1x A100 40GB)](#fine-tuning-inference-on-nvidia-dgx-a100-1x-a100-40gb)
-      - [Inference performance: NVIDIA DGX-1 (1x V100 16GB)](#inference-performance-nvidia-dgx-1-1x-v100-16gb)
-        * [Fine-tuning inference on NVIDIA DGX-1 with 16GB](#fine-tuning-inference-on-nvidia-dgx-1-with-16gb)
-      - [Inference performance: NVIDIA DGX-2 (1x V100 32GB)](#inference-performance-nvidia-dgx-2-1x-v100-32gb)
-        * [Fine-tuning inference on NVIDIA DGX-2 with 32GB](#fine-tuning-inference-on-nvidia-dgx-2-with-32gb)
-=======
         * [Pre-training stability test: NVIDIA DGX A100 (8x A100 40GB)](#pre-training-stability-test-nvidia-dgx-a100-8x-a100-40gb)
         * [Fine-tuning stability test: NVIDIA DGX-1 (8x V100 16GB)](#fine-tuning-stability-test-nvidia-dgx-1-8x-v100-16gb)
     + [Training performance results](#training-performance-results)
@@ -89,22 +59,12 @@ This repository provides a script and recipe to train the ELECTRA model for Tens
         * [Fine-tuning inference on NVIDIA DGX A100 (1x A100 40GB)](#fine-tuning-inference-on-nvidia-dgx-a100-1x-a100-40gb)
       - [Inference performance: NVIDIA T4](#inference-performance-nvidia-t4)
         * [Fine-tuning inference on NVIDIA T4](#fine-tuning-inference-on-nvidia-t4)
->>>>>>> repo1
 - [Release notes](#release-notes)
   * [Changelog](#changelog)
   * [Known issues](#known-issues)
  
 ## Model overview
  
-<<<<<<< HEAD
-Electra, Efficiently Learning an Encoder that Classifies Token Replacements Accurately, is novel pre-training language representations which outperforms existing techniques given the same compute budget on a wide array of Natural Language Processing (NLP) tasks. This model is based on the [ELECTRA: Pre-training Text Encoders as Discriminators Rather Than Generators](https://openreview.net/forum?id=r1xMH1BtvB) paper. NVIDIA's implementation of ELECTRA is an optimized version of the [Hugging Face implementation](https://huggingface.co/transformers/model_doc/electra.html), leveraging mixed precision arithmetic and Tensor Cores on Volta, Turing, and the NVIDIA Ampere GPU architectures for faster training times while maintaining target accuracy.
- 
-This repository contains scripts to interactively launch data download, training, benchmarking and inference routines in a Docker container for fine-tuning for tasks such as question answering. The major differences between the original implementation of the paper and this version of ELECTRA are as follows:
- 
--   Fused Adam optimizer for fine tuning tasks
--   Fused CUDA kernels for better performance LayerNorm
--   Automatic mixed precision (AMP) training support
-=======
 Electra (Efficiently Learning an Encoder that Classifies Token Replacements Accurately), is a novel pre-training method for language representations which outperforms existing techniques, given the same compute budget on a wide array of Natural Language Processing (NLP) tasks. This model is based on the [ELECTRA: Pre-training Text Encoders as Discriminators Rather Than Generators](https://openreview.net/forum?id=r1xMH1BtvB) paper. NVIDIA's implementation of ELECTRA is an optimized version of the [Hugging Face implementation](https://huggingface.co/transformers/model_doc/electra.html), leveraging mixed precision arithmetic and Tensor Cores on Volta, Turing, and the NVIDIA Ampere GPU architectures for faster training times with state-of-the-art accuracy.
  
 This repository contains the scripts to interactively launch data download, training, benchmarking and inference routines in a Docker container for pre-training on your own dataset (Wikipedia and BookCorpus shown as an example), and fine-tuning for tasks such as question answering. The major differences between the original implementation as described in the paper and this version of ELECTRA are as follows:
@@ -113,25 +73,16 @@ This repository contains the scripts to interactively launch data download, trai
 -   Scripts to preprocess downloaded data or a custom corpus into inputs and targets for pre-training in a modular fashion
 -   Automatic mixed precision (AMP) support and optimized for performance
 -   Multi-GPU and Multi-node training support with push-button scripts to reach state-of-the-art accuracy and performance.
->>>>>>> repo1
  
 Other publicly available implementations of Electra include:
 1. [Hugging Face](https://huggingface.co/transformers/model_doc/electra.html)
 2. [Google's implementation](https://github.com/google-research/electra)
  
-<<<<<<< HEAD
-This model trains with mixed precision Tensor Cores on Volta and provides a push-button solution to pretraining on a corpus of choice. As a result, researchers can get results 4x faster than training without Tensor Cores. This model is tested against each NGC monthly container release to ensure consistent accuracy and performance over time.
- 
-### Model architecture
- 
-ELECTRA is a combination of two transformer models: a generator and a discriminator. The generator’s role is to replace tokens in a sequence, and is therefore trained as a masked language model. The discriminator, which is the model we’re interested in, tries to identify which tokens were replaced by the generator in the sequence. Both generator and discriminator use the same architecture as the encoder of the Transformer. The encoder is simply a stack of Transformer blocks, which consist of a multi-head attention layer followed by successive stages of feed-forward networks and layer normalization. The multi-head attention layer accomplishes self-attention on multiple input representations.
-=======
 This model is trained with mixed precision using Tensor Cores on Volta, Turing, and the NVIDIA Ampere GPU architectures. Additionally, this model provides push-button solutions to pre-training, fine-tuning and inference and on a corpus of choice. As a result, researchers can get results up to 4x faster than training without Tensor Cores. This model is tested against each NGC monthly container release to ensure consistent accuracy and performance over time.
  
 ### Model architecture
  
 ELECTRA is a combination of two Transformer models: a generator and a discriminator. The generator’s role is to replace tokens in a sequence, and is therefore trained as a masked language model. The discriminator, which is the model we are interested in, tries to identify which tokens were replaced by the generator in the sequence. Both generator and discriminator use the same architecture as the encoder of the Transformer. The encoder is simply a stack of Transformer blocks, which consist of a multi-head attention layer followed by successive stages of feed-forward networks and layer normalization. The multi-head attention layer performs self-attention on multiple input representations.
->>>>>>> repo1
  
 ![Figure 1-1](https://1.bp.blogspot.com/-sHybc03nJRo/XmfLongdVYI/AAAAAAAAFbI/a0t5w_zOZ-UtxYaoQlVkmTRsyFJyFddtQCLcBGAsYHQ/s1600/image1.png "ELECTRA architecture")
  
@@ -139,11 +90,7 @@ ELECTRA is a combination of two Transformer models: a generator and a discrimina
  
 ### Default configuration
  
-<<<<<<< HEAD
-ELECTRA uses a new pre-training task, called replaced token detection (RTD), that trains a bidirectional model (like a MLM) while learning from all input positions (like a LM). Inspired by generative adversarial networks (GANs), instead of corrupting the input by replacing tokens with “[MASK]” as in BERT, the generator is trained to corrupt the input by replacing some input tokens with incorrect, but somewhat plausible, fakes. On the other hand, the discriminator is trained to distinguish between “real” and “fake” input data. 
-=======
 ELECTRA uses a new pre-training task called replaced token detection (RTD), that trains a bidirectional model (like a MLM) while learning from all input positions (like a LM). Inspired by generative adversarial networks (GANs), instead of corrupting the input by replacing tokens with “[MASK]” as in BERT, the generator is trained to corrupt the input by replacing some input tokens with incorrect, but somewhat plausible, fakes. On the other hand, the discriminator is trained to distinguish between “real” and “fake” input data. 
->>>>>>> repo1
  
 The [Google ELECTRA repository](https://github.com/google-research/electra) reports the results for three configurations of ELECTRA, each corresponding to a unique model size. This implementation provides the same configurations by default, which are described in the table below.
  
@@ -154,17 +101,6 @@ The [Google ELECTRA repository](https://github.com/google-research/electra) repo
 |ELECTRA_LARGE|24 encoder|1024 |335M|
  
 The following features were implemented in this model:
-<<<<<<< HEAD
--   General:
-  - Mixed precision support with TensorFlow Automatic Mixed Precision (TF-AMP)
-  - Multi-GPU support using Horovod
-  - XLA support
-  
--   Inference:
-  - Joint predictions with beam search. The default beam size is 4.
- 
- 
-=======
 - General:
   - Mixed precision support with TensorFlow Automatic Mixed Precision (TF-AMP)
   - Multi-GPU support using Horovod
@@ -180,24 +116,12 @@ The following features were implemented in this model:
 - Inference:
   - Joint predictions with beam search.
  
->>>>>>> repo1
 ### Feature support matrix
  
 The following features are supported by this model.
  
 | **Feature** | **ELECTRA** |
 |:---------:|:----------:|
-<<<<<<< HEAD
-|Automatic mixed precision (AMP)|Yes|
-|Horovod Multi-GPU|Yes|
- 
- 
- 
-#### Features
- 
-[AMP](https://nvidia.github.io/apex/amp.html) is an abbreviation used for automatic mixed precision training.
- 
-=======
 |LAMB|Yes|
 |Automatic mixed precision (AMP)|Yes|
 |XLA|Yes|
@@ -226,7 +150,6 @@ XLA is a domain-specific compiler for linear algebra that can accelerate TensorF
 **Multi-node Training**
  
 Supported on a Pyxis/Enroot Slurm cluster.
->>>>>>> repo1
  
 ### Mixed precision training
  
@@ -235,11 +158,7 @@ Mixed precision is the combined use of different numerical precisions in a compu
 1.  Porting the model to use the FP16 data type where appropriate.
 2.  Adding loss scaling to preserve small gradient values.
  
-<<<<<<< HEAD
-This can now be achieved using Automatic Mixed Precision (AMP) for TensorFlow to enable the full [mixed precision methodology](https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html#tensorflow) in your existing TensorFlow model code.  AMP enables mixed precision training on Volta, Turing, and NVIDIA Ampere GPU architectures automatically. The TensorFlow framework code makes all necessary model changes internally.
-=======
 This can now be achieved using Automatic Mixed Precision (AMP) for TensorFlow to enable the full [mixed precision methodology](https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html#tensorflow) in your existing TensorFlow model code. AMP enables mixed precision training on Volta, Turing, and NVIDIA Ampere GPU architectures automatically. The TensorFlow framework code makes all necessary model changes internally.
->>>>>>> repo1
  
 In TF-AMP, the computational graph is optimized to use as few casts as necessary and maximize the use of FP16, and the loss scaling is automatically applied inside of supported optimizers. AMP can be configured to work with the existing tf.contrib loss scaling manager by disabling the AMP scaling with a single environment variable to perform only the automatic mixed-precision optimization. It accomplishes this by automatically rewriting all computation graphs with the necessary operations to enable mixed precision training and automatic loss scaling.
  
@@ -247,27 +166,10 @@ For information about:
 -   How to train using mixed precision, see the [Mixed Precision Training](https://arxiv.org/abs/1710.03740) paper and [Training With Mixed Precision](https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html) documentation.
 -   Techniques used for mixed precision training, see the [Mixed-Precision Training of Deep Neural Networks](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/) blog.
 -   How to access and enable AMP for TensorFlow, see [Using TF-AMP](https://docs.nvidia.com/deeplearning/dgx/tensorflow-user-guide/index.html#tfamp) from the TensorFlow User Guide.
-<<<<<<< HEAD
--   APEX tools for mixed precision training, see the [NVIDIA Apex: Tools for Easy Mixed-Precision Training in PyTorch](https://devblogs.nvidia.com/apex-pytorch-easy-mixed-precision-training/).
-=======
->>>>>>> repo1
  
  
 #### Enabling mixed precision
  
-<<<<<<< HEAD
-In this repository, Mixed precision is enabled in TensorFlow by using the Automatic Mixed Precision (TF-AMP) extension which casts variables to half-precision upon retrieval, while storing variables in single-precision format. Furthermore, to preserve small gradient magnitudes in backpropagation, a [loss scaling](https://docs.nvidia.com/deeplearning/sdk/mixed-precision-training/index.html#lossscaling) step must be included when applying gradients. In TensorFlow, loss scaling can be applied statically by using simple multiplication of loss by a constant value or automatically, by TF-AMP. Automatic mixed precision makes all the adjustments internally in TensorFlow, providing two benefits over manual operations. First, programmers need not modify network model code, reducing development and maintenance effort. Second, using AMP maintains forward and backward compatibility with all the APIs for defining and running TensorFlow models.
- 
-To enable mixed precision, you can simply add the `--amp` to the command-line used to run the model.
- 
-#### Enabling TF32
- 
-TensorFloat-32 (TF32) is the new math mode in [NVIDIA A100](#https://www.nvidia.com/en-us/data-center/a100/) GPUs for handling the matrix math also called tensor operations. TF32 running on Tensor Cores in A100 GPUs can provide up to 10x speedups compared to single-precision floating-point math (FP32) on Volta GPUs. 
- 
-TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models which require high dynamic range for weights or activations.
- 
-For more information, refer to the [TensorFloat-32 in the A100 GPU Accelerates AI Training, HPC up to 20x](#https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/) blog post.
-=======
 This implementation exploits the TensorFlow Automatic Mixed Precision feature. To enable AMP, you simply need to supply the `--amp` flag to the `run_pretraining.py` or `run_tf_squad.py` script. For reference, enabling AMP required us to apply the following changes to the code:
  
 1. Set the Keras mixed precision policy:
@@ -301,7 +203,6 @@ TensorFloat-32 (TF32) is the new math mode in [NVIDIA A100](https://www.nvidia.c
 TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models which require high dynamic range for weights or activations.
  
 For more information, refer to the [TensorFloat-32 in the A100 GPU Accelerates AI Training, HPC up to 20x](https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/) blog post.
->>>>>>> repo1
  
 TF32 is supported in the NVIDIA Ampere GPU architecture and is enabled by default.
  
@@ -319,14 +220,11 @@ Training a model on vast amounts of data on the same (or different) task to buil
 **Transformer**  
 The paper [Attention Is All You Need](https://arxiv.org/abs/1706.03762) introduces a novel architecture called Transformer that uses an attention mechanism and transforms one sequence into another.
  
-<<<<<<< HEAD
-=======
  **Phase 1**
 Pretraining on samples of sequence length 128 and at most 15% masked predictions per sequence.
  
 **Phase 2**
 Pretraining on samples of sequence length 512 and at most 15% masked predictions per sequence.
->>>>>>> repo1
  
 ## Setup
  
@@ -337,11 +235,7 @@ The following section lists the requirements that you need to meet in order to s
 This repository contains Dockerfile which extends the TensorFlow2 NGC container and encapsulates some dependencies. Aside from these dependencies, ensure you have the following components:
  
 -   [NVIDIA Docker](https://github.com/NVIDIA/nvidia-docker)
-<<<<<<< HEAD
--   [TensorFlow2 20.06-py3 NGC container or later](https://ngc.nvidia.com/registry/nvidia-tensorflow)
-=======
 -   [TensorFlow2 20.07-py3 NGC container or later](https://ngc.nvidia.com/registry/nvidia-tensorflow)
->>>>>>> repo1
 -   Supported GPUs:
     - [NVIDIA Volta architecture](https://www.nvidia.com/en-us/data-center/volta-gpu-architecture/)
     - [NVIDIA Turing architecture](https://www.nvidia.com/en-us/geforce/turing/)
@@ -354,27 +248,6 @@ For more information about how to get started with NGC containers, see the follo
  
 For those unable to use the TensorFlow 2 NGC container, to set up the required environment or create your own container, see the versioned [NVIDIA Container Support Matrix](https://docs.nvidia.com/deeplearning/dgx/support-matrix/index.html).
  
-<<<<<<< HEAD
-## Quick Start Guide
- 
-To train your model using mixed precision with Tensor Cores or using FP32, perform the following steps using the default parameters of the ELECTRA model. The default parameters for pretraining have been set to run on 8x A100 40G cards. For the specifics concerning training and inference, see the [Advanced](#advanced) section.
- 
-1. Clone the repository.
- 
-`git clone https://github.com/NVIDIA/DeepLearningExamples.git`
- 
-`cd DeepLearningExamples/TensorFlow2/LanguageModeling/ELECTRA`
- 
-2. Build ELECTRA on top of the NGC container.
-`bash scripts/docker/build.sh`
- 
-3. Start an interactive session in the NGC container to run training/inference.
-`bash scripts/docker/launch.sh`
- 
-Resultant logs of pretraining and fine-tuning routines are stored in the `results/` folder. Checkpoints are stored in the `checkpoints/`
- 
-Required data are downloaded in the `data/` directory by default.
-=======
 For multi-node, the sample provided in this repository requires [Enroot](https://github.com/NVIDIA/enroot) and [Pyxis](https://github.com/NVIDIA/pyxis) set up on a [SLURM](https://slurm.schedmd.com) cluster.
  
 More information on how to set up and launch can be found in the [Multi-node Documentation](https://docs.nvidia.com/ngc/multi-node-bert-user-guide).
@@ -403,37 +276,12 @@ bash scripts/docker/launch.sh
 Resultant logs of pre-training and fine-tuning routines are stored in the `results/` folder. Checkpoints are stored in the `results/<model-name>/` folder.
  
 Required data is downloaded into the `data/` directory by default.
->>>>>>> repo1
  
 4. Download and preprocess the dataset.
  
 This repository provides scripts to download, verify, and extract the following datasets:
  
 -   [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/) (fine-tuning for question answering)
-<<<<<<< HEAD
- 
-To download, verify, extract the datasets, and create the shards in `.hdf5` format, run:
-`/workspace/electra/data/create_datasets_from_start.sh`
- 
-5. Start fine-tuning with the SQuAD dataset.
- 
-The above pretrained ELECTRA representations can be fine tuned with just one additional output layer for a state-of-the-art question answering system. Running the following script launches fine-tuning for question answering with the SQuAD dataset.
-`bash scripts/run_squad.sh $(source scripts/configs/squad_config.sh && dgxa100_8gpu_amp) train_eval`
-
-More configs for different V100 and A100 hardware setups can be found in `scripts/configs/squad_config.sh`
- 
-6. Start validation/evaluation.
- 
-Validation can be performed with the `bash scripts/run_squad.sh $(source scripts/configs/squad_config.sh && dgxa100_8gpu_amp) eval`. Running training first is required to generate needed checkpoints.
- 
-7. Start inference/predictions.
- 
-Inference can be performed with the `bash scripts/run_squad.sh $(source scripts/configs/squad_config.sh && dgxa100_8gpu_amp) prediction`. Inference predictions are saved to `<OUTPUT_DIRECTORY>/predictions.json`.
- 
-## Advanced
- 
-The following sections provide greater details of the dataset, running training and inference, and the training results.
-=======
 -   Wikipedia (pre-training)
 -   BookCorpus (pre-training)
  
@@ -518,21 +366,12 @@ Inference predictions are saved to `<OUTPUT_DIRECTORY>/predictions.json`.
 ## Advanced
  
 The following sections provide greater details of the datasets, running training and inference, and the training results.
->>>>>>> repo1
  
 ### Scripts and sample code
  
 Descriptions of the key scripts and folders are provided below.
  
 -   `data/` - Contains scripts for downloading and preparing individual datasets, and will contain downloaded and processed datasets.
-<<<<<<< HEAD
--   `scripts/` - Contains shell scripts to launch data download, pre-training, and fine-tuning.
--   `run_squad.sh`  - Interface for launching question answering fine-tuning with `run_squad.py`.
--   `modeling.py` - Implements the ELECTRA pre-training and fine-tuning model architectures with TensorFlow2.
--   `optimization.py` - Implements the Adam optimizer with TensorFlow2.
--   `run_squad.py` - Implements fine tuning training and evaluation for question answering on the [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/) dataset.
- 
-=======
 -   `scripts/` - Contains shell scripts to launch the Docker container, data download, pre-training, fine-tuning and inference.
 -   `results/` - Folder where all training and inference results get stored by default.
 -   `run_squad.sh`  - Interface for launching question answering fine-tuning with `run_tf_squad.py`.
@@ -549,16 +388,10 @@ Descriptions of the key scripts and folders are provided below.
 -   `run_tf_squad.py` - Implements fine-tuning training and evaluation for question answering on the [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/) dataset.
 -   `inference.py` - Implements interactive question answering.
 -   `postprocess_pretrained_ckpt.py` - Implements extracting and saving the discriminator and the generator from the pretrained checkpoint.
->>>>>>> repo1
  
  
 ### Parameters
  
-<<<<<<< HEAD
-#### Fine tuning parameters
- 
-Default arguments are listed below in the order the scripts expects:
-=======
 #### Pre-training parameters
  
 ELECTRA is designed to pre-train deep bidirectional networks for language representations. The following scripts replicate pre-training on Wikipedia + BookCorpus from this [paper](https://openreview.net/forum?id=r1xMH1BtvB). These scripts are general and can be used for pre-training language representations on any corpus of choice.
@@ -672,17 +505,12 @@ The complete list of the available parameters for the `run_pretraining.py` scrip
 #### Fine-tuning parameters
  
 Default arguments are listed below in the order `scripts/run_squad.sh` expects:
->>>>>>> repo1
  
 -   ELECTRA MODEL - The default is `"google/electra-base-discriminator"`.
 -   Number of training Epochs - The default is `2`.
 -   Batch size - The default is `16`.
 -   Learning rate - The default is `4e-4`.
-<<<<<<< HEAD
--   Precision (either `amp` or `fp32`) - The default is `amp`.
-=======
 -   Precision (either `amp`, `tf32` or `fp32`) - The default is `amp`.
->>>>>>> repo1
 -   Number of GPUs - The default is `8`.
 -   Seed - The default is `1`.
 -   SQuAD version - The default is `1.1`
@@ -693,24 +521,10 @@ Default arguments are listed below in the order `scripts/run_squad.sh` expects:
  
 The script saves the checkpoint at the end of each epoch to the `checkpoints/` folder.
  
-<<<<<<< HEAD
- 
- 
-=======
->>>>>>> repo1
 The main script `run_tf_squad.py` specific parameters are:
  
 ```
  --electra_model ELECTRA_MODEL     - Specifies the type of ELECTRA model to use;
-<<<<<<< HEAD
-                                     should be one of the following:
-     google/electra-small-generator
-     google/electra-base-generator
-     google/electra-large-generator
-     google/electra-small-discriminator
-     google/electra-base-discriminator
-     google/electra-large-discriminator
-=======
                                      should be the discriminator of a pretrained checkpoint(output of postprocess_pretrained_ckpt.py)
                                      or one of the following:
               google/electra-small-generator
@@ -722,7 +536,6 @@ The main script `run_tf_squad.py` specific parameters are:
  
  --amp                        - If set, will perform computations using
                                 automatic mixed precision.
->>>>>>> repo1
  
  --data_dir DATA_DIR          - Path to the SQuAD json for training and evaluation.
  
@@ -751,15 +564,9 @@ The main script `run_tf_squad.py` specific parameters are:
                                 end predictions are not conditioned on one another.
     
  --joint_head <True|False>    - If true, beam search will be used to jointly predict
-<<<<<<< HEAD
-                                the start end end positions. Default is True.
- 
- --beam_size BEAM_SIZE        - The beam size used to do joint predictions. 
-=======
                                 the start and end positions. Default is True.
  
  --beam_size BEAM_SIZE        - The beam size used to do joint predictions. The default value is 5.
->>>>>>> repo1
  
  --verbose_logging            - If true, all the warnings related to data
                                 processing will be printed. A number of warnings
@@ -780,19 +587,14 @@ The main script `run_tf_squad.py` specific parameters are:
  
 To see the full list of available options and their descriptions, use the `-h` or `--help` command line option, for example:
  
-<<<<<<< HEAD
-=======
 `python run_pretraining.py --help`
  
->>>>>>> repo1
 `python run_tf_squad.py --help`
  
 Detailed descriptions of command-line options can be found in the [Parameters](#parameters) section.
  
 ### Getting the data
  
-<<<<<<< HEAD
-=======
 For pre-training ELECTRA, we use the concatenation of Wikipedia (2500M words) as well as BookCorpus (800M words). For Wikipedia, we extract only the text passages and ignore headers, lists, and tables. ELECTRA requires that datasets are structured as a document level corpus rather than a shuffled sentence level corpus because it is critical to extract long contiguous sentences.
  
 The preparation of the pre-training dataset is described in the `dataPrep.py` script found in the `data/` folder. The component steps in the automated scripts to prepare the datasets are as follows:
@@ -809,13 +611,10 @@ The preparation of the pre-training dataset is described in the `dataPrep.py` sc
  
 The tools used for preparing the BookCorpus and Wikipedia datasets can be applied to prepare an arbitrary corpus. The `create_datasets_from_start.sh` script in the `data/` directory applies sentence segmentation, sharding, and `tfrecord` file creation given an arbitrary text file containing a document-separated text corpus.
  
->>>>>>> repo1
 For fine-tuning a pre-trained ELECTRA model for specific tasks, by default this repository prepares the following dataset:
  
 -   [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/): for question answering
  
-<<<<<<< HEAD
-=======
 Depending on the speed of your internet connection, this process takes about a day to complete. The BookCorpus server could sometimes get overloaded and also contain broken links resulting in HTTP 403 and 503 errors. You can either skip the missing files or retry downloading at a later time.
  
  
@@ -823,14 +622,11 @@ Depending on the speed of your internet connection, this process takes about a d
  
 This repository provides functionality to combine multiple datasets into a single dataset for pre-training on a diverse text corpus at the shard level. Currently Wikipedia and BookCorpus get merged in `data/create_datasets_from_start.sh`. Snippets to download and format more text corpuses can be added to `data/dataPrep.py`. The sharding scheme combines multiple corpuses together and splits them into the required number of training(90%) and testing(10%) shards. Once the data is sharded, the `build_pretraining_dataset.py` converts raw text shards to tokenized segments and saves the dataset to the `data` directory in TFRecord format. This dataset can now be used to pre-train ELECTRA.
  
->>>>>>> repo1
  
 ### Training process
  
 The training process consists of two steps: pre-training and fine-tuning.
  
-<<<<<<< HEAD
-=======
 #### Pre-training
  
 Pre-training is performed using `run_pretraining.py` along with parameters defined in `scripts/run_pretraining.sh` and `scripts/configs/pretrain_configs.sh`.
@@ -885,7 +681,6 @@ Note that the `run.sub` script is a starting point that has to be adapted depend
 Refer to the files contents to see the full list of variables to adjust for your system.
  
  
->>>>>>> repo1
 #### Fine-tuning
  
 Fine-tuning is provided for a variety of tasks. The following tasks are included with this repository through the following scripts:
@@ -896,11 +691,6 @@ By default, each Python script implements fine-tuning a pre-trained ELECTRA mode
  
 -   Uses 8 GPUs
 -   Has FP16 precision enabled
-<<<<<<< HEAD
--   HAS XLA enabled
--   Saves a checkpoint at the end of training to the `checkpoints/` folder
- 
-=======
 -   Has XLA enabled
 -   Saves a checkpoint at the end of training to the `checkpoints/` folder
  
@@ -911,18 +701,13 @@ bash scripts/run_squad.sh $(source scripts/configs/squad_config.sh && dgx2_16gpu
 bash scripts/run_squad.sh $(source scripts/configs/squad_config.sh && dgx1_8gpu_amp) train_eval
 ```
  
->>>>>>> repo1
 Fine-tuning Python scripts implement support for mixed precision and multi-GPU training through [Horovod](https://github.com/horovod/horovod). For a full list of parameters and associated explanations, see the [Parameters](#parameters) section.
  
 All fine-tuning shell scripts have the same positional arguments, outlined below:
  
 ```bash scripts/run_squad.sh <pretrained electra model> <epochs> <batch size> <learning rate> <amp|fp32> <num_gpus> <seed> <SQuAD version> <path to SQuAD dataset> <results directory> <checkpoint_to_load> <mode (either `train`, `eval` or `train_eval`)>```
  
-<<<<<<< HEAD
-By default, the mode positional argument is set to train_eval. See the [Quick Start Guide](#quick-start-guide) for explanations of each positional argument.
-=======
 By default, the mode positional argument is set to `train_eval`. See the [Fine-tuning parameters](#fine-tuning-parameters) for explanations of each positional argument.
->>>>>>> repo1
  
 Note: The first positional argument (the path to the checkpoint to load) is required.
  
@@ -955,25 +740,6 @@ The following section shows how to run benchmarks measuring the model performanc
  
 #### Training performance benchmark
  
-<<<<<<< HEAD
-Training performance benchmarks for fine-tuning can be obtained by running `scripts/benchmark.sh`. The required parameters can be passed through the command-line as described in [Training process](#training-process). The performance information is printed at the end of each epoch.
- 
-To benchmark the training performance on a specific batch size, run:
-`bash scripts/benchmark.sh train <num_gpus> <batch size> <infer_batch_size> <amp|fp32> <SQuAD version> <path to SQuAD dataset> <results directory> <checkpoint_to_load> <cache_Dir>`
- 
-An example call used to generate throughput numbers:
-`bash scripts/benchmark.sh train 8 16`
- 
-#### Inference performance benchmark
- 
-Inference performance benchmarks fine-tuning can be obtained by running `scripts/benchmark.sh`. The required parameters can be passed through the command-line as described in [Inference process](#inference-process). This script runs one epoch by default on the SQuAD v1.1 dataset and extracts the averaged performance for the given configuration. 
- 
-To benchmark the training performance on a specific batch size, run:
-`bash scripts/benchmark.sh train <num_gpus> <batch size> <infer_batch_size> <amp|fp32> <SQuAD version> <path to SQuAD dataset> <results directory> <checkpoint_to_load> <cache_Dir>`
- 
-An example call used to generate throughput numbers:
-`bash scripts/benchmark.sh eval 8 256`
-=======
 Training performance benchmarks for both pre-training phases can be obtained by running `scripts/benchmark_pretraining.sh`. Default parameters are set to run a few training steps for a converging NVIDIA DGX A100 system.
  
 To benchmark training performance with other parameters, run:
@@ -1007,7 +773,6 @@ To benchmark the training performance on a specific batch size, run:
  
 An example call used to generate throughput numbers:
 `bash scripts/benchmark_squad.sh eval 8 256`
->>>>>>> repo1
   
  
 ### Results
@@ -1016,10 +781,6 @@ The following sections provide details on how we achieved our performance and ac
  
 #### Training accuracy results
  
-<<<<<<< HEAD
-##### Fine-tuning accuracy: NVIDIA DGX A100 (8x A100 40GB)
-Our results were obtained by running the `scripts/run_squad.sh` training script in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX A100 (8x A100 40GB) GPUs.
-=======
 ##### Pre-training loss curves
 ![Pretraining Loss Curves](images/total_loss.svg)
  
@@ -1045,7 +806,6 @@ The SQuAD fine-tuning scripts by default train on [Google's ELECTRA++ base pretr
 Our results were obtained by running the `scripts/run_squad.sh` training script in the tensorflow:20.07-tf2-py3 NGC container on NVIDIA DGX A100 (8x A100 40GB) GPUs. 
  
 *ELECTRA BASE++*
->>>>>>> repo1
  
 | GPUs    | Batch size / GPU    | Accuracy / F1 - FP32  | Accuracy / F1 - mixed precision  |   Time to train - TF32 (sec) |  Time to train - mixed precision (sec) | Time to train speedup (FP32 to mixed precision) | 
 |---------|---------------------|------------------|-----------------------------|--------------------------|---------------------------------|-------------------------------------------------|
@@ -1054,24 +814,16 @@ Our results were obtained by running the `scripts/run_squad.sh` training script 
  
  
 ##### Fine-tuning accuracy: NVIDIA DGX-1 (8x V100 16GB)
-<<<<<<< HEAD
-Our results were obtained by running the `scripts/run_squad.sh` training script in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX-1 with (8x V100 16GB) GPUs.
-=======
  
 Our results were obtained by running the `scripts/run_squad.sh` training script in the tensorflow:20.07-tf2-py3 NGC container on NVIDIA DGX-1 with (8x V100 16GB) GPUs.
  
 *ELECTRA BASE++*
->>>>>>> repo1
  
 | GPUs    | Batch size / GPU (FP32 : mixed precision)   | Accuracy / F1 - FP32  | Accuracy / F1 - mixed precision  |   Time to train - FP32 (sec) |  Time to train - mixed precision (sec) | Time to train speedup (FP32 to mixed precision) |       
 |---------|---------------------|------------------|-----------------------------|--------------------------|---------------------------------|-------------------------------------------------|
 |   1   |          8 : 16           |         87.36 / 92.82        |             87.32 / 92.74              |              5136            |                  1378               |          3.73                 |
 |   8   |          8 : 16           |         87.02 / 92.73       |             87.02 / 92.72              |              730            |                  334               |          2.18                 |
  
-<<<<<<< HEAD
-##### Fine-tuning accuracy: NVIDIA DGX-2 (16x V100 32GB)
-Our results were obtained by running the `scripts/run_squad.sh` training script in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX-2 (16x V100 32G) GPUs.
-=======
 *ELECTRA BASE checkpoint Wikipedia and BookCorpus*
  
 GPUs | SQuAD version| Batch size / GPU (FP32 : mixed precision)   | Accuracy / F1 - FP32  | Accuracy / F1 - mixed precision  |   Time to train - FP32 (sec) |  Time to train - mixed precision (sec) | Time to train speedup (FP32 to mixed precision) |       
@@ -1084,22 +836,12 @@ GPUs | SQuAD version| Batch size / GPU (FP32 : mixed precision)   | Accuracy / F
 Our results were obtained by running the `scripts/run_squad.sh` training script in the tensorflow:20.07-tf2-py3 NGC container on NVIDIA DGX-2 (16x V100 32G) GPUs.
  
 *ELECTRA BASE++*
->>>>>>> repo1
  
 | GPUs    | Batch size / GPU    | Accuracy / F1 - FP32  | Accuracy / F1 - mixed precision  |   Time to train - FP32 (sec) |  Time to train - mixed precision (sec) | Time to train speedup (FP32 to mixed precision) |       
 |---------|---------------------|------------------|-----------------------------|--------------------------|---------------------------------|-------------------------------------------------|
 |   1   |          32           |         87.14 / 92.69        |             86.95 / 92.69              |              4478            |                  1162               |          3.85                 |
 |   16   |          32           |         86.95 / 90.58         |             86.93 / 92.48               |              333            |                  229               |          1.45                 |
  
-<<<<<<< HEAD
- 
- 
- 
-##### Training stability test
- 
-###### Fine-tuning stability test: NVIDIA DGX-1 (8x V100 16GB)
- 
-=======
   
 ##### Training stability test
  
@@ -1117,7 +859,6 @@ Training stability with 48 x DGX A100, TF32 computations and loss reported after
  
 *ELECTRA BASE++*
  
->>>>>>> repo1
 Training stability with 8 GPUs, FP16 computations, batch size of 16 on SQuAD v1.1:
   
 | Accuracy Metric | Seed 1 | Seed 2 | Seed 3 | Seed 4 | Seed 5 | Mean | Standard Deviation
@@ -1132,40 +873,10 @@ Training stability with 8 GPUs, FP16 computations, batch size of 16 on SQuAD v1.
 |Exact Match %| 83.00 | 82.84 | 83.11 | 82.70 | 82.94 | 82.91 | 0.15
 | f1 % | 85.63 | 85.48 | 85.69 | 85.31 | 85.57 | 85.54 | 0.15
  
-<<<<<<< HEAD
- 
-=======
->>>>>>> repo1
 #### Training performance results
  
 ##### Training performance: NVIDIA DGX A100 (8x A100 40GB)
  
-<<<<<<< HEAD
-Our results were obtained by running the `scripts/benchmark.sh` training script in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX A100 (8x A100 40GB) GPUs. Performance numbers (in items/images per second) were averaged over an entire training epoch.
- 
-###### Fine-tuning NVIDIA DGX A100 (8x A100 40GB)
-  
-| GPUs | Batch size / GPU | Throughput - FP32 (sequences/sec) | Throughput - mixed precision (sequences/sec) | Throughput speedup (TF32 - mixed precision) | Weak scaling - TF32 | Weak scaling - mixed precision |
-|------------------|----------------------|-----------------------------------------------|------------------------------------|---------------------------------|----------------------|----------------------------------------------
-| 1 |  32 |  104    | 285 |  2.73  |  1.00  | 1.00
-| 4 |  32 |  405    | 962 |  2.37  |  3.88  | 3.37
-| 8 |  32 |   809   | 1960|  2.42  |  7.75  | 6.87
- 
- 
- 
-##### Training performance: NVIDIA DGX-1 (8x V100 16GB)
- 
-Our results were obtained by running the `scripts/benchmark.sh` training scripts in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX-1 with (8x V100 32GB) GPUs. Performance numbers (in sequences per second) were averaged over an entire training epoch.
- 
- 
-###### Fine-tuning NVIDIA DGX-1 (8x V100 16GB)
- 
-| GPUs | Batch size / GPU (FP32 : mixed precision)   | Throughput - FP32 (sequences/sec) | Throughput - mixed precision (sequences/sec) | Throughput speedup (FP32 - mixed precision) | Weak scaling - FP32 | Weak scaling - mixed precision |
-|------------------|----------------------|-----------------------------------------------|------------------------------------|---------------------------------|----------------------|----------------------------------------------
-|1 | 8 : 16|  35| 144| 4.11| 1.00| 1.00
-|4 | 8 : 16| 133| 508| 3.81| 3.80| 3.52
-|8 | 8 : 16| 263| 965| 3.67| 7.51| 6.70
-=======
 Our results were obtained by running the `scripts/benchmark_squad.sh` training script in the tensorflow:20.07-tf2-py3 NGC container on NVIDIA DGX A100 (8x A100 40GB) GPUs. Performance numbers (in items/images per second) were averaged over an entire training epoch.
  
 ###### Pre-training NVIDIA DGX A100 (8x A100 40GB)
@@ -1203,24 +914,11 @@ Our results were obtained by running the `scripts/benchmark_squad.sh` training s
 |------------------|-----------|-----------|-----------------------------------------------|------------------------------------|---------------------------------|----------------------|----------------------------------------------
 |1 | 8 : 16| 384| 35| 154| 4.4 | 1.00| 1.00
 |8 | 8 : 16| 384|268|1051| 3.92| 7.66| 6.82
->>>>>>> repo1
  
 To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
  
 ##### Training performance: NVIDIA DGX-2 (16x V100 32GB)
  
-<<<<<<< HEAD
-Our results were obtained by running the `scripts/benchmark.sh` training scripts in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX-2 with (16x V100 32G) GPUs. Performance numbers (in sequences per second) were averaged over an entire training epoch.
- 
-###### Fine-tuning NVIDIA DGX-2 With 32GB
- 
-| GPUs | Batch size / GPU | Throughput - FP32 (sequences/sec) | Throughput - mixed precision (sequences/sec) | Throughput speedup (FP32 - mixed precision) | Weak scaling - FP32 | Weak scaling - mixed precision |
-|------|------------------|----------------------------------|---------------------------------------------|---------------------------------------------|---------------------|--------------------------------|
-|    1 |               16 |                               40 |                                         173 |                                        4.33 |                1.00 |                           1.00 |
-|    4 |               16 |                              157 |                                         625 |                                        3.98 |                3.93 |                           3.61 |
-|    8 |               16 |                              311 |                                        1209 |                                        3.89 |                7.78 |                           6.99 |
-|   16 |               16 |                              611 |                                        2288 |                                        3.74 |               15.28 |                          13.23 |
-=======
 Our results were obtained by running the `scripts/benchmark_squad.sh` training scripts in the tensorflow:20.07-tf2-py3 NGC container on NVIDIA DGX-2 with (16x V100 32G) GPUs. Performance numbers (in sequences per second) were averaged over an entire training epoch.
  
 ###### Pre-training NVIDIA DGX-2 (16x V100 32GB)
@@ -1241,7 +939,6 @@ Our results were obtained by running the `scripts/benchmark_squad.sh` training s
 |    1 |               16 |          384 |                     40 |                                         184 |                                        4.6  |                1.00 |                           1.00 |
 |    8 |               16 |          384 |                    311 |                                        1289 |                                        4.14 |                7.77 |                           7.00 |
 |   16 |               16 |          384 |                    626 |                                        2594 |                                        4.14 |               15.65 |                          14.09 |
->>>>>>> repo1
  
 To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
  
@@ -1249,11 +946,7 @@ To achieve these same results, follow the steps in the [Quick Start Guide](#quic
  
 ##### Inference performance: NVIDIA DGX A100 (1x A100 40GB)
  
-<<<<<<< HEAD
-Our results were obtained by running the `scripts/benchmark.sh` inferencing benchmarking script in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX A100 (1x A100 40GB) GPU.
-=======
 Our results were obtained by running the `scripts/benchmark_squad.sh` inferencing benchmarking script in the tensorflow:20.07-tf2-py3 NGC container on NVIDIA DGX A100 (1x A100 40GB) GPU.
->>>>>>> repo1
  
 ###### Fine-tuning inference on NVIDIA DGX A100 (1x A100 40GB)
  
@@ -1261,34 +954,14 @@ FP16
  
 | Batch size | Sequence length | Throughput Avg (sequences/sec) | Latency Avg (ms) | Latency 90% (ms) | Latency 95% (ms) | Latency 99% (ms) |
 |------------|-----------------|--------------------------------|------------------|------------------|------------------|------------------|
-<<<<<<< HEAD
-|          1 |             384 |                            178 |            5.630 |            5.500 |            5.555 |            5.608 |
-|        256 |             384 |                            857 |            1.112 |            1.111 |            1.111 |            1.112 |
-|        512 |             384 |                            864 |            1.054 |            1.051 |            1.053 |            1.053 |
-=======
 |          1 |             384 |                            166 |            6.035 |            5.995 |            6.013 |            6.029 |
 |        256 |             384 |                            886 |           276.26 |           274.53 |          275.276 |          275.946 |
 |        512 |             384 |                            886 |           526.5  |          525.014 |          525.788 |          525.788 |
->>>>>>> repo1
  
 TF32
  
 | Batch size | Sequence length | Throughput Avg (sequences/sec) | Latency Avg (ms) | Latency 90% (ms) | Latency 95% (ms) | Latency 99% (ms) |
 |------------|-----------------|--------------------------------|------------------|------------------|------------------|------------------|
-<<<<<<< HEAD
-|          1 |             384 |                            123 |            8.186 |            7.995 |            8.078 |            8.152 |
-|        256 |             384 |                            344 |            2.832 |            2.822 |            2.826 |            2.830 |
-|        512 |             384 |                            351 |            2.787 |            2.781 |            2.784 |            2.784 |
- 
- 
- 
-##### Inference performance: NVIDIA DGX-1 (1x V100 16GB)
- 
-Our results were obtained by running the `scripts/benchmark.sh` script in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX-1 with (1x V100 16G) GPUs.
- 
- 
-###### Fine-tuning inference on NVIDIA DGX-1 with 16GB
-=======
 |          1 |             384 |                            122 |            8.228 |            8.171 |            8.198 |            8.221 |
 |        256 |             384 |                            342 |          729.293 |          727.990 |          728.505 |          729.027 |
 |        512 |             384 |                            350 |         1429.314 |         1427.719 |         1428.550 |         1428.550 |
@@ -1300,57 +973,15 @@ Our results were obtained by running the `scripts/benchmark.sh` script in the te
 Our results were obtained by running the `scripts/benchmark_squad.sh` script in the tensorflow:20.07-tf2-py3 NGC container on NVIDIA Tesla T4 (1x T4 16GB) GPU. 
  
 ###### Fine-tuning inference on NVIDIA T4
->>>>>>> repo1
  
 FP16
  
 | Batch size | Sequence length | Throughput Avg (sequences/sec) | Latency Avg (ms) | Latency 90% (ms) | Latency 95% (ms) | Latency 99% (ms) |
 |------------|-----------------|--------------------------------|------------------|------------------|------------------|------------------|
-<<<<<<< HEAD
-|          1 |             384 |                            141 |            7.100 |            7.071 |            7.081 |            7.091 |
-|        128 |             384 |                            517 |            1.933 |            1.930 |            1.930 |            1.932 |
-|        256 |             384 |                            524 |            1.910 |            1.907 |            1.908 |            1.909 |
- 
- 
-FP32
- 
-| Batch size | Sequence length | Throughput Avg (sequences/sec) | Latency Avg (ms) | Latency 90% (ms) | Latency 95% (ms) | Latency 99% (ms) |
-|------------|-----------------|--------------------------------|------------------|------------------|------------------|------------------|
-|          1 |             384 |                             84 |           11.869 |           11.814 |           11.832 |           11.850 |
-|        128 |             384 |                            117 |            8.548 |            8.527 |            8.529 |            8.537 |
-|        256 |             384 |                            141 |            7.100 |            7.071 |            7.081 |            7.091 |
- 
- 
-##### Inference performance: NVIDIA DGX-2 (1x V100 32GB)
- 
-Our results were obtained by running the `scripts/benchmark.sh` scripts in the tensorflow:20.06-tf2-py3 NGC container on NVIDIA DGX-2 with (1x V100 32G) GPUs.
- 
- 
-###### Fine-tuning inference on NVIDIA DGX-2 with 32GB
-  
-FP16
- 
-| Batch size | Sequence length | Throughput Avg (sequences/sec) | Latency Avg (ms) | Latency 90% (ms) | Latency 95% (ms) | Latency 99% (ms) |
-|------------|-----------------|--------------------------------|------------------|------------------|------------------|------------------|
-|          1 |             384 |                            144 |            6.953 |            6.888 |            6.910 |            6.932 |
-|        128 |             384 |                            547 |            1.828 |            1.827 |            1.827 |            1.828 |
-|        256 |             384 |                            557 |            1.795 |            1.792 |            1.793 |            1.794 |
- 
-FP32
- 
-| Batch size | Sequence length | Throughput Avg (sequences/sec) | Latency Avg (ms) | Latency 90% (ms) | Latency 95% (ms) | Latency 99% (ms) |
-|------------|-----------------|--------------------------------|------------------|------------------|------------------|------------------|
-|          1 |             384 |                             86 |           11.580 |           11.515 |           11.535 |           11.558 |
-|        128 |             384 |                            124 |            8.056 |             8.05 |            8.052 |            8.055 |
-|        256 |             384 |                            125 |            8.006 |            8.002 |            8.004 |            8.005 |
- 
- 
-=======
 |          1 |             384 |                            58  |           17.413 |           17.295 |           17.349 |           17.395 |
 |        128 |             384 |                            185 |          677.298 |          675.211 |          675.674 |          676.269 |
 |        256 |             384 |                            169 |         1451.396 |         1445.070 |         1447.654 |         1450.141 |
    
->>>>>>> repo1
 To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
   
 ## Release notes
@@ -1360,8 +991,6 @@ To achieve these same results, follow the steps in the [Quick Start Guide](#quic
 July 2020
 - Initial release.
  
-<<<<<<< HEAD
-=======
 October 2020
 - Data preparation scripts for pre-training.
 - Pre-training support.
@@ -1369,7 +998,6 @@ October 2020
 - Update beam size in SQuAD fine-tuning from 4 to 5 for higher accuracy.
 - T4 inference performance.
  
->>>>>>> repo1
 ### Known issues
  
 There are no known issues with this model.

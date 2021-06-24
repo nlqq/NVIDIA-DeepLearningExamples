@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-import math
-import os
-=======
 import collections
 import math
 import os
 import pathlib
 import re
->>>>>>> repo1
 
 import pynvml
 
@@ -43,20 +38,6 @@ class device:
         affinity_list = [int(x) for x in affinity_string]
         affinity_list.reverse()  # so core 0 is in 0th element of list
 
-<<<<<<< HEAD
-        return [i for i, e in enumerate(affinity_list) if e != 0]
-
-
-def set_affinity(gpu_id=None):
-    if gpu_id is None:
-        gpu_id = int(os.getenv('LOCAL_RANK', 0))
-
-    dev = device(gpu_id)
-    os.sched_setaffinity(0, dev.getCpuAffinity())
-
-    # list of ints representing the logical cores this process is now affinitied with
-    return os.sched_getaffinity(0)
-=======
         ret = [i for i, e in enumerate(affinity_list) if e != 0]
         return ret
 
@@ -159,4 +140,3 @@ def set_affinity(gpu_id, nproc_per_node, mode='socket'):
 
     affinity = os.sched_getaffinity(0)
     return affinity
->>>>>>> repo1

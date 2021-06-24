@@ -35,12 +35,7 @@ def main(args):
         args.input_files = args.input_files.split(',')
 
     hdf5_tfrecord_folder_prefix = "_lower_case_" + str(args.do_lower_case) + "_seq_len_" + str(args.max_seq_length) \
-<<<<<<< HEAD
-                                  + "_max_pred_" + str(args.max_predictions_per_seq) + "_masked_lm_prob_" + str(args.masked_lm_prob) \
-                                  + "_random_seed_" + str(args.random_seed) + "_dupe_factor_" + str(args.dupe_factor)
-=======
                                   + "_random_seed_" + str(args.random_seed)
->>>>>>> repo1
 
     directory_structure = {
         'download' : working_dir + '/download',    # Downloaded and decompressed
@@ -93,22 +88,6 @@ def main(args):
             wiki_formatter.merge()
 
         elif args.dataset == 'wikicorpus_zh':
-<<<<<<< HEAD
-            assert False, 'wikicorpus_zh not fully supported at this time. The simplified/tradition Chinese data needs to be translated and properly segmented still, and should work once this step is added.'
-            if args.skip_wikiextractor == 0:
-                path_to_wikiextractor_in_container = '/workspace/wikiextractor/WikiExtractor.py'
-                wikiextractor_command = path_to_wikiextractor_in_container + ' ' + directory_structure['download'] + '/' + args.dataset + '/wikicorpus_zh.xml ' + '-b 100M --processes ' + str(args.n_processes) + ' -o ' + directory_structure['extracted'] + '/' + args.dataset
-                print('WikiExtractor Command:', wikiextractor_command)
-                wikiextractor_process = subprocess.run(wikiextractor_command, shell=True, check=True)
-                #wikiextractor_process.communicate()
-
-            wiki_path = directory_structure['extracted'] + '/wikicorpus_zh'
-            output_filename = directory_structure['formatted'] + '/wikicorpus_zh_one_article_per_line.txt'
-            wiki_formatter = WikicorpusTextFormatting.WikicorpusTextFormatting(wiki_path, output_filename, recursive=True)
-            wiki_formatter.merge()
-            
-            assert os.stat(output_filename).st_size > 0, 'File glob did not pick up extracted wiki files from WikiExtractor.'
-=======
             raise NotImplementedError(
                 'wikicorpus_zh not fully supported at this time. The simplified/tradition Chinese data needs to be '
                 'translated and properly segmented still, and should work once this step is added.')
@@ -125,7 +104,6 @@ def main(args):
             # wiki_formatter.merge()
             #
             # assert os.stat(output_filename).st_size > 0, 'File glob did not pick up extracted wiki files from WikiExtractor.'
->>>>>>> repo1
 
     elif args.action == 'sharding':
         # Note: books+wiki requires user to provide list of input_files (comma-separated with no spaces)
@@ -160,8 +138,6 @@ def main(args):
             sharding.distribute_articles_over_shards()
             sharding.write_shards_to_disk()
 
-<<<<<<< HEAD
-=======
             for _dir in ['train', 'test']:
                 if not os.path.exists(directory_structure['sharded'] + '/' + args.dataset + '/' + _dir):
                     os.makedirs(directory_structure['sharded'] + '/' + args.dataset + '/' + _dir)
@@ -170,88 +146,10 @@ def main(args):
                 mv_process = subprocess.Popen(command, shell=True)
 
                 mv_process.wait()
->>>>>>> repo1
         else:
             assert False, 'Unsupported dataset for sharding'
 
     elif args.action == 'create_tfrecord_files':
-<<<<<<< HEAD
-        assert False, 'TFrecord creation not supported in this PyTorch model example release.' \
-                      ''
-        if not os.path.exists(directory_structure['tfrecord'] + "/" + args.dataset):
-            os.makedirs(directory_structure['tfrecord'] + "/" + args.dataset)
-
-        def create_record_worker(filename_prefix, shard_id, output_format='tfrecord'):
-            bert_preprocessing_command = 'python /workspace/bert/create_pretraining_data.py'
-            bert_preprocessing_command += ' --input_file=' + directory_structure['sharded'] + '/' + args.dataset + '/' + filename_prefix + '_' + str(shard_id) + '.txt'
-            bert_preprocessing_command += ' --output_file=' + directory_structure['tfrecord'] + '/' + args.dataset + '/' + filename_prefix + '_' + str(shard_id) + '.' + output_format
-            bert_preprocessing_command += ' --vocab_file=' + args.vocab_file
-            bert_preprocessing_command += ' --do_lower_case' if args.do_lower_case else ''
-            bert_preprocessing_command += ' --max_seq_length=' + str(args.max_seq_length)
-            bert_preprocessing_command += ' --max_predictions_per_seq=' + str(args.max_predictions_per_seq)
-            bert_preprocessing_command += ' --masked_lm_prob=' + str(args.masked_lm_prob)
-            bert_preprocessing_command += ' --random_seed=' + str(args.random_seed)
-            bert_preprocessing_command += ' --dupe_factor=' + str(args.dupe_factor)
-            bert_preprocessing_process = subprocess.Popen(bert_preprocessing_command, shell=True)
-
-            last_process = bert_preprocessing_process
-
-            # This could be better optimized (fine if all take equal time)
-            if shard_id % args.n_processes == 0 and shard_id > 0:
-                bert_preprocessing_process.wait()
-            return last_process
-
-        output_file_prefix = args.dataset
-
-        for i in range(args.n_training_shards):
-            last_process =create_record_worker(output_file_prefix + '_training', i)
-
-        last_process.wait()
-
-        for i in range(args.n_test_shards):
-            last_process = create_record_worker(output_file_prefix + '_test', i)
-
-        last_process.wait()
-
-
-    elif args.action == 'create_hdf5_files':
-        last_process = None
-
-        if not os.path.exists(directory_structure['hdf5'] + "/" + args.dataset):
-            os.makedirs(directory_structure['hdf5'] + "/" + args.dataset)
-
-        def create_record_worker(filename_prefix, shard_id, output_format='hdf5'):
-            bert_preprocessing_command = 'python /workspace/bert/create_pretraining_data.py'
-            bert_preprocessing_command += ' --input_file=' + directory_structure['sharded'] + '/' + args.dataset + '/' + filename_prefix + '_' + str(shard_id) + '.txt'
-            bert_preprocessing_command += ' --output_file=' + directory_structure['hdf5'] + '/' + args.dataset + '/' + filename_prefix + '_' + str(shard_id) + '.' + output_format
-            bert_preprocessing_command += ' --vocab_file=' + args.vocab_file
-            bert_preprocessing_command += ' --do_lower_case' if args.do_lower_case else ''
-            bert_preprocessing_command += ' --max_seq_length=' + str(args.max_seq_length)
-            bert_preprocessing_command += ' --max_predictions_per_seq=' + str(args.max_predictions_per_seq)
-            bert_preprocessing_command += ' --masked_lm_prob=' + str(args.masked_lm_prob)
-            bert_preprocessing_command += ' --random_seed=' + str(args.random_seed)
-            bert_preprocessing_command += ' --dupe_factor=' + str(args.dupe_factor)
-            bert_preprocessing_process = subprocess.Popen(bert_preprocessing_command, shell=True)
-
-            last_process = bert_preprocessing_process
-
-            # This could be better optimized (fine if all take equal time)
-            if shard_id % args.n_processes == 0 and shard_id > 0:
-                bert_preprocessing_process.wait()
-            return last_process
-
-        output_file_prefix = args.dataset
-
-        for i in range(args.n_training_shards):
-            last_process = create_record_worker(output_file_prefix + '_training', i)
-
-        last_process.wait()
-
-        for i in range(args.n_test_shards):
-            last_process = create_record_worker(output_file_prefix + '_test', i)
-
-        last_process.wait()
-=======
 
         if not os.path.exists(directory_structure['tfrecord'] + "/" + args.dataset):
             os.makedirs(directory_structure['tfrecord'] + "/" + args.dataset)
@@ -275,7 +173,6 @@ def main(args):
 
     elif args.action == 'create_hdf5_files':
         raise NotImplementedError
->>>>>>> repo1
 
 
 if __name__ == "__main__":
@@ -323,33 +220,21 @@ if __name__ == "__main__":
         '--n_training_shards',
         type=int,
         help='Specify the number of training shards to generate',
-<<<<<<< HEAD
-        default=256
-=======
         default=2048
->>>>>>> repo1
     )
 
     parser.add_argument(
         '--n_test_shards',
         type=int,
         help='Specify the number of test shards to generate',
-<<<<<<< HEAD
-        default=256
-=======
         default=2048
->>>>>>> repo1
     )
 
     parser.add_argument(
         '--fraction_test_set',
         type=float,
         help='Specify the fraction (0..1) of the data to withhold for the test data split (based on number of sequences)',
-<<<<<<< HEAD
-        default=0.2
-=======
         default=0.1
->>>>>>> repo1
     )
 
     parser.add_argument(
@@ -398,24 +283,10 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-<<<<<<< HEAD
-        '--max_predictions_per_seq',
-        type=int,
-        help='Specify the maximum number of masked words per sequence',
-        default=20
-    )
-
-    parser.add_argument(
-        '--do_lower_case',
-        type=int,
-        help='Specify whether it is cased (0) or uncased (1) (any number greater than 0 will be treated as uncased)',
-        default=1
-=======
         '--do_lower_case',
         type=int,
         help='Specify whether it is cased (0) or uncased (1) (any number greater than 0 will be treated as uncased)',
         default=0
->>>>>>> repo1
     )
 
     parser.add_argument(

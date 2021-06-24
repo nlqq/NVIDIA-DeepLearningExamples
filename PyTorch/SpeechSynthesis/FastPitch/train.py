@@ -35,15 +35,10 @@ import time
 from collections import defaultdict, OrderedDict
 from contextlib import contextmanager
 
-<<<<<<< HEAD
-import torch
-import numpy as np
-=======
 import numpy as np
 import nvidia_dlprof_pytorch_nvtx as pyprof
 import torch
 import torch.cuda.profiler as profiler
->>>>>>> repo1
 import torch.distributed as dist
 from scipy.io.wavfile import write as write_wav
 from torch.autograd import Variable
@@ -52,26 +47,16 @@ from torch.nn.parameter import Parameter
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
-<<<<<<< HEAD
-import dllogger as DLLogger
-from apex import amp
-from apex.optimizers import FusedAdam, FusedLAMB
-=======
 import common.tb_dllogger as logger
 from apex import amp
 from apex.optimizers import FusedAdam, FusedLAMB
 from apex.multi_tensor_apply import multi_tensor_applier
 import amp_C
->>>>>>> repo1
 
 import common
 import data_functions
 import loss_functions
 import models
-<<<<<<< HEAD
-from common.log_helper import init_dllogger, TBLogger, unique_dllogger_fpath
-=======
->>>>>>> repo1
 
 
 def parse_args(parser):
@@ -84,10 +69,7 @@ def parse_args(parser):
                         help='Path to dataset')
     parser.add_argument('--log-file', type=str, default=None,
                         help='Path to a DLLogger log file')
-<<<<<<< HEAD
-=======
     parser.add_argument('--pyprof', action='store_true', help='Enable pyprof profiling')
->>>>>>> repo1
 
     training = parser.add_argument_group('training setup')
     training.add_argument('--epochs', type=int, required=True,
@@ -104,15 +86,8 @@ def parse_args(parser):
                           help='Enable AMP')
     training.add_argument('--cuda', action='store_true',
                           help='Run on GPU using CUDA')
-<<<<<<< HEAD
-    training.add_argument('--cudnn-enabled', action='store_true',
-                          help='Enable cudnn')
-    training.add_argument('--cudnn-benchmark', action='store_true',
-                          help='Run cudnn benchmark')
-=======
     training.add_argument('--cudnn-benchmark', action='store_true',
                           help='Enable cudnn benchmark mode')
->>>>>>> repo1
     training.add_argument('--ema-decay', type=float, default=0,
                           help='Discounting factor for training weights EMA')
     training.add_argument('--gradient-accumulation-steps', type=int, default=1,
@@ -138,29 +113,20 @@ def parse_args(parser):
 
     dataset = parser.add_argument_group('dataset parameters')
     dataset.add_argument('--training-files', type=str, required=True,
-<<<<<<< HEAD
-                         help='Path to training filelist')
-    dataset.add_argument('--validation-files', type=str, required=True,
-                         help='Path to validation filelist')
-=======
                          help='Path to training filelist. Separate multiple paths with commas.')
     dataset.add_argument('--validation-files', type=str, required=True,
                          help='Path to validation filelist. Separate multiple paths with commas.')
->>>>>>> repo1
     dataset.add_argument('--pitch-mean-std-file', type=str, default=None,
                          help='Path to pitch stats to be stored in the model')
     dataset.add_argument('--text-cleaners', nargs='*',
                          default=['english_cleaners'], type=str,
                          help='Type of text cleaners for input text')
-<<<<<<< HEAD
-=======
     dataset.add_argument('--symbol-set', type=str, default='english_basic',
                          help='Define symbol set for input text')
 
     cond = parser.add_argument_group('conditioning on additional attributes')
     cond.add_argument('--n-speakers', type=int, default=1,
                       help='Condition on speaker, value > 1 enables trainable speaker embeddings.')
->>>>>>> repo1
 
     distributed = parser.add_argument_group('distributed setup')
     distributed.add_argument('--local_rank', type=int, default=os.getenv('LOCAL_RANK', 0),
@@ -173,12 +139,7 @@ def parse_args(parser):
 def reduce_tensor(tensor, num_gpus):
     rt = tensor.clone()
     dist.all_reduce(rt, op=dist.ReduceOp.SUM)
-<<<<<<< HEAD
-    rt /= num_gpus
-    return rt
-=======
     return rt.true_divide(num_gpus)
->>>>>>> repo1
 
 
 def init_distributed(args, world_size, rank):
@@ -220,10 +181,6 @@ def save_checkpoint(local_rank, model, ema_model, optimizer, epoch, total_iter,
                     config, amp_run, filepath):
     if local_rank != 0:
         return
-<<<<<<< HEAD
-=======
-
->>>>>>> repo1
     print(f"Saving model and optimizer state at epoch {epoch} to {filepath}")
     ema_dict = None if ema_model is None else ema_model.state_dict()
     checkpoint = {'epoch': epoch,
@@ -258,13 +215,6 @@ def load_checkpoint(local_rank, model, ema_model, optimizer, epoch, total_iter,
         ema_model.load_state_dict(checkpoint['ema_state_dict'])
 
 
-<<<<<<< HEAD
-def validate(model, criterion, valset, batch_size, world_size, collate_fn,
-             distributed_run, rank, batch_to_gpu, use_gt_durations=False):
-    """Handles all the validation scoring and printing"""
-    was_training = model.training
-    model.eval()
-=======
 def validate(model, epoch, total_iter, criterion, valset, batch_size,
              collate_fn, distributed_run, batch_to_gpu, use_gt_durations=False,
              ema=False):
@@ -273,7 +223,6 @@ def validate(model, epoch, total_iter, criterion, valset, batch_size,
     model.eval()
 
     tik = time.perf_counter()
->>>>>>> repo1
     with torch.no_grad():
         val_sampler = DistributedSampler(valset) if distributed_run else None
         val_loader = DataLoader(valset, num_workers=8, shuffle=False,
@@ -286,10 +235,6 @@ def validate(model, epoch, total_iter, criterion, valset, batch_size,
             x, y, num_frames = batch_to_gpu(batch)
             y_pred = model(x, use_gt_durations=use_gt_durations)
             loss, meta = criterion(y_pred, y, is_training=False, meta_agg='sum')
-<<<<<<< HEAD
-=======
-
->>>>>>> repo1
             if distributed_run:
                 for k,v in meta.items():
                     val_meta[k] += reduce_tensor(v, 1)
@@ -298,14 +243,6 @@ def validate(model, epoch, total_iter, criterion, valset, batch_size,
                 for k,v in meta.items():
                     val_meta[k] += v
                 val_num_frames = num_frames.item()
-<<<<<<< HEAD
-        val_meta = {k: v / len(valset) for k,v in val_meta.items()}
-        val_loss = val_meta['loss']
-
-    if was_training:
-        model.train()
-    return val_loss.item(), val_meta, val_num_frames
-=======
 
         val_meta = {k: v / len(valset) for k,v in val_meta.items()}
 
@@ -324,7 +261,6 @@ def validate(model, epoch, total_iter, criterion, valset, batch_size,
     if was_training:
         model.train()
     return val_meta
->>>>>>> repo1
 
 
 def adjust_learning_rate(total_iter, opt, learning_rate, warmup_iters=None):
@@ -350,45 +286,18 @@ def apply_ema_decay(model, ema_model, decay):
         v.copy_(decay * v + (1 - decay) * st[k])
 
 
-<<<<<<< HEAD
-=======
 def apply_multi_tensor_ema(model_weight_list, ema_model_weight_list, decay, overflow_buf):
     if not decay:
         return
     amp_C.multi_tensor_axpby(65536, overflow_buf, [ema_model_weight_list, model_weight_list, ema_model_weight_list], decay, 1-decay, -1)
 
 
->>>>>>> repo1
 def main():
     parser = argparse.ArgumentParser(description='PyTorch FastPitch Training',
                                      allow_abbrev=False)
     parser = parse_args(parser)
     args, _ = parser.parse_known_args()
 
-<<<<<<< HEAD
-    if 'LOCAL_RANK' in os.environ and 'WORLD_SIZE' in os.environ:
-        local_rank = int(os.environ['LOCAL_RANK'])
-        world_size = int(os.environ['WORLD_SIZE'])
-    else:
-        local_rank = args.rank
-        world_size = args.world_size
-    distributed_run = world_size > 1
-
-    torch.manual_seed(args.seed + local_rank)
-    np.random.seed(args.seed + local_rank)
-
-    if local_rank == 0:
-        if not os.path.exists(args.output):
-            os.makedirs(args.output)
-
-        log_fpath = args.log_file or os.path.join(args.output, 'nvlog.json')
-        log_fpath = unique_dllogger_fpath(log_fpath)
-        init_dllogger(log_fpath)
-    else:
-        init_dllogger(dummy=True)
-
-    [DLLogger.log("PARAMETER", {k:v}) for k,v in vars(args).items()]
-=======
     distributed_run = args.world_size > 1
 
     torch.manual_seed(args.seed + args.local_rank)
@@ -406,36 +315,22 @@ def main():
     logger.init(log_fpath, args.output, enabled=(args.local_rank == 0),
                 tb_subsets=tb_subsets)
     logger.parameters(vars(args), tb_subset='train')
->>>>>>> repo1
 
     parser = models.parse_model_args('FastPitch', parser)
     args, unk_args = parser.parse_known_args()
     if len(unk_args) > 0:
         raise ValueError(f'Invalid options {unk_args}')
 
-<<<<<<< HEAD
-    torch.backends.cudnn.enabled = args.cudnn_enabled
-    torch.backends.cudnn.benchmark = args.cudnn_benchmark
-
-    if distributed_run:
-        init_distributed(args, world_size, local_rank)
-=======
     torch.backends.cudnn.benchmark = args.cudnn_benchmark
 
     if distributed_run:
         init_distributed(args, args.world_size, args.local_rank)
->>>>>>> repo1
 
     device = torch.device('cuda' if args.cuda else 'cpu')
     model_config = models.get_model_config('FastPitch', args)
     model = models.get_model('FastPitch', model_config, device)
 
     # Store pitch mean/std as params to translate from Hz during inference
-<<<<<<< HEAD
-    fpath = common.utils.stats_filename(
-        args.dataset_path, args.training_files, 'pitch_char')
-=======
->>>>>>> repo1
     with open(args.pitch_mean_std_file, 'r') as f:
         stats = json.load(f)
     model.pitch_mean[0] = stats['mean']
@@ -463,12 +358,9 @@ def main():
             model, device_ids=[args.local_rank], output_device=args.local_rank,
             find_unused_parameters=True)
 
-<<<<<<< HEAD
-=======
     if args.pyprof:
         pyprof.init(enable_function_stack=True)
 
->>>>>>> repo1
     start_epoch = [1]
     start_iter = [0]
 
@@ -482,15 +374,9 @@ def main():
         ch_fpath = None
 
     if ch_fpath is not None:
-<<<<<<< HEAD
-        load_checkpoint(local_rank, model, ema_model, optimizer, start_epoch,
-                        start_iter, model_config, args.amp, ch_fpath,
-                        world_size)
-=======
         load_checkpoint(args.local_rank, model, ema_model, optimizer, start_epoch,
                         start_iter, model_config, args.amp, ch_fpath,
                         args.world_size)
->>>>>>> repo1
 
     start_epoch = start_epoch[0]
     total_iter = start_iter[0]
@@ -500,19 +386,12 @@ def main():
         pitch_predictor_loss_scale=args.pitch_predictor_loss_scale)
 
     collate_fn = data_functions.get_collate_function('FastPitch')
-<<<<<<< HEAD
-    trainset = data_functions.get_data_loader('FastPitch', args.dataset_path,
-                                              args.training_files, args)
-    valset = data_functions.get_data_loader('FastPitch', args.dataset_path,
-                                            args.validation_files, args)
-=======
     trainset = data_functions.get_data_loader('FastPitch',
                                               audiopaths_and_text=args.training_files,
                                               **vars(args))
     valset = data_functions.get_data_loader('FastPitch',
                                             audiopaths_and_text=args.validation_files,
                                             **vars(args))
->>>>>>> repo1
     if distributed_run:
         train_sampler, shuffle = DistributedSampler(trainset), False
     else:
@@ -525,19 +404,6 @@ def main():
 
     batch_to_gpu = data_functions.get_batch_to_gpu('FastPitch')
 
-<<<<<<< HEAD
-    model.train()
-
-    train_tblogger = TBLogger(local_rank, args.output, 'train')
-    val_tblogger = TBLogger(local_rank, args.output, 'val', dummies=True)
-    if args.ema_decay > 0:
-        val_ema_tblogger = TBLogger(local_rank, args.output, 'val_ema')
-
-    val_loss = 0.0
-    torch.cuda.synchronize()
-    for epoch in range(start_epoch, args.epochs + 1):
-        epoch_start_time = time.time()
-=======
     if args.ema_decay:
         ema_model_weight_list, model_weight_list, overflow_buf_for_ema = init_multi_tensor_ema(model, ema_model)
     else:
@@ -552,7 +418,6 @@ def main():
     torch.cuda.synchronize()
     for epoch in range(start_epoch, args.epochs + 1):
         epoch_start_time = time.perf_counter()
->>>>>>> repo1
 
         epoch_loss = 0.0
         epoch_mel_loss = 0.0
@@ -570,35 +435,15 @@ def main():
         epoch_iter = 0
         num_iters = len(train_loader) // args.gradient_accumulation_steps
         for batch in train_loader:
-<<<<<<< HEAD
-=======
-
->>>>>>> repo1
             if accumulated_steps == 0:
                 if epoch_iter == num_iters:
                     break
                 total_iter += 1
                 epoch_iter += 1
-<<<<<<< HEAD
-                iter_start_time = time.time()
-                start = time.perf_counter()
-
-                old_lr = optimizer.param_groups[0]['lr']
-                adjust_learning_rate(total_iter, optimizer, args.learning_rate,
-                                     args.warmup_steps)
-                new_lr = optimizer.param_groups[0]['lr']
-
-                if new_lr != old_lr:
-                    dllog_lrate_change = f'{old_lr:.2E} -> {new_lr:.2E}'
-                    train_tblogger.log_value(total_iter, 'lrate', new_lr)
-                else:
-                    dllog_lrate_change = None
-=======
                 iter_start_time = time.perf_counter()
 
                 adjust_learning_rate(total_iter, optimizer, args.learning_rate,
                                      args.warmup_steps)
->>>>>>> repo1
 
                 model.zero_grad()
 
@@ -617,15 +462,9 @@ def main():
                 loss.backward()
 
             if distributed_run:
-<<<<<<< HEAD
-                reduced_loss = reduce_tensor(loss.data, world_size).item()
-                reduced_num_frames = reduce_tensor(num_frames.data, 1).item()
-                meta = {k: reduce_tensor(v, world_size) for k,v in meta.items()}
-=======
                 reduced_loss = reduce_tensor(loss.data, args.world_size).item()
                 reduced_num_frames = reduce_tensor(num_frames.data, 1).item()
                 meta = {k: reduce_tensor(v, args.world_size) for k,v in meta.items()}
->>>>>>> repo1
             else:
                 reduced_loss = loss.item()
                 reduced_num_frames = num_frames.item()
@@ -639,11 +478,7 @@ def main():
 
             if accumulated_steps % args.gradient_accumulation_steps == 0:
 
-<<<<<<< HEAD
-                train_tblogger.log_grads(total_iter, model)
-=======
                 logger.log_grads_tb(total_iter, model)
->>>>>>> repo1
                 if args.amp:
                     torch.nn.utils.clip_grad_norm_(
                         amp.master_params(optimizer), args.grad_clip_thresh)
@@ -652,25 +487,6 @@ def main():
                         model.parameters(), args.grad_clip_thresh)
 
                 optimizer.step()
-<<<<<<< HEAD
-                apply_ema_decay(model, ema_model, args.ema_decay)
-
-                iter_stop_time = time.time()
-                iter_time = iter_stop_time - iter_start_time
-                frames_per_sec = iter_num_frames / iter_time
-                epoch_frames_per_sec += frames_per_sec
-                epoch_loss += iter_loss
-                epoch_num_frames += iter_num_frames
-                iter_mel_loss = iter_meta['mel_loss'].item()
-                epoch_mel_loss += iter_mel_loss
-
-                DLLogger.log((epoch, epoch_iter, num_iters), OrderedDict([
-                    ('train_loss', iter_loss), ('train_mel_loss', iter_mel_loss),
-                    ('train_frames/s', frames_per_sec), ('took', iter_time),
-                    ('lrate_change', dllog_lrate_change)
-                ]))
-                train_tblogger.log_meta(total_iter, iter_meta)
-=======
                 apply_multi_tensor_ema(model_weight_list, ema_model_weight_list, args.ema_decay, overflow_buf_for_ema)
 
                 iter_time = time.perf_counter() - iter_start_time
@@ -690,7 +506,6 @@ def main():
                                ('took', iter_time),
                                ('lrate', optimizer.param_groups[0]['lr'])]),
                 )
->>>>>>> repo1
 
                 accumulated_steps = 0
                 iter_loss = 0
@@ -698,71 +513,6 @@ def main():
                 iter_meta = {}
 
         # Finished epoch
-<<<<<<< HEAD
-        epoch_stop_time = time.time()
-        epoch_time = epoch_stop_time - epoch_start_time
-
-        DLLogger.log((epoch,), data=OrderedDict([
-            ('avg_train_loss', epoch_loss / epoch_iter),
-            ('avg_train_mel_loss', epoch_mel_loss / epoch_iter),
-            ('avg_train_frames/s', epoch_num_frames / epoch_time),
-            ('took', epoch_time)
-        ]))
-
-        tik = time.time()
-        val_loss, meta, num_frames = validate(
-            model, criterion, valset, args.batch_size, world_size, collate_fn,
-            distributed_run, local_rank, batch_to_gpu, use_gt_durations=True)
-        tok = time.time()
-
-        DLLogger.log((epoch,), data=OrderedDict([
-            ('val_loss', val_loss),
-            ('val_mel_loss', meta['mel_loss'].item()),
-            ('val_frames/s', num_frames / (tok - tik)),
-            ('took', tok - tik),
-        ]))
-        val_tblogger.log_meta(total_iter, meta)
-
-        if args.ema_decay > 0:
-            tik_e = time.time()
-            val_loss_e, meta_e, num_frames_e = validate(
-                ema_model, criterion, valset, args.batch_size, world_size,
-                collate_fn, distributed_run, local_rank, batch_to_gpu,
-                use_gt_durations=True)
-            tok_e = time.time()
-
-            DLLogger.log((epoch,), data=OrderedDict([
-                ('val_ema_loss', val_loss_e),
-                ('val_ema_mel_loss', meta_e['mel_loss'].item()),
-                ('val_ema_frames/s', num_frames_e / (tok_e - tik_e)),
-                ('took', tok_e - tik_e),
-            ]))
-            val_ema_tblogger.log_meta(total_iter, meta)
-
-        if (epoch > 0 and args.epochs_per_checkpoint > 0 and
-            (epoch % args.epochs_per_checkpoint == 0) and local_rank == 0):
-
-            checkpoint_path = os.path.join(
-                args.output, f"FastPitch_checkpoint_{epoch}.pt")
-            save_checkpoint(local_rank, model, ema_model, optimizer, epoch,
-                            total_iter, model_config, args.amp, checkpoint_path)
-        if local_rank == 0:
-            DLLogger.flush()
-
-    # Finished training
-    DLLogger.log((), data=OrderedDict([
-        ('avg_train_loss', epoch_loss / epoch_iter),
-        ('avg_train_mel_loss', epoch_mel_loss / epoch_iter),
-        ('avg_train_frames/s', epoch_num_frames / epoch_time),
-    ]))
-    DLLogger.log((), data=OrderedDict([
-        ('val_loss', val_loss),
-        ('val_mel_loss', meta['mel_loss'].item()),
-        ('val_frames/s', num_frames / (tok - tik)),
-    ]))
-    if local_rank == 0:
-        DLLogger.flush()
-=======
         epoch_time = time.perf_counter() - epoch_start_time
 
         logger.log((epoch,),
@@ -816,7 +566,6 @@ def main():
             args.output, f"FastPitch_checkpoint_{epoch}.pt")
         save_checkpoint(args.local_rank, model, ema_model, optimizer, epoch,
                         total_iter, model_config, args.amp, checkpoint_path)
->>>>>>> repo1
 
 
 if __name__ == '__main__':

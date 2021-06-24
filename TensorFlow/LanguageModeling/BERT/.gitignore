@@ -4,15 +4,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
-<<<<<<< HEAD
-=======
 *.png
 .idea/
 *swp
 data/
 checkpoints/
 data_dl/
->>>>>>> repo1
 
 # C extensions
 *.so
