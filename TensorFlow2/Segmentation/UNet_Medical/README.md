@@ -31,16 +31,6 @@ This repository provides a script and recipe to train UNet Medical to achieve st
      * [Inference performance benchmark](#inference-performance-benchmark)
    * [Results](#results)
      * [Training accuracy results](#training-accuracy-results)
-<<<<<<< HEAD
-       * [Training accuracy: NVIDIA DGX A100 (8x A100 40GB)](#training-accuracy-nvidia-dgx-a100-8x-a100-40gb)  
-       * [Training accuracy: NVIDIA DGX-1 (8x V100 16GB)](#training-accuracy-nvidia-dgx-1-8x-v100-16gb)
-     * [Training performance results](#training-performance-results)
-       * [Training performance: NVIDIA DGX A100 (8x A100 40GB)](#training-performance-nvidia-dgx-a100-8x-a100-40gb) 
-       * [Training performance: NVIDIA DGX-1 (8x V100 16GB)](#training-performance-nvidia-dgx-1-8x-v100-16gb)
-     * [Inference performance results](#inference-performance-results)
-        * [Inference performance: NVIDIA DGX A100 (1x A100 40GB)](#inference-performance-nvidia-dgx-a100-1x-a100-40gb)
-        * [Inference performance: NVIDIA DGX-1 (1x V100 16GB)](#inference-performance-nvidia-dgx-1-1x-v100-16gb)
-=======
        * [Training accuracy: NVIDIA DGX A100 (8x A100 80G)](#training-accuracy-nvidia-dgx-a100-8x-a100-80g)  
        * [Training accuracy: NVIDIA DGX-1 (8x V100 16G)](#training-accuracy-nvidia-dgx-1-8x-v100-16g)
      * [Training performance results](#training-performance-results)
@@ -49,7 +39,6 @@ This repository provides a script and recipe to train UNet Medical to achieve st
      * [Inference performance results](#inference-performance-results)
         * [Inference performance: NVIDIA DGX A100 (1x A100 80G)](#inference-performance-nvidia-dgx-a100-1x-a100-80g)
         * [Inference performance: NVIDIA DGX-1 (1x V100 16G)](#inference-performance-nvidia-dgx-1-1x-v100-16g)
->>>>>>> repo1
 - [Release notes](#release-notes)
    * [Changelog](#changelog)
    * [Known issues](#known-issues)
@@ -134,11 +123,7 @@ This implementation exploits the TensorFlow Automatic Mixed Precision feature. T
    ```python
    optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
    if using_amp:
-<<<<<<< HEAD
-       optimizer = tf.keras.mixed_precision.experimental.LossScaleOptimizer(optimizer, "dynamic")
-=======
        optimizer = tf.keras.mixed_precision.LossScaleOptimizer(optimizer, dynamic=True)
->>>>>>> repo1
    ```
  
 3. Use scaled loss to calculate gradients:
@@ -152,19 +137,11 @@ This implementation exploits the TensorFlow Automatic Mixed Precision feature. T
  
 #### Enabling TF32
 
-<<<<<<< HEAD
-TensorFloat-32 (TF32) is the new math mode in [NVIDIA A100](#https://www.nvidia.com/en-us/data-center/a100/) GPUs for handling the matrix math also called tensor operations. TF32 running on Tensor Cores in A100 GPUs can provide up to 10x speedups compared to single-precision floating-point math (FP32) on Volta GPUs. 
-
-TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models which require high dynamic range for weights or activations.
-
-For more information, refer to the [TensorFloat-32 in the A100 GPU Accelerates AI Training, HPC up to 20x](#https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/) blog post.
-=======
 TensorFloat-32 (TF32) is the new math mode in [NVIDIA A100](https://www.nvidia.com/en-us/data-center/a100/) GPUs for handling the matrix math also called tensor operations. TF32 running on Tensor Cores in A100 GPUs can provide up to 10x speedups compared to single-precision floating-point math (FP32) on Volta GPUs. 
 
 TF32 Tensor Cores can speed up networks using FP32, typically with no loss of accuracy. It is more robust than FP16 for models which require high dynamic range for weights or activations.
 
 For more information, refer to the [TensorFloat-32 in the A100 GPU Accelerates AI Training, HPC up to 20x](https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/) blog post.
->>>>>>> repo1
 
 TF32 is supported in the NVIDIA Ampere GPU architecture and is enabled by default.
 
@@ -176,11 +153,7 @@ The following section lists the requirements that you need to meet in order to s
  
 This repository contains Dockerfile which extends the TensorFlow NGC container and encapsulates some dependencies. Aside from these dependencies, ensure you have the following components:
 - [NVIDIA Docker](https://github.com/NVIDIA/nvidia-docker)
-<<<<<<< HEAD
-- TensorFlow 20.06-tf2-py3 [NGC container](https://ngc.nvidia.com/registry/nvidia-tensorflow) with Tensorflow 2.2 or later
-=======
 - TensorFlow 21.02-tf2-py3 [NGC container](https://ngc.nvidia.com/registry/nvidia-tensorflow) with Tensorflow 2.2 or later
->>>>>>> repo1
 -   GPU-based architecture:
     - [NVIDIA Volta](https://www.nvidia.com/en-us/data-center/volta-gpu-architecture/)
     - [NVIDIA Turing](https://www.nvidia.com/en-us/geforce/turing/)
@@ -247,23 +220,6 @@ For the specifics concerning training and inference, see the [Advanced](#advance
    After the Docker container is launched, the training with the [default hyperparameters](#default-parameters) (for example 1/8 GPUs FP32/TF-AMP) can be started with:
   
    ```bash
-<<<<<<< HEAD
-   bash examples/unet{_TF-AMP}_{1,8}GPU.sh <path/to/dataset> <path/to/checkpoint>
-   ```
-  
-   For example, to run with full precision (FP32) on 1 GPU from the project’s folder, simply use:
-  
-   ```bash
-   bash examples/unet_1GPU.sh /data /results
-   ```
-  
-   This script will launch a training on a single fold and store the model’s checkpoint in the <path/to/checkpoint> directory. 
-  
-   The script can be run directly by modifying flags if necessary, especially the number of GPUs, which is defined after the `-np` flag. Since the test volume does not have labels, 20% of the training data is used for validation in 5-fold cross-validation manner. The number of fold can be changed using `--crossvalidation_idx` with an integer in range 0-4. For example, to run with 4 GPUs using fold 1 use:
-  
-   ```bash
-   horovodrun -np 4 python main.py --data_dir /data --model_dir /results --batch_size 1 --exec_mode train --crossvalidation_idx 1 --xla --amp
-=======
    bash examples/unet_TRAIN_SINGLE{_TF-AMP}.sh <number/of/gpus> <path/to/dataset> <path/to/checkpoint>
    ```
   
@@ -279,24 +235,16 @@ For the specifics concerning training and inference, see the [Advanced](#advance
   
    ```bash
    horovodrun -np 4 python main.py --data_dir /data --model_dir /results --batch_size 1 --exec_mode train --fold 1 --xla --amp
->>>>>>> repo1
    ```
   
    Training will result in a checkpoint file being written to `./results` on the host machine.
  
 6. Start validation/evaluation.
   
-<<<<<<< HEAD
-   The trained model can be evaluated by passing the `--exec_mode evaluate` flag. Since evaluation is carried out on a validation dataset, the `--crossvalidation_idx` parameter should be filled. For example:
-  
-   ```bash
-   python main.py --data_dir /data --model_dir /results --batch_size 1 --exec_mode evaluate --crossvalidation_idx 0 --xla --amp
-=======
    The trained model can be evaluated by passing the `--exec_mode evaluate` flag. Since evaluation is carried out on a validation dataset, the `--fold` parameter should be filled. For example:
   
    ```bash
    python main.py --data_dir /data --model_dir /results --batch_size 1 --exec_mode evaluate --fold 0 --xla --amp
->>>>>>> repo1
    ```
   
    Evaluation can also be triggered jointly after training by passing the `--exec_mode train_and_evaluate` flag.
@@ -343,24 +291,15 @@ Other folders included in the root directory are:
 The complete list of the available parameters for the `main.py` script contains:
 * `--exec_mode`: Select the execution mode to run the model (default: `train`). Modes available:
   * `train` - trains model from scratch.
-<<<<<<< HEAD
-  * `evaluate` - loads checkpoint (if available) and performs evaluation on validation subset (requires `--crossvalidation_idx` other than `None`).
-  * `train_and_evaluate` - trains model from scratch and performs validation at the end (requires `--crossvalidation_idx` other than `None`).
-=======
   * `evaluate` - loads checkpoint (if available) and performs evaluation on validation subset (requires `--fold` other than `None`).
   * `train_and_evaluate` - trains model from scratch and performs validation at the end (requires `--fold` other than `None`).
->>>>>>> repo1
   * `predict` - loads checkpoint (if available) and runs inference on the test set. Stores the results in `--model_dir` directory.
   * `train_and_predict` - trains model from scratch and performs inference.
 * `--model_dir`: Set the output directory for information related to the model (default: `/results`).
 * `--log_dir`: Set the output directory for logs (default: None).
 * `--data_dir`: Set the input directory containing the dataset (default: `None`).
 * `--batch_size`: Size of each minibatch per GPU (default: `1`).
-<<<<<<< HEAD
-* `--crossvalidation_idx`: Selected fold for cross-validation (default: `None`).
-=======
 * `--fold`: Selected fold for cross-validation (default: `None`).
->>>>>>> repo1
 * `--max_steps`: Maximum number of steps (batches) for training (default: `1000`).
 * `--seed`: Set random seed for reproducibility (default: `0`).
 * `--weight_decay`: Weight decay coefficient (default: `0.0005`).
@@ -385,11 +324,7 @@ usage: main.py [-h]
               [--exec_mode {train,train_and_predict,predict,evaluate,train_and_evaluate}]
               [--model_dir MODEL_DIR] --data_dir DATA_DIR [--log_dir LOG_DIR]
               [--batch_size BATCH_SIZE] [--learning_rate LEARNING_RATE]
-<<<<<<< HEAD
-              [--crossvalidation_idx CROSSVALIDATION_IDX]
-=======
               [--fold FOLD]
->>>>>>> repo1
               [--max_steps MAX_STEPS] [--weight_decay WEIGHT_DECAY]
               [--log_every LOG_EVERY] [--warmup_steps WARMUP_STEPS]
               [--seed SEED] [--augment] [--benchmark]
@@ -410,11 +345,7 @@ optional arguments:
                        Size of each minibatch per GPU
  --learning_rate LEARNING_RATE
                        Learning rate coefficient for AdamOptimizer
-<<<<<<< HEAD
- --crossvalidation_idx CROSSVALIDATION_IDX
-=======
  --fold FOLD
->>>>>>> repo1
                        Chosen fold for cross-validation. Use None to disable
                        cross-validation
  --max_steps MAX_STEPS
@@ -489,11 +420,7 @@ horovodrun -np <number/of/gpus> python main.py --data_dir /data [other parameter
 The main result of the training are checkpoints stored by default in `./results/` on the host machine, and in the `/results` in the container. This location can be controlled
 by the `--model_dir` command-line argument, if a different location was mounted while starting the container. In the case when the training is run in `train_and_predict` mode, the inference will take place after the training is finished, and inference results will be stored to the `/results` directory.
  
-<<<<<<< HEAD
-If the `--exec_mode train_and_evaluate` parameter was used, and if `--crossvalidation_idx` parameter is set to an integer value of {0, 1, 2, 3, 4}, the evaluation of the validation set takes place after the training is completed. The results of the evaluation will be printed to the console.
-=======
 If the `--exec_mode train_and_evaluate` parameter was used, and if `--fold` parameter is set to an integer value of {0, 1, 2, 3, 4}, the evaluation of the validation set takes place after the training is completed. The results of the evaluation will be printed to the console.
->>>>>>> repo1
 
 ### Inference process
  
@@ -517,19 +444,11 @@ The following section shows how to run benchmarks measuring the model performanc
  
 To benchmark training, run one of the `TRAIN_BENCHMARK` scripts in `./examples/`:
 ```bash
-<<<<<<< HEAD
-bash examples/unet_TRAIN_BENCHMARK{_TF-AMP}_{1, 8}GPU.sh <path/to/dataset> <path/to/checkpoints> <batch/size>
-```
-For example, to benchmark training using mixed-precision on 8 GPUs use:
-```bash
-bash examples/unet_TRAIN_BENCHMARK_TF-AMP_8GPU.sh <path/to/dataset> <path/to/checkpoint> <batch/size>
-=======
 bash examples/unet_TRAIN_BENCHMARK{_TF-AMP}.sh <number/of/gpus> <path/to/dataset> <path/to/checkpoints> <batch/size>
 ```
 For example, to benchmark training using mixed-precision on 8 GPUs use:
 ```bash
 bash examples/unet_TRAIN_BENCHMARK_TF-AMP.sh 8 <path/to/dataset> <path/to/checkpoint> <batch/size>
->>>>>>> repo1
 ```
  
 Each of these scripts will by default run 200 warm-up iterations and benchmark the performance during training in the next 800 iterations.
@@ -569,42 +488,13 @@ The following sections provide details on how we achieved our performance and ac
  
 #### Training accuracy results
  
-<<<<<<< HEAD
-##### Training accuracy: NVIDIA DGX A100 (8x A100 40GB)
- 
-The following table lists the average DICE score across 5-fold cross-validation. Our results were obtained by running the `examples/unet_TRAIN{_TF-AMP}_{1, 8}GPU.sh` training script in the `tensorflow:20.06-tf2-py3` NGC container on NVIDIA DGX A100 (8x A100 40GB) GPUs.
-=======
 ##### Training accuracy: NVIDIA DGX A100 (8x A100 80G)
  
 The following table lists the average DICE score across 5-fold cross-validation. Our results were obtained by running the `examples/unet_TRAIN_FULL{_TF-AMP}.sh` training script in the `tensorflow:21.02-tf2-py3` NGC container on NVIDIA DGX A100 (8x A100 80G) GPUs.
->>>>>>> repo1
  
 | GPUs | Batch size / GPU | DICE - TF32 | DICE - mixed precision | Time to train - TF32 | Time to train - mixed precision | Time to train speedup (TF32 to mixed precision) |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | 1 | 8 | 0.8900 | 0.8902 | 21.3 | 8.6 | 2.48 |
-<<<<<<< HEAD
-| 8 | 8 | 0.8855 | 0.8858 | 2.5 | 2.5 | 1.00 |
-
-##### Training accuracy: NVIDIA DGX-1 (8x V100 16GB)
- 
-The following table lists the average DICE score across 5-fold cross-validation. Our results were obtained by running the `examples/unet_TRAIN_{FP32, TF-AMP}_{1, 8}GPU.sh` training script in the `tensorflow:20.06-tf2-py3` NGC container on NVIDIA DGX-1 with (8x V100 16GB) GPUs.
- 
-| GPUs | Batch size / GPU | DICE - FP32 | DICE - mixed precision | Time to train - FP32 [min] | Time to train - mixed precision [min] | Time to train speedup (FP32 to mixed precision) |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| 1 | 8 | 0.8901 | 0.8898 | 47 | 16 | 2.94 |
-| 8 | 8 | 0.8848 | 0.8857 | 7 | 4.5 | 1.56 |
- 
-To reproduce this result, start the Docker container interactively and run one of the TRAIN scripts:
-```bash
-bash examples/unet_TRAIN{_TF-AMP}_{1, 8}GPU.sh <path/to/dataset> <path/to/checkpoint> <batch/size>
-```
- for example
-```bash
-bash examples/unet_TRAIN_TF-AMP_8GPU.sh /data /results 8
-```
-
-This command will launch a script which will run 5-fold cross-validation training for 6400 iterations and print the validation DICE score and cross-entropy loss. The time reported is for one fold, which means that the training for 5 folds will take 5 times longer. The default batch size is 8, however if you have less than 16 Gb memory card and you encounter GPU memory issue you should decrease the batch size. The logs of the runs can be found in `/results` directory once the script is finished.
-=======
 | 8 | 8 | 0.8855 | 0.8858 |  2.5 | 2.5 | 1.00 |
 
 ##### Training accuracy: NVIDIA DGX-1 (8x V100 16G)
@@ -630,44 +520,15 @@ At the end, it will collect the scores and print the average validation DICE sco
 The time reported is for one fold, which means that the training for 5 folds will take 5 times longer. 
 The default batch size is 8, however if you have less than 16 Gb memory card and you encounter GPU memory issue you should decrease the batch size. 
 The logs of the runs can be found in `/results` directory once the script is finished.
->>>>>>> repo1
 
 **Learning curves**
 
 The following image show the training loss as a function of iteration for training using DGX A100 (TF32 and TF-AMP) and DGX-1 V100 (FP32 and TF-AMP).
-<<<<<<< HEAD
-![LearningCurves](images/UNetMed_TF2_conv.png)
-=======
 ![LearningCurves](images/U-NetMed_TF2_conv.png)
->>>>>>> repo1
 
 
 #### Training performance results
  
-<<<<<<< HEAD
-##### Training performance: NVIDIA DGX A100 (8x A100 40GB)
-
-Our results were obtained by running the `examples/unet_TRAIN_BENCHMARK{_TF-AMP}_{1, 8}GPU.sh` training script in the NGC container on NVIDIA DGX A100 (8x A100 40GB) GPUs. Performance numbers (in images per second) were averaged over 1000 iterations, excluding the first 200 warm-up steps.
-
-| GPUs | Batch size / GPU | Throughput - TF32 [img/s] | Throughput - mixed precision [img/s] | Throughput speedup (TF32 - mixed precision) | Weak scaling - TF32 | Weak scaling - mixed precision |
-|:----:|:----------------:|:-------------------------:|:------------------------------------:|:-------------------------------------------:|:-------------------:|:------------------------------:|
-|  1   |        1         |           29.56           |                62.50                 |                    2.11                     |          -          |               -                |
-|  1   |        8         |           46.26           |                118.98                |                    2.57                     |          -          |               -                |
-|  8   |        1         |          210.74           |                259.22                |                    1.23                     |        7.13         |              4.15              |
-|  8   |        8         |          293.64           |                561.77                |                    1.91                     |        6.35         |              4.72              |
-
-
-##### Training performance: NVIDIA DGX-1 (8x V100 16GB)
-
-Our results were obtained by running the `examples/unet_TRAIN_BENCHMARK{_TF-AMP}_{1, 8}GPU.sh` training script in the `tensorflow:20.06-tf2-py3`6-tf2-py3 NGC container on NVIDIA DGX-1 with (8x V100 16GB) GPUs. Performance numbers (in images per second) were averaged over 1000 iterations, excluding the first 200 warm-up steps.
-
-| GPUs | Batch size / GPU | Throughput - FP32 [img/s] | Throughput - mixed precision [img/s] | Throughput speedup (FP32 - mixed precision) | Weak scaling - FP32 | Weak scaling - mixed precision |
-|:----:|:----------------:|:-------------------------:|:------------------------------------:|:-------------------------------------------:|:-------------------:|:------------------------------:|
-|  1   |        1         |           14.65           |                40.36                 |                    2.75                     |          -          |               -                |
-|  1   |        8         |           17.91           |                59.58                 |                    3.33                     |          -          |               -                |
-|  8   |        1         |          117.81           |                210.18                |                    1.78                     |        8.04         |              5.21              |
-|  8   |        8         |          137.11           |                368.88                |                    2.69                     |        7.66         |              6.19              |
-=======
 ##### Training performance: NVIDIA DGX A100 (8x A100 80G)
 
 Our results were obtained by running the `examples/unet_TRAIN_BENCHMARK{_TF-AMP}.sh` training script in the NGC container on NVIDIA DGX A100 (8x A100 80G) GPUs. Performance numbers (in images per second) were averaged over 1000 iterations, excluding the first 200 warm-up steps.
@@ -690,7 +551,6 @@ Our results were obtained by running the `examples/unet_TRAIN_BENCHMARK{_TF-AMP}
 |  1   |        8         |           19.40           |                 60.65                |                    3.12                     |          -          |               -                |
 |  8   |        1         |          120.90           |                225.27                |                    1.86                     |        7.14         |              5.68              |
 |  8   |        8         |          137.11           |                419.99                |                    3.06                     |        7.07         |              6.92              |
->>>>>>> repo1
  
  
 To achieve these same results, follow the steps in the [Training performance benchmark](#training-performance-benchmark) section.
@@ -702,52 +562,25 @@ TensorFlow 2 runs by default using the eager mode, which makes tensor evaluation
  
 #### Inference performance results
 
-<<<<<<< HEAD
-##### Inference performance: NVIDIA DGX A100 (1x A100 40GB)
-
-Our results were obtained by running the `examples/unet_INFER_BENCHMARK{_TF-AMP}.sh` inferencing benchmarking script in the `tensorflow:20.06-tf2-py3` NGC container on NVIDIA DGX A100 (1x A100 40GB) GPU.
-=======
 ##### Inference performance: NVIDIA DGX A100 (1x A100 80G)
 
 Our results were obtained by running the `examples/unet_INFER_BENCHMARK{_TF-AMP}.sh` inference benchmarking script in the `tensorflow:21.02-tf2-py3` NGC container on NVIDIA DGX A100 (1x A100 80G) GPU.
->>>>>>> repo1
 
 FP16
 
 | Batch size | Resolution | Throughput Avg [img/s] | Latency Avg [ms] | Latency 90% [ms] | Latency 95% [ms] | Latency 99% [ms] |
 |:----------:|:----------:|:----------------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-<<<<<<< HEAD
-|     1      | 572x572x1  |         283.12         |      3.534       |      3.543       |      3.544       |      3.547       |
-|     2      | 572x572x1  |         188.69         |      10.603      |      10.619      |      10.623      |      10.629      |
-|     4      | 572x572x1  |         204.49         |      19.572      |      19.610      |      19.618      |      19.632      |
-|     8      | 572x572x1  |         412.70         |      19.386      |      19.399      |      19.401      |      19.406      |
-|     16     | 572x572x1  |         423.76         |      37.760      |      37.783      |      37.788      |      37.797      |
-=======
 |     1      | 572x572x1  |         275.98         |      3.534       |      3.543       |      3.544       |      3.547       |
 |     2      | 572x572x1  |         376.68         |      10.603      |      10.619      |      10.623      |      10.629      |
 |     4      | 572x572x1  |         443.05         |      19.572      |      19.610      |      19.618      |      19.632      |
 |     8      | 572x572x1  |         440.71         |      19.386      |      19.399      |      19.401      |      19.406      |
 |     16     | 572x572x1  |         462.79         |      37.760      |      37.783      |      37.788      |      37.797      |
->>>>>>> repo1
 
 
 TF32
 
 | Batch size | Resolution | Throughput Avg [img/s] | Latency Avg [ms] | Latency 90% [ms] | Latency 95% [ms] | Latency 99% [ms] |
 |:----------:|:----------:|:----------------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-<<<<<<< HEAD
-|     1      | 572x572x1  |         107.44         |      9.317       |      9.341       |      9.346       |      9.355       |
-|     2      | 572x572x1  |         115.66         |      17.294      |      17.309      |      17.312      |      17.318      |
-|     4      | 572x572x1  |         126.29         |      31.676      |      31.698      |      31.702      |      31.710      |
-|     8      | 572x572x1  |         138.55         |      57.742      |      57.755      |      57.757      |      57.762      |
-|     16     | 572x572x1  |         142.17         |     112.545      |     112.562      |     112.565      |     112.572      |
-
-To achieve these same results, follow the steps in the [Quick Start Guide](#quick-start-guide).
-
-##### Inference performance: NVIDIA DGX-1 (1x V100 16GB)
- 
-Our results were obtained by running the `examples/unet_INFER_BENCHMARK{_TF-AMP}.sh` inferencing benchmarking script in the `tensorflow:20.06-tf2-py3` NGC container on NVIDIA DGX-1 with (1x V100 16GB) GPU.
-=======
 |     1      | 572x572x1  |         152.27         |      9.317       |      9.341       |      9.346       |      9.355       |
 |     2      | 572x572x1  |         180.84         |      17.294      |      17.309      |      17.312      |      17.318      |
 |     4      | 572x572x1  |         203.60         |      31.676      |      31.698      |      31.702      |      31.710      |
@@ -759,43 +592,26 @@ To achieve these same results, follow the steps in the [Quick Start Guide](#quic
 ##### Inference performance: NVIDIA DGX-1 (1x V100 16G)
  
 Our results were obtained by running the `examples/unet_INFER_BENCHMARK{_TF-AMP}.sh` inference benchmarking script in the `tensorflow:21.02-tf2-py3` NGC container on NVIDIA DGX-1 with (1x V100 16G) GPU.
->>>>>>> repo1
  
 FP16
  
 | Batch size | Resolution | Throughput Avg [img/s] | Latency Avg [ms] | Latency 90% [ms] | Latency 95% [ms] | Latency 99% [ms] |
 |:----------:|:----------:|:----------------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-<<<<<<< HEAD
-|     1      | 572x572x1  |         146.17         |      6.843       |      6.851       |      6.853       |      6.856       |
-|     2      | 572x572x1  |         151.19         |      13.230      |      13.242      |      13.244      |      13.248      |
-|     4      | 572x572x1  |         153.65         |      26.035      |      26.049      |      26.051      |      26.057      |
-|     8      | 572x572x1  |         183.49         |      43.602      |      43.627      |      43.631      |      43.640      |
-|     16     | 572x572x1  |         186.62         |      85.743      |      85.807      |      85.819      |      85.843      |
-=======
 |     1      | 572x572x1  |         142.15         |      10.537       |      6.851       |      6.853       |      6.856       |
 |     2      | 572x572x1  |         159.25         |      13.230      |      13.242      |      13.244      |      13.248      |
 |     4      | 572x572x1  |         178.19         |      26.035      |      26.049      |      26.051      |      26.057      |
 |     8      | 572x572x1  |         188.54         |      43.602      |      43.627      |      43.631      |      43.640      |
 |     16     | 572x572x1  |         195.27         |      85.743      |      85.807      |      85.819      |      85.843      |
->>>>>>> repo1
  
 FP32
  
 | Batch size | Resolution | Throughput Avg [img/s] | Latency Avg [ms] | Latency 90% [ms] | Latency 95% [ms] | Latency 99% [ms] |
 |:----------:|:----------:|:----------------------:|:----------------:|:----------------:|:----------------:|:----------------:|
-<<<<<<< HEAD
-|     1      | 572x572x1  |         51.72          |      19.336      |      19.352      |      19.355      |      19.361      |
-|     2      | 572x572x1  |         53.89          |      37.112      |      37.127      |      37.130      |      37.136      |
-|     4      | 572x572x1  |         54.77          |      73.033      |      73.068      |      73.074      |      73.087      |
-|     8      | 572x572x1  |         55.24          |     144.829      |     144.924      |     144.943      |     144.979      |
-|     16     | 572x572x1  |         68.09          |     234.995      |     235.098      |     235.118      |     235.157      |
-=======
 |     1      | 572x572x1  |         51.71          |      20.065      |      20.544      |      20.955      |      21.913      |
 |     2      | 572x572x1  |         55.87          |      37.112      |      37.127      |      37.130      |      37.136      |
 |     4      | 572x572x1  |         58.15          |      73.033      |      73.068      |      73.074      |      73.087      |
 |     8      | 572x572x1  |         59.28          |     144.829      |     144.924      |     144.943      |     144.979      |
 |     16     | 572x572x1  |         73.01          |     234.995      |     235.098      |     235.118      |     235.157      |
->>>>>>> repo1
  
 To achieve these same results, follow the steps in the [Inference performance benchmark](#inference-performance-benchmark) section.
  
@@ -806,14 +622,11 @@ Throughput is reported in images per second. Latency is reported in milliseconds
  
 ### Changelog
 
-<<<<<<< HEAD
-=======
 February 2021
 
 * Updated training and inference performance with V100 and A100 results
 * Refactored the example scripts
 
->>>>>>> repo1
 June 2020
 
 * Updated training and inference accuracy with A100 results
@@ -824,9 +637,6 @@ February 2020
  
 ### Known issues
  
-<<<<<<< HEAD
-=======
 * Training on 8 GPUs with FP32 and XLA using batch size 8 may sometimes cause out-of-memory errors. 
->>>>>>> repo1
 * For TensorFlow 2.0 the training performance using AMP and XLA is around 30% lower than reported here. The issue was solved in TensorFlow 2.1.
 
